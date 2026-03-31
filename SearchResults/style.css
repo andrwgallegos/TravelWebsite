@@ -175,7 +175,7 @@ body {
 
 .search-card {
   background-color: white;
-  max-width: 1450px;
+  max-width: 1450px;          
   margin: 0 auto;
   border-radius: 20px;
   padding: 24px 18px;
@@ -377,8 +377,9 @@ body {
   border-radius: 10px;
 }
 
+/*  Probably can be deleted since I've added the actual images here instead of the place holder. 
 .image-blue {
-  background: linear-gradient(135deg, #4a90e2, #67c2e4);
+  background: linear-gradient(135deg, #4a90e2, #67c2e4);            
 }
 
 .image-orange {
@@ -396,6 +397,7 @@ body {
 .image-tan {
   background: linear-gradient(135deg, #d4915d, #e8b88e);
 }
+*/
 
 .listing-info {
   padding: 12px 8px 8px 12px;
@@ -453,17 +455,17 @@ body {
   width: 166px;
   height: 113px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #4a7fc2, #68a5e6);
+  /*background: linear-gradient(135deg, #4a7fc2, #68a5e6);*/      /* Can probably remove this since images are being used for the ads intead of the placeholders */ 
   margin-bottom: 8px;
 }
 
-.ad-image-red {
+/*.ad-image-red {
   background: linear-gradient(135deg, #8f2c2c, #d06a3d);
 }
 
 .ad-image-green {
   background: linear-gradient(135deg, #557b5c, #93b28a);
-}
+}*/
 
 .ad-card p {
   font-size: 15px;
