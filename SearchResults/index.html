@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Basic page setup -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Browser tab title -->
   <title>Expedia Search Results</title>
 
+  <!-- Page stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
+  <!-- Google fonts used across the site -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -18,24 +22,32 @@
 <body>
   <div class="page">
 
-    <!-- MOBILE OVERLAY -->
+    <!-- Dark overlay shown behind the mobile menu when it opens -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
-    <!-- NAVBAR -->
+    <!-- Top navigation -->
     <header class="navbar">
       <div class="navbar-left">
+        <!-- Clickable logo that returns to the homepage -->
         <a href="../Homepage/index.html" class="logo-link">
           <div class="logo-box">↗</div>
           <h1 class="logo-text">Expedia</h1>
         </a>
 
+        <!-- Desktop-only navigation button -->
         <button class="nav-link dropdown-button desktop-only">Shop travel</button>
       </div>
 
-      <button class="hamburger-button mobile-only" id="hamburgerButton" aria-label="Open navigation menu">
+      <!-- Mobile hamburger button -->
+      <button
+        class="hamburger-button mobile-only"
+        id="hamburgerButton"
+        aria-label="Open navigation menu"
+      >
         ☰
       </button>
 
+      <!-- Desktop navigation -->
       <nav class="navbar-right desktop-nav">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
@@ -44,20 +56,23 @@
         <button class="sign-in-button">Sign in</button>
       </nav>
 
+      <!-- Mobile dropdown navigation -->
       <nav class="mobile-nav" id="mobileNav">
-        <a href="#" class="nav-link">USD</a>
-        <a href="#" class="nav-link">List your property</a>
+        <a href="../Homepage/index.html" class="nav-link">Homepage</a>
+        <a href="index.html" class="nav-link active-link">Search Results</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
-        <a href="index.html" class="nav-link active-link">Search Results</a>
+        <a href="#" class="nav-link">List your property</a>
+        <a href="#" class="nav-link">USD</a>
         <button class="sign-in-button mobile-sign-in">Sign in</button>
       </nav>
     </header>
 
-    <!-- SEARCH HERO -->
+    <!-- Dark blue search section -->
     <section class="search-hero">
       <div class="search-card">
 
+        <!-- Travel categories row -->
         <div class="category-row">
           <div class="category-item">
             <div class="category-icon">🛏️</div>
@@ -90,6 +105,7 @@
           </div>
         </div>
 
+        <!-- Search form stays on the same page for now -->
         <form class="search-form" action="index.html">
           <input type="text" placeholder="Where to?" />
           <input type="text" placeholder="Dates" />
@@ -97,6 +113,7 @@
           <button type="submit" class="search-button">Search</button>
         </form>
 
+        <!-- Active filters shown below the search fields -->
         <div class="active-filters">
           <button class="filter-pill">✕ Beachfront</button>
           <button class="filter-pill">✕ Free cancellation</button>
@@ -105,9 +122,10 @@
       </div>
     </section>
 
-    <!-- MAIN CONTENT -->
+    <!-- Main page layout -->
     <main class="results-layout">
 
+      <!-- Left filter sidebar -->
       <aside class="filters-panel">
         <h2 class="filters-title">Search Filters</h2>
 
@@ -124,9 +142,9 @@
             <h3>Property Type</h3>
             <span>▾</span>
           </div>
-          <button class="filter-option selected">Selected</button>
-          <button class="filter-option">Unselected</button>
-          <button class="filter-option">Unselected</button>
+          <button class="filter-option selected">Hotels</button>
+          <button class="filter-option">Resorts</button>
+          <button class="filter-option">Vacation rentals</button>
         </section>
 
         <section class="filter-group">
@@ -134,12 +152,15 @@
             <h3>Guest Rating</h3>
             <span>▾</span>
           </div>
-          <button class="filter-option selected">Selected</button>
+          <button class="filter-option selected">Excellent</button>
+          <button class="filter-option">Very good</button>
+          <button class="filter-option">Good</button>
         </section>
 
         <button class="apply-button">Apply</button>
       </aside>
 
+      <!-- Center results grid -->
       <section class="listings-panel">
         <a href="../CheckoutPage/index.html" class="listing-link">
           <article class="listing-card">
@@ -214,6 +235,7 @@
         </a>
       </section>
 
+      <!-- Right ad sidebar -->
       <aside class="ads-panel">
         <div class="ads-arrow">↑</div>
 
@@ -238,6 +260,7 @@
     </main>
   </div>
 
+  <!-- Page script for mobile navigation -->
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,16 +1,21 @@
-/* RESET */
+/* =========================
+   RESET
+   Removes default browser spacing
+========================= */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* MOBILE-FIRST BASE */
+/* =========================
+   BASE / MOBILE-FIRST
+========================= */
 body {
   background-color: #e9f0f5;
   font-family: 'Inter', sans-serif;
   color: #191e3b;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Prevents horizontal scrolling on mobile */
 }
 
 .page {
@@ -18,14 +23,16 @@ body {
   min-height: 100vh;
 }
 
-/* NAVBAR */
+/* =========================
+   NAVBAR
+========================= */
 .navbar {
   background-color: white;
   padding: 18px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
+  position: relative; /* Lets the dropdown menu anchor to the navbar */
   border-bottom: 1px solid #d9e2ea;
 }
 
@@ -91,11 +98,13 @@ body {
   color: #3b5d7e;
 }
 
+/* Desktop nav is hidden by default on mobile */
 .desktop-only,
 .desktop-nav {
   display: none;
 }
 
+/* Hamburger is visible on mobile */
 .mobile-only {
   display: inline-flex;
 }
@@ -108,9 +117,10 @@ body {
   cursor: pointer;
 }
 
+/* Dark overlay behind mobile menu */
 .mobile-menu-overlay {
   position: fixed;
-  inset: 0;
+  inset: 0; /* Covers the entire screen */
   background: rgba(0, 0, 0, 0.35);
   opacity: 0;
   visibility: hidden;
@@ -123,11 +133,12 @@ body {
   visibility: visible;
 }
 
+/* Mobile dropdown panel */
 .mobile-nav {
   position: absolute;
   top: 100%;
   right: 16px;
-  width: min(260px, 85vw);
+  width: min(260px, 85vw); /* Keeps the menu from becoming too wide on phones */
   background: white;
   border-radius: 12px;
   padding: 16px;
@@ -152,7 +163,9 @@ body {
   width: 100%;
 }
 
-/* SEARCH HERO */
+/* =========================
+   SEARCH HERO
+========================= */
 .search-hero {
   background-color: #191e3b;
   padding: 20px 16px 26px;
@@ -171,6 +184,7 @@ body {
   gap: 22px;
 }
 
+/* Category icons use a grid on mobile */
 .category-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -193,6 +207,7 @@ body {
   color: black;
 }
 
+/* Search form stacks vertically on smaller screens */
 .search-form {
   display: flex;
   flex-direction: column;
@@ -229,6 +244,7 @@ body {
   min-height: 52px;
 }
 
+/* Active filters below the form */
 .active-filters {
   display: flex;
   gap: 12px;
@@ -246,7 +262,9 @@ body {
   cursor: pointer;
 }
 
-/* MAIN CONTENT */
+/* =========================
+   MAIN CONTENT LAYOUT
+========================= */
 .results-layout {
   display: grid;
   grid-template-columns: 1fr;
@@ -260,10 +278,11 @@ body {
 .listings-panel,
 .ads-panel {
   background-color: white;
-  border-radius: 0;
 }
 
-/* FILTERS PANEL */
+/* =========================
+   FILTERS PANEL
+========================= */
 .filters-panel {
   padding: 22px 18px;
   display: flex;
@@ -328,7 +347,9 @@ body {
   min-height: 52px;
 }
 
-/* LISTINGS PANEL */
+/* =========================
+   LISTINGS PANEL
+========================= */
 .listings-panel {
   padding: 22px 18px;
   display: grid;
@@ -407,7 +428,9 @@ body {
   color: #191e3b;
 }
 
-/* ADS PANEL */
+/* =========================
+   ADS PANEL
+========================= */
 .ads-panel {
   padding: 22px 18px;
   display: flex;
@@ -448,7 +471,9 @@ body {
   color: #3b5d7e;
 }
 
-/* TABLET */
+/* =========================
+   TABLET
+========================= */
 @media (min-width: 700px) {
   .category-row {
     grid-template-columns: repeat(6, 1fr);
@@ -476,7 +501,9 @@ body {
   }
 }
 
-/* DESKTOP */
+/* =========================
+   DESKTOP
+========================= */
 @media (min-width: 1100px) {
   .mobile-only,
   .mobile-nav,
@@ -562,7 +589,9 @@ body {
   }
 }
 
-/* WIDE DESKTOP */
+/* =========================
+   WIDE DESKTOP
+========================= */
 @media (min-width: 1400px) {
   .results-layout {
     grid-template-columns: 420px 1fr 306px;
