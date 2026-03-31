@@ -13,6 +13,7 @@ This project is a multi-page travel booking website prototype built with HTML an
 Each page has its own folder with:
 - index.html
 - style.css
+- script.js
 - images/
 
 ## How to Run
