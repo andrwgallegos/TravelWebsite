@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Basic page setup -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Expedia Home Page Mockup</title>
+  <!-- Browser tab title -->
+  <title>Expedia Home Page</title>
 
-  <!-- CSS -->
+  <!-- Page stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Fonts -->
+  <!-- Google fonts used across the site -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -17,38 +19,61 @@
     rel="stylesheet"
   />
 </head>
-
 <body>
   <div class="page">
 
-    <!-- NAVBAR -->
+    <!-- Dark overlay shown behind the mobile menu when it opens -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Top navigation -->
     <header class="navbar">
       <div class="navbar-left">
-        <!-- Clickable logo -->
+        <!-- Clickable logo that returns to the homepage -->
         <a href="index.html" class="logo-link">
           <div class="logo-box">↗</div>
           <h1 class="logo-text">Expedia</h1>
         </a>
 
-        <button class="nav-link dropdown-button">Shop travel</button>
+        <!-- Only shown on desktop -->
+        <button class="nav-link dropdown-button desktop-only">Shop travel</button>
       </div>
 
-      <nav class="navbar-right">
+      <!-- Mobile hamburger button -->
+      <button
+        class="hamburger-button mobile-only"
+        id="hamburgerButton"
+        aria-label="Open navigation menu"
+      >
+        ☰
+      </button>
+
+      <!-- Desktop navigation -->
+      <nav class="navbar-right desktop-nav">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <button class="sign-in-button">Sign in</button>
       </nav>
+
+      <!-- Mobile dropdown navigation -->
+      <nav class="mobile-nav" id="mobileNav">
+        <a href="index.html" class="nav-link active-link">Homepage</a>
+        <a href="../SearchResults/index.html" class="nav-link">Search Results</a>
+        <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
+        <a href="../Trips/index.html" class="nav-link">Trips</a>
+        <a href="#" class="nav-link">List your property</a>
+        <a href="#" class="nav-link">USD</a>
+        <button class="sign-in-button mobile-sign-in">Sign in</button>
+      </nav>
     </header>
 
-    <!-- HERO -->
+    <!-- Dark blue hero section -->
     <section class="hero">
       <h2 class="hero-title">Here is a catchy company slogan</h2>
 
+      <!-- White card that holds category icons and search form -->
       <div class="search-card">
-
-        <!-- CATEGORY ROW -->
         <div class="category-row">
           <div class="category-item">
             <div class="category-icon">🛏️</div>
@@ -81,77 +106,85 @@
           </div>
         </div>
 
-        <!-- SEARCH FORM -->
+        <!-- Search form routes to Search Results -->
         <form class="search-form" action="../SearchResults/index.html">
           <input type="text" placeholder="Where to?" />
           <input type="text" placeholder="Dates" />
           <input type="text" placeholder="Travelers" />
           <button type="submit" class="search-button">Search</button>
         </form>
-
       </div>
     </section>
 
-    <!-- TRIPS -->
+    <!-- Lower section with trip cards -->
     <section class="trip-section">
       <h2 class="section-title">Ideas for your next trip</h2>
 
       <div class="trip-grid">
+        <a href="../SearchResults/index.html" class="trip-link">
+          <article class="trip-card">
+            <img src="images/san-juan.jpg" alt="San Juan" />
+            <div class="trip-info">
+              <h3>San Juan</h3>
+              <p class="location">Puerto Rico</p>
+              <p class="price">$248</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
 
-        <!-- CARD -->
-        <article class="trip-card">
-          <img src="images/san-juan.jpg" alt="San Juan" />
-          <div class="trip-info">
-            <h3>San Juan</h3>
-            <p class="location">Puerto Rico</p>
-            <p class="price">$248</p>
-            <p class="note">per night</p>
-          </div>
-        </article>
+        <a href="../SearchResults/index.html" class="trip-link">
+          <article class="trip-card">
+            <img src="images/miami.jpg" alt="Miami Beach" />
+            <div class="trip-info">
+              <h3>Miami Beach</h3>
+              <p class="location">Florida, USA</p>
+              <p class="price">$331</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
 
-        <article class="trip-card">
-          <img src="images/miami.jpg" alt="Miami Beach" />
-          <div class="trip-info">
-            <h3>Miami Beach</h3>
-            <p class="location">Florida, USA</p>
-            <p class="price">$331</p>
-            <p class="note">per night</p>
-          </div>
-        </article>
+        <a href="../SearchResults/index.html" class="trip-link">
+          <article class="trip-card">
+            <img src="images/myrtle.jpg" alt="Myrtle Beach" />
+            <div class="trip-info">
+              <h3>Myrtle Beach</h3>
+              <p class="location">South Carolina, USA</p>
+              <p class="price">$146</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
 
-        <article class="trip-card">
-          <img src="images/myrtle.jpg" alt="Myrtle Beach" />
-          <div class="trip-info">
-            <h3>Myrtle Beach</h3>
-            <p class="location">South Carolina, USA</p>
-            <p class="price">$146</p>
-            <p class="note">per night</p>
-          </div>
-        </article>
+        <a href="../SearchResults/index.html" class="trip-link">
+          <article class="trip-card">
+            <img src="images/wilmington.jpg" alt="Wilmington" />
+            <div class="trip-info">
+              <h3>Wilmington</h3>
+              <p class="location">North Carolina, USA</p>
+              <p class="price">$143</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
 
-        <article class="trip-card">
-          <img src="images/wilmington.jpg" alt="Wilmington" />
-          <div class="trip-info">
-            <h3>Wilmington</h3>
-            <p class="location">North Carolina, USA</p>
-            <p class="price">$143</p>
-            <p class="note">per night</p>
-          </div>
-        </article>
-
-        <article class="trip-card">
-          <img src="images/hilton-head.jpg" alt="Hilton Head Island" />
-          <div class="trip-info">
-            <h3>Hilton Head Island</h3>
-            <p class="location">South Carolina, USA</p>
-            <p class="price">$240</p>
-            <p class="note">per night</p>
-          </div>
-        </article>
-
+        <a href="../SearchResults/index.html" class="trip-link">
+          <article class="trip-card">
+            <img src="images/hilton-head.jpg" alt="Hilton Head Island" />
+            <div class="trip-info">
+              <h3>Hilton Head Island</h3>
+              <p class="location">South Carolina, USA</p>
+              <p class="price">$240</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
       </div>
     </section>
-
   </div>
+
+  <!-- Page script for mobile navigation -->
+  <script src="script.js"></script>
 </body>
 </html>

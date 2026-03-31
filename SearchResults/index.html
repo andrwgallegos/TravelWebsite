@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Expedia Search Results</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Source+Serif+4:wght@900&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <div class="page">
+
+    <!-- MOBILE OVERLAY -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+      <div class="navbar-left">
+        <a href="../Homepage/index.html" class="logo-link">
+          <div class="logo-box">↗</div>
+          <h1 class="logo-text">Expedia</h1>
+        </a>
+
+        <button class="nav-link dropdown-button desktop-only">Shop travel</button>
+      </div>
+
+      <button class="hamburger-button mobile-only" id="hamburgerButton" aria-label="Open navigation menu">
+        ☰
+      </button>
+
+      <nav class="navbar-right desktop-nav">
+        <a href="#" class="nav-link">USD</a>
+        <a href="#" class="nav-link">List your property</a>
+        <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
+        <a href="../Trips/index.html" class="nav-link">Trips</a>
+        <button class="sign-in-button">Sign in</button>
+      </nav>
+
+      <nav class="mobile-nav" id="mobileNav">
+        <a href="#" class="nav-link">USD</a>
+        <a href="#" class="nav-link">List your property</a>
+        <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
+        <a href="../Trips/index.html" class="nav-link">Trips</a>
+        <a href="index.html" class="nav-link active-link">Search Results</a>
+        <button class="sign-in-button mobile-sign-in">Sign in</button>
+      </nav>
+    </header>
+
+    <!-- SEARCH HERO -->
+    <section class="search-hero">
+      <div class="search-card">
+
+        <div class="category-row">
+          <div class="category-item">
+            <div class="category-icon">🛏️</div>
+            <p>Stays</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">✈️</div>
+            <p>Flights</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">🚗</div>
+            <p>Cars</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">🧳</div>
+            <p>Packages</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">🎟️</div>
+            <p>Activities</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">🛳️</div>
+            <p>Cruises</p>
+          </div>
+        </div>
+
+        <form class="search-form" action="index.html">
+          <input type="text" placeholder="Where to?" />
+          <input type="text" placeholder="Dates" />
+          <input type="text" placeholder="Travelers" />
+          <button type="submit" class="search-button">Search</button>
+        </form>
+
+        <div class="active-filters">
+          <button class="filter-pill">✕ Beachfront</button>
+          <button class="filter-pill">✕ Free cancellation</button>
+          <button class="filter-pill">✕ Under $300</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="results-layout">
+
+      <aside class="filters-panel">
+        <h2 class="filters-title">Search Filters</h2>
+
+        <section class="filter-group">
+          <div class="filter-group-header">
+            <h3>Price</h3>
+            <span>▾</span>
+          </div>
+          <button class="filter-option selected">$0–$300</button>
+        </section>
+
+        <section class="filter-group">
+          <div class="filter-group-header">
+            <h3>Property Type</h3>
+            <span>▾</span>
+          </div>
+          <button class="filter-option selected">Selected</button>
+          <button class="filter-option">Unselected</button>
+          <button class="filter-option">Unselected</button>
+        </section>
+
+        <section class="filter-group">
+          <div class="filter-group-header">
+            <h3>Guest Rating</h3>
+            <span>▾</span>
+          </div>
+          <button class="filter-option selected">Selected</button>
+        </section>
+
+        <button class="apply-button">Apply</button>
+      </aside>
+
+      <section class="listings-panel">
+        <a href="../CheckoutPage/index.html" class="listing-link">
+          <article class="listing-card">
+            <div class="listing-image image-blue"></div>
+            <div class="listing-info">
+              <h3>San Juan</h3>
+              <p class="location">Puerto Rico</p>
+              <p class="price">$248</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
+
+        <a href="../CheckoutPage/index.html" class="listing-link">
+          <article class="listing-card">
+            <div class="listing-image image-orange"></div>
+            <div class="listing-info">
+              <h3>Miami Beach</h3>
+              <p class="location">Florida, USA</p>
+              <p class="price">$331</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
+
+        <a href="../CheckoutPage/index.html" class="listing-link">
+          <article class="listing-card">
+            <div class="listing-image image-sky"></div>
+            <div class="listing-info">
+              <h3>Myrtle Beach</h3>
+              <p class="location">South Carolina, USA</p>
+              <p class="price">$146</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
+
+        <a href="../CheckoutPage/index.html" class="listing-link">
+          <article class="listing-card">
+            <div class="listing-image image-sky"></div>
+            <div class="listing-info">
+              <h3>Myrtle Beach</h3>
+              <p class="location">South Carolina, USA</p>
+              <p class="price">$146</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
+
+        <a href="../CheckoutPage/index.html" class="listing-link">
+          <article class="listing-card">
+            <div class="listing-image image-green"></div>
+            <div class="listing-info">
+              <h3>Wilmington</h3>
+              <p class="location">North Carolina, USA</p>
+              <p class="price">$143</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
+
+        <a href="../CheckoutPage/index.html" class="listing-link">
+          <article class="listing-card">
+            <div class="listing-image image-tan"></div>
+            <div class="listing-info">
+              <h3>Hilton Head Island</h3>
+              <p class="location">South Carolina, USA</p>
+              <p class="price">$240</p>
+              <p class="note">per night</p>
+            </div>
+          </article>
+        </a>
+      </section>
+
+      <aside class="ads-panel">
+        <div class="ads-arrow">↑</div>
+
+        <div class="ad-card">
+          <div class="ad-image"></div>
+          <p>10% Off Economy Flights</p>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-image ad-image-red"></div>
+          <p>Car Rental Deals</p>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-image ad-image-green"></div>
+          <p>Holiday Inn Deals</p>
+        </div>
+
+        <div class="ads-arrow">↓</div>
+      </aside>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
