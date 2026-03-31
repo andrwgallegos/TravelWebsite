@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Expedia Home Page Mockup</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Source+Serif+4:wght@900&display=swap"
+    rel="stylesheet"
+  />
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+      <div class="navbar-left">
+        <!-- Clickable logo -->
+        <a href="index.html" class="logo-link">
+          <div class="logo-box">↗</div>
+          <h1 class="logo-text">Expedia</h1>
+        </a>
+
+        <button class="nav-link dropdown-button">Shop travel</button>
+      </div>
+
+      <nav class="navbar-right">
+        <a href="#" class="nav-link">USD</a>
+        <a href="#" class="nav-link">List your property</a>
+        <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
+        <a href="../Trips/index.html" class="nav-link">Trips</a>
+        <button class="sign-in-button">Sign in</button>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <h2 class="hero-title">Here is a catchy company slogan</h2>
+
+      <div class="search-card">
+
+        <!-- CATEGORY ROW -->
+        <div class="category-row">
+          <div class="category-item">
+            <div class="category-icon">🛏️</div>
+            <p>Stays</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">✈️</div>
+            <p>Flights</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">🚗</div>
+            <p>Cars</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">🧳</div>
+            <p>Packages</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">🎟️</div>
+            <p>Activities</p>
+          </div>
+
+          <div class="category-item">
+            <div class="category-icon">🛳️</div>
+            <p>Cruises</p>
+          </div>
+        </div>
+
+        <!-- SEARCH FORM -->
+        <form class="search-form" action="../SearchResults/index.html">
+          <input type="text" placeholder="Where to?" />
+          <input type="text" placeholder="Dates" />
+          <input type="text" placeholder="Travelers" />
+          <button type="submit" class="search-button">Search</button>
+        </form>
+
+      </div>
+    </section>
+
+    <!-- TRIPS -->
+    <section class="trip-section">
+      <h2 class="section-title">Ideas for your next trip</h2>
+
+      <div class="trip-grid">
+
+        <!-- CARD -->
+        <article class="trip-card">
+          <img src="images/san-juan.jpg" alt="San Juan" />
+          <div class="trip-info">
+            <h3>San Juan</h3>
+            <p class="location">Puerto Rico</p>
+            <p class="price">$248</p>
+            <p class="note">per night</p>
+          </div>
+        </article>
+
+        <article class="trip-card">
+          <img src="images/miami.jpg" alt="Miami Beach" />
+          <div class="trip-info">
+            <h3>Miami Beach</h3>
+            <p class="location">Florida, USA</p>
+            <p class="price">$331</p>
+            <p class="note">per night</p>
+          </div>
+        </article>
+
+        <article class="trip-card">
+          <img src="images/myrtle.jpg" alt="Myrtle Beach" />
+          <div class="trip-info">
+            <h3>Myrtle Beach</h3>
+            <p class="location">South Carolina, USA</p>
+            <p class="price">$146</p>
+            <p class="note">per night</p>
+          </div>
+        </article>
+
+        <article class="trip-card">
+          <img src="images/wilmington.jpg" alt="Wilmington" />
+          <div class="trip-info">
+            <h3>Wilmington</h3>
+            <p class="location">North Carolina, USA</p>
+            <p class="price">$143</p>
+            <p class="note">per night</p>
+          </div>
+        </article>
+
+        <article class="trip-card">
+          <img src="images/hilton-head.jpg" alt="Hilton Head Island" />
+          <div class="trip-info">
+            <h3>Hilton Head Island</h3>
+            <p class="location">South Carolina, USA</p>
+            <p class="price">$240</p>
+            <p class="note">per night</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

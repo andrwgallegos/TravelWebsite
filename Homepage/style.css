@@ -1,0 +1,179 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #e9f0f5;
+  font-family: 'Inter', sans-serif;
+  color: #191e3b;
+}
+
+.page {
+  width: 100%;
+}
+
+/* NAVBAR */
+.navbar {
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 48px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+}
+
+.logo-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background-color: #fbbf23;
+  color: #191e3b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.logo-text {
+  font-family: 'Source Serif 4', serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: #191e3b;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  text-decoration: none;
+  color: #191e3b;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dropdown-button::after {
+  content: " ▼";
+  font-size: 12px;
+}
+
+.sign-in-button {
+  background-color: #191e3b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* HERO */
+.hero {
+  background-color: #191e3b;
+  padding: 42px 32px 54px;
+  border-top: 14px solid #d9e2ea;
+  border-bottom: 14px solid #d9e2ea;
+}
+
+.hero-title {
+  text-align: center;
+  color: white;
+  font-size: 40px;
+  font-style: italic;
+  font-weight: 500;
+  margin-bottom: 28px;
+}
+
+.search-card {
+  background-color: white;
+  max-width: 1290px;
+  margin: 0 auto;
+  border-radius: 20px;
+  padding: 40px 48px 48px;
+}
+
+/* CATEGORY */
+.category-row {
+  display: flex;
+  justify-content: center;
+  gap: 42px;
+  margin-bottom: 34px;
+  flex-wrap: wrap;
+}
+
+.category-item {
+  text-align: center;
+}
+
+.category-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+/* SEARCH */
+.search-form {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.search-form input {
+  width: 295px;
+  height: 52px;
+  border: 1px solid #191e3b;
+  border-radius: 20px;
+  padding: 0 16px;
+}
+
+.search-button {
+  background-color: #fbbf23;
+  color: #191e3b;
+  border-radius: 20px;
+  padding: 14px 24px;
+  font-weight: 700;
+}
+
+/* TRIPS */
+.trip-section {
+  background-color: white;
+  padding: 34px 32px 50px;
+}
+
+.section-title {
+  font-size: 36px;
+  margin-bottom: 34px;
+}
+
+.trip-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 28px;
+}
+
+.trip-card img {
+  width: 100%;
+  height: 225px;
+  object-fit: cover;
+}
