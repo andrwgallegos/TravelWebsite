@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic page setup -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Browser tab title -->
+  <title>Expedia Checkout</title>
+
+  <!-- Page stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Google fonts used across the site -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Source+Serif+4:wght@900&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <div class="page">
+
+    <!-- Dark overlay shown behind the mobile menu -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Error banner is hidden until validation fails -->
+    <div id="errorBanner" class="error-banner hidden">
+      To continue, please correct the errors below.
+    </div>
+
+    <!-- Success modal is hidden until booking succeeds -->
+    <div id="successModal" class="success-modal hidden">
+      <div class="success-modal-content">
+        <h2>Your Trip Has Been Booked!</h2>
+
+        <!-- Simple success icon -->
+        <div class="success-checkmark">
+          <svg viewBox="0 0 52 52" aria-hidden="true">
+            <circle cx="26" cy="26" r="25" fill="none" stroke="#10b981" stroke-width="2"></circle>
+            <path
+              d="M14 27l8 8 16-16"
+              fill="none"
+              stroke="#10b981"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top navigation -->
+    <header class="navbar">
+      <div class="navbar-left">
+        <!-- Clickable logo that returns to homepage -->
+        <a href="../Homepage/index.html" class="logo-link">
+          <div class="logo-box">↗</div>
+          <h1 class="logo-text">Expedia</h1>
+        </a>
+
+        <!-- Desktop-only shop travel button -->
+        <button class="nav-link dropdown-button desktop-only">Shop travel</button>
+      </div>
+
+      <!-- Mobile hamburger button -->
+      <button
+        class="hamburger-button mobile-only"
+        id="hamburgerButton"
+        aria-label="Open navigation menu"
+      >
+        ☰
+      </button>
+
+      <!-- Desktop navigation -->
+      <nav class="navbar-right desktop-nav">
+        <a href="#" class="nav-link">USD</a>
+        <a href="#" class="nav-link">List your property</a>
+        <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
+        <a href="../Trips/index.html" class="nav-link">Trips</a>
+        <button class="sign-in-button">Sign in</button>
+      </nav>
+
+      <!-- Mobile dropdown navigation -->
+      <nav class="mobile-nav" id="mobileNav">
+        <a href="../Homepage/index.html" class="nav-link">Homepage</a>
+        <a href="../SearchResults/index.html" class="nav-link">Search Results</a>
+        <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
+        <a href="../Trips/index.html" class="nav-link">Trips</a>
+        <a href="#" class="nav-link">List your property</a>
+        <a href="#" class="nav-link">USD</a>
+        <button class="sign-in-button mobile-sign-in">Sign in</button>
+      </nav>
+    </header>
+
+    <!-- Main checkout content -->
+    <main class="checkout-layout">
+
+      <!-- Left panel: traveler and payment form -->
+      <section class="left-panel">
+        <div class="form-container">
+          <h1 class="form-title">Who’s checking in?</h1>
+          <p class="required-text"><span class="required-star">*</span>Required</p>
+
+          <form id="checkoutForm">
+
+            <!-- Personal details -->
+            <div class="form-group">
+              <label for="firstName">First Name <span class="required-star">*</span></label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                placeholder="(e.g. John)"
+                class="form-input"
+              />
+              <span class="error-message" id="firstNameError">Please enter a first name.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Last Name <span class="required-star">*</span></label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                placeholder="(e.g. Smith)"
+                class="form-input"
+              />
+              <span class="error-message" id="lastNameError">Please enter a last name.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email address <span class="required-star">*</span></label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="johnsmith@gmail.com"
+                class="form-input"
+              />
+              <span class="error-message" id="emailError">
+                Please enter a valid email address.
+              </span>
+            </div>
+
+            <!-- Two-column row on larger screens -->
+            <div class="form-row">
+              <div class="form-group form-group-half">
+                <label for="phoneCountry">Phone country/region <span class="required-star">*</span></label>
+                <select id="phoneCountry" name="phoneCountry" class="form-select">
+                  <option value="USA +1">USA +1</option>
+                  <option value="UK +44">UK +44</option>
+                  <option value="CA +1">CA +1</option>
+                </select>
+              </div>
+
+              <div class="form-group form-group-half">
+                <label for="phoneNumber">Phone number <span class="required-star">*</span></label>
+                <input
+                  type="tel"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  placeholder="Phone number"
+                  class="form-input"
+                />
+                <span class="error-message" id="phoneNumberError">
+                  Please enter a phone number.
+                </span>
+              </div>
+            </div>
+
+            <!-- Payment section -->
+            <div class="payment-section">
+              <h2 class="section-title">Payment details</h2>
+              <p class="section-subtitle">
+                Safe, secure transactions. Your personal information is protected.
+              </p>
+
+              <!-- Selectable payment methods -->
+              <div class="payment-methods">
+                <button type="button" class="payment-method selected" data-method="card">
+                  <span class="payment-method-label">Card</span>
+                </button>
+
+                <button type="button" class="payment-method" data-method="affirm">
+                  <span class="payment-method-label">Affirm</span>
+                </button>
+
+                <button type="button" class="payment-method" data-method="paypal">
+                  <span class="payment-method-label">PayPal</span>
+                </button>
+
+                <button type="button" class="payment-method" data-method="applepay">
+                  <span class="payment-method-label">Apple Pay</span>
+                </button>
+              </div>
+
+              <!-- Card form is only shown when Card is selected -->
+              <div id="cardDetailsForm" class="card-details-form">
+                <div class="form-group">
+                  <label for="cardNumber">Card number <span class="required-star">*</span></label>
+                  <input
+                    type="text"
+                    id="cardNumber"
+                    name="cardNumber"
+                    placeholder="1234 5678 9012 3456"
+                    maxlength="19"
+                    class="form-input"
+                  />
+                  <span class="error-message" id="cardNumberError">
+                    Please enter a valid card number.
+                  </span>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group form-group-half">
+                    <label for="expirationDate">Expiration Date <span class="required-star">*</span></label>
+                    <input
+                      type="text"
+                      id="expirationDate"
+                      name="expirationDate"
+                      placeholder="03/26"
+                      maxlength="5"
+                      class="form-input"
+                    />
+                    <span class="error-message" id="expirationDateError">
+                      Please enter a valid expiration date.
+                    </span>
+                  </div>
+
+                  <div class="form-group form-group-half">
+                    <label for="securityCode">Security Code <span class="required-star">*</span></label>
+                    <input
+                      type="text"
+                      id="securityCode"
+                      name="securityCode"
+                      placeholder="123"
+                      maxlength="4"
+                      class="form-input"
+                    />
+                    <span class="error-message" id="securityCodeError">
+                      Please enter a valid security code.
+                    </span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="billingZip">Billing ZIP code <span class="required-star">*</span></label>
+                  <input
+                    type="text"
+                    id="billingZip"
+                    name="billingZip"
+                    placeholder="12345"
+                    class="form-input form-input-small"
+                  />
+                  <span class="error-message" id="billingZipError">
+                    Please enter a valid billing ZIP code.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Final submit button -->
+            <button type="submit" class="btn-book-now">Book Now</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Right panel: summary card -->
+      <aside class="right-panel">
+        <div class="booking-summary">
+          <div class="hotel-image">
+            <!-- Replace with local image later if preferred -->
+            <img
+              src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700&h=400&fit=crop"
+              alt="Resort view"
+            />
+          </div>
+
+          <div class="hotel-info">
+            <h2 class="hotel-name">Four Seasons Resort Puerto Rico</h2>
+            <p class="hotel-address">
+              State Road 187 Kilometer 4.2, Río Grande, 00745
+            </p>
+          </div>
+
+          <div class="hotel-rating">
+            <div class="rating-badge">9.8</div>
+            <span class="rating-text">Exceptional</span>
+          </div>
+
+          <div class="review-count">25 Reviews</div>
+
+          <!-- Scrolls user back to form -->
+          <button class="btn-edit" type="button">Edit</button>
+
+          <div class="check-details">
+            <div class="check-in">
+              <div class="check-label">Check-in</div>
+              <div class="check-date">Fri, Mar 27, 2026</div>
+              <div class="check-time">4:00pm</div>
+            </div>
+
+            <div class="check-out">
+              <div class="check-label">Check-out</div>
+              <div class="check-date">Sun, Mar 29, 2026</div>
+              <div class="check-time">12:00pm</div>
+            </div>
+
+            <div class="nights">
+              <div class="check-label">Nights</div>
+              <div class="nights-count">2</div>
+            </div>
+          </div>
+
+          <div class="property-highlights">
+            <h3>Property Highlights</h3>
+            <div class="highlights-grid">
+              <div class="highlight-item">Pool</div>
+              <div class="highlight-item">Spa</div>
+              <div class="highlight-item">Pet friendly</div>
+              <div class="highlight-item">Restaurant</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="special-requests">
+            <span>Any special/accessibility requests?</span>
+            <span class="arrow-icon">›</span>
+          </div>
+        </div>
+      </aside>
+
+    </main>
+  </div>
+
+  <!-- Page script -->
+  <script src="script.js"></script>
+</body>
+</html>
