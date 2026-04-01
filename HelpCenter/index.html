@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Browser tab title -->
-  <title>Expedia Home Page</title>
+  <title>Expedia Help Center</title>
 
   <!-- Page stylesheet -->
   <link rel="stylesheet" href="style.css" />
@@ -29,12 +29,12 @@
     <header class="navbar">
       <div class="navbar-left">
         <!-- Clickable logo that returns to the homepage -->
-        <a href="index.html" class="logo-link">
+        <a href="../Homepage/index.html" class="logo-link">
           <div class="logo-box">↗</div>
           <h1 class="logo-text">Expedia</h1>
         </a>
 
-        <!-- Only shown on desktop -->
+        <!-- Desktop-only dropdown button -->
         <button class="nav-link dropdown-button desktop-only">Shop travel</button>
       </div>
 
@@ -51,16 +51,16 @@
       <nav class="navbar-right desktop-nav">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
-        <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
+        <a href="index.html" class="nav-link active-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <button class="sign-in-button">Sign in</button>
       </nav>
 
       <!-- Mobile dropdown navigation -->
       <nav class="mobile-nav" id="mobileNav">
-        <a href="index.html" class="nav-link active-link">Homepage</a>
+        <a href="../Homepage/index.html" class="nav-link">Homepage</a>
         <a href="../SearchResults/index.html" class="nav-link">Search Results</a>
-        <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
+        <a href="index.html" class="nav-link active-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
@@ -68,123 +68,185 @@
       </nav>
     </header>
 
-    <!-- Dark blue hero section -->
-    <section class="hero">
-      <h2 class="hero-title">Here is a catchy company slogan</h2>
+    <!-- Blue help banner -->
+    <section class="help-hero">
+      <h2 class="help-title">How can we help?</h2>
 
-      <!-- White card that holds category icons and search form -->
-      <div class="search-card">
-        <div class="category-row">
-          <div class="category-item">
-            <div class="category-icon">🛏️</div>
-            <p>Stays</p>
-          </div>
-
-          <div class="category-item">
-            <div class="category-icon">✈️</div>
-            <p>Flights</p>
-          </div>
-
-          <div class="category-item">
-            <div class="category-icon">🚗</div>
-            <p>Cars</p>
-          </div>
-
-          <div class="category-item">
-            <div class="category-icon">🧳</div>
-            <p>Packages</p>
-          </div>
-
-          <div class="category-item">
-            <div class="category-icon">🎟️</div>
-            <p>Activities</p>
-          </div>
-
-          <div class="category-item">
-            <div class="category-icon">🛳️</div>
-            <p>Cruises</p>
-          </div>
-        </div>
-
-        <!-- Search form routes to Search Results -->
-        <form class="search-form" action="../SearchResults/index.html">
-          <input type="text" placeholder="Where to?" />
-          <input type="text" placeholder="Dates" />
-          <input type="text" placeholder="Travelers" />
-          <button type="submit" class="search-button">Search</button>
-        </form>
-      </div>
+      <!-- Help search form -->
+      <form class="help-search-form" id="helpSearchForm">
+        <input
+          type="text"
+          id="helpSearchInput"
+          placeholder="Search Help Topics"
+          aria-label="Search help topics"
+        />
+        <button type="submit" class="search-button">Search</button>
+      </form>
     </section>
 
-    <!-- Lower section with trip cards -->
-    <section class="trip-section">
-      <h2 class="section-title">Ideas for your next trip</h2>
+    <!-- FAQ section -->
+    <main class="faq-section">
+      <h2 class="section-title">Frequently Asked Questions</h2>
 
-      <div class="trip-grid">
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/san-juan.jpg" alt="San Juan" />
-            <div class="trip-info">
-              <h3>San Juan</h3>
-              <p class="location">Puerto Rico</p>
-              <p class="price">$248</p>
-              <p class="note">per night</p>
-            </div>
-          </article>
-        </a>
+      <!-- FAQ grid -->
+      <div class="faq-grid">
 
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/miami.jpg" alt="Miami Beach" />
-            <div class="trip-info">
-              <h3>Miami Beach</h3>
-              <p class="location">Florida, USA</p>
-              <p class="price">$331</p>
-              <p class="note">per night</p>
-            </div>
-          </article>
-        </a>
+        <!-- Column 1 -->
+        <section class="faq-category">
+          <h3 class="category-title">Booking &amp; Reservations</h3>
 
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/myrtle.jpg" alt="Myrtle Beach" />
-            <div class="trip-info">
-              <h3>Myrtle Beach</h3>
-              <p class="location">South Carolina, USA</p>
-              <p class="price">$146</p>
-              <p class="note">per night</p>
-            </div>
+          <article class="faq-item">
+            <button class="faq-question">How do I manage my booking?</button>
+            <p class="faq-answer">
+              You can review and update your reservation details from your trip dashboard after signing in.
+            </p>
           </article>
-        </a>
 
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/wilmington.jpg" alt="Wilmington" />
-            <div class="trip-info">
-              <h3>Wilmington</h3>
-              <p class="location">North Carolina, USA</p>
-              <p class="price">$143</p>
-              <p class="note">per night</p>
-            </div>
+          <article class="faq-item">
+            <button class="faq-question">Can I change my hotel dates?</button>
+            <p class="faq-answer">
+              Date changes depend on the property’s availability and booking rules shown before checkout.
+            </p>
           </article>
-        </a>
 
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/hilton-head.jpg" alt="Hilton Head Island" />
-            <div class="trip-info">
-              <h3>Hilton Head Island</h3>
-              <p class="location">South Carolina, USA</p>
-              <p class="price">$240</p>
-              <p class="note">per night</p>
-            </div>
+          <article class="faq-item">
+            <button class="faq-question">Where can I find my confirmation?</button>
+            <p class="faq-answer">
+              Confirmation details are usually sent by email and also appear in your account under trips.
+            </p>
           </article>
-        </a>
+
+          <article class="faq-item">
+            <button class="faq-question">Can I book for someone else?</button>
+            <p class="faq-answer">
+              Yes, but make sure the traveler information matches the guest or passenger who will be checking in.
+            </p>
+          </article>
+        </section>
+
+        <!-- Column 2 -->
+        <section class="faq-category">
+          <h3 class="category-title">Cancellations &amp; Refunds</h3>
+
+          <article class="faq-item">
+            <button class="faq-question">How do I cancel a reservation?</button>
+            <p class="faq-answer">
+              Open your booking details and choose the cancellation option if your reservation qualifies.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">How long do refunds take?</button>
+            <p class="faq-answer">
+              Refund times vary by provider and payment method, but many are processed within several business days.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">Will I be charged a fee?</button>
+            <p class="faq-answer">
+              Fees depend on the cancellation policy shown at booking and may differ by hotel, airline, or package.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">Can I get travel credits instead?</button>
+            <p class="faq-answer">
+              Some bookings may offer credits or partial refunds depending on provider rules and timing.
+            </p>
+          </article>
+        </section>
+
+        <!-- Column 3 -->
+        <section class="faq-category">
+          <h3 class="category-title">Payment Methods</h3>
+
+          <article class="faq-item">
+            <button class="faq-question">What payment methods are accepted?</button>
+            <p class="faq-answer">
+              Accepted payment methods may include major credit cards, debit cards, and other supported options.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">Can I split my payment?</button>
+            <p class="faq-answer">
+              Split payment availability depends on the specific booking type and checkout options offered.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">Why was my payment declined?</button>
+            <p class="faq-answer">
+              Double-check the billing details, card expiration date, and available funds before trying again.
+            </p>
+          </article>
+        </section>
+
+        <!-- Column 4 -->
+        <section class="faq-category">
+          <h3 class="category-title">Travel Documents</h3>
+
+          <article class="faq-item">
+            <button class="faq-question">Do I need a passport?</button>
+            <p class="faq-answer">
+              Passport requirements depend on your destination, citizenship, and the kind of trip you booked.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">Do I need a visa?</button>
+            <p class="faq-answer">
+              Visa rules vary by country and traveler status, so always review official requirements before travel.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">What ID can I use for check-in?</button>
+            <p class="faq-answer">
+              Most providers require a valid government-issued ID, and international trips may require a passport.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">Where do I upload documents?</button>
+            <p class="faq-answer">
+              If documents are needed, the provider usually explains the process in your trip details or confirmation.
+            </p>
+          </article>
+        </section>
+
+        <!-- Column 5 -->
+        <section class="faq-category">
+          <h3 class="category-title">Check-in &amp; Trip Details</h3>
+
+          <article class="faq-item">
+            <button class="faq-question">When can I check in?</button>
+            <p class="faq-answer">
+              Check-in times vary by property or travel provider and are listed in the booking details.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">How do I view my itinerary?</button>
+            <p class="faq-answer">
+              You can open your trip page after signing in to review your full itinerary and booking summary.
+            </p>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">What if my trip changes?</button>
+            <p class="faq-answer">
+              Updates are usually sent by email and may also appear on your booking or trip dashboard.
+            </p>
+          </article>
+        </section>
+
       </div>
-    </section>
+    </main>
   </div>
 
-  <!-- Page script for mobile navigation -->
+  <!-- Page script for mobile navigation and FAQ interactions -->
   <script src="script.js"></script>
 </body>
 </html>

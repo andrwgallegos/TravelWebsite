@@ -15,7 +15,7 @@ body {
   background-color: #e9f0f5;
   font-family: 'Inter', sans-serif;
   color: #191e3b;
-  overflow-x: hidden; /* Prevents horizontal scroll on mobile */
+  overflow-x: hidden; /* Prevents horizontal scrolling on mobile */
 }
 
 .page {
@@ -32,7 +32,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative; /* Needed so mobile menu can position under navbar */
+  position: relative; /* Lets the mobile dropdown attach to navbar */
   border-bottom: 1px solid #d9e2ea;
 }
 
@@ -98,13 +98,13 @@ body {
   color: #3b5d7e;
 }
 
-/* Desktop nav is hidden on mobile */
+/* Desktop nav hidden on mobile by default */
 .desktop-only,
 .desktop-nav {
   display: none;
 }
 
-/* Hamburger is shown on mobile */
+/* Hamburger shown on mobile */
 .mobile-only {
   display: inline-flex;
 }
@@ -117,10 +117,10 @@ body {
   cursor: pointer;
 }
 
-/* Overlay shown behind open mobile menu */
+/* Dark overlay behind the open mobile menu */
 .mobile-menu-overlay {
   position: fixed;
-  inset: 0; /* Fills entire screen */
+  inset: 0; /* Covers entire viewport */
   background: rgba(0, 0, 0, 0.35);
   opacity: 0;
   visibility: hidden;
@@ -133,12 +133,12 @@ body {
   visibility: visible;
 }
 
-/* Hidden mobile menu panel */
+/* Mobile dropdown menu panel */
 .mobile-nav {
   position: absolute;
   top: 100%;
   right: 16px;
-  width: min(260px, 85vw); /* Keeps menu readable on small screens */
+  width: min(260px, 85vw); /* Prevents menu from getting too wide on phones */
   background: white;
   border-radius: 12px;
   padding: 16px;
@@ -164,66 +164,37 @@ body {
 }
 
 /* =========================
-   HERO
+   HELP HERO
 ========================= */
-.hero {
-  background-color: #191e3b;
-  padding: 20px 16px 26px;
+.help-hero {
+  background-color: #3b5d7e;
+  padding: 24px 16px 28px;
   border-top: 10px solid #d9e2ea;
   border-bottom: 10px solid #d9e2ea;
 }
 
-.hero-title {
+.help-title {
   text-align: center;
   color: white;
   font-size: 28px;
   font-style: italic;
   font-weight: 500;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
-.search-card {
+/* Search form stacks on mobile */
+.help-search-form {
   background-color: white;
-  max-width: 1290px;
+  max-width: 1450px;
   margin: 0 auto;
   border-radius: 20px;
-  padding: 24px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-/* Category icons arranged in a compact grid on mobile */
-.category-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px 12px;
-  justify-items: center;
-}
-
-.category-item {
-  text-align: center;
-}
-
-.category-icon {
-  font-size: 38px;
-  margin-bottom: 8px;
-}
-
-.category-item p {
-  font-size: 16px;
-  font-weight: 600;
-  color: black;
-}
-
-/* Search form stacks vertically on mobile */
-.search-form {
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.search-form input {
+.help-search-form input {
   width: 100%;
   height: 52px;
   border: 1px solid #191e3b;
@@ -235,7 +206,7 @@ body {
   outline: none;
 }
 
-.search-form input::placeholder {
+.help-search-form input::placeholder {
   color: #a3a3a3;
   font-size: 12px;
   font-weight: 300;
@@ -254,103 +225,90 @@ body {
 }
 
 /* =========================
-   TRIP SECTION
+   FAQ SECTION
 ========================= */
-.trip-section {
+.faq-section {
   background-color: white;
-  padding: 26px 16px 40px;
+  padding: 28px 16px 40px;
 }
 
 .section-title {
+  max-width: 1600px;
+  margin: 0 auto 26px;
   font-size: 28px;
   font-weight: 600;
   color: #191e3b;
-  margin-bottom: 24px;
-  max-width: 1440px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-.trip-grid {
-  max-width: 1440px;
+/* One-column layout on phones */
+.faq-grid {
+  max-width: 1600px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: 28px;
 }
 
-.trip-link {
-  text-decoration: none;
-  color: inherit;
+.faq-category {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.trip-card {
-  border-radius: 20px;
-  overflow: hidden;
-  background-color: white;
-  max-width: 320px;
-  margin: 0 auto;
-}
-
-.trip-card img {
-  width: 100%;
-  height: 210px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.trip-info {
-  padding: 12px 8px 8px;
-}
-
-.trip-info h3 {
-  font-size: 16px;
+.category-title {
+  font-size: 22px;
   font-weight: 600;
   color: #191e3b;
-  margin-bottom: 4px;
 }
 
-.trip-info .location {
-  font-size: 14px;
-  font-weight: 400;
-  color: #191e3b;
-  margin-bottom: 6px;
+/* Each FAQ item is grouped for spacing and interaction */
+.faq-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.trip-info .price {
-  font-size: 16px;
+/* Question is a button so it is keyboard/touch friendly */
+.faq-question {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  font-size: 17px;
   font-weight: 600;
   color: #191e3b;
-  margin-bottom: 2px;
+  cursor: pointer;
 }
 
-.trip-info .note {
-  font-size: 12px;
-  font-weight: 400;
+/* Hidden by default so clicking question can reveal it */
+.faq-answer {
+  display: none;
+  font-size: 13px;
+  line-height: 1.45;
   color: #191e3b;
+}
+
+/* Added by JavaScript when answer is open */
+.faq-answer.show {
+  display: block;
 }
 
 /* =========================
    TABLET
 ========================= */
 @media (min-width: 700px) {
-  .category-row {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .search-form {
+  .help-search-form {
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    align-items: center;
   }
 
-  .search-form input {
-    width: 230px;
+  .help-search-form input {
+    flex: 1; /* Lets the input take most of the row width */
   }
 
-  .trip-grid {
+  .faq-grid {
     grid-template-columns: repeat(2, 1fr);
-    justify-items: center;
+    gap: 32px 28px;
   }
 }
 
@@ -379,44 +337,20 @@ body {
     gap: 28px;
   }
 
-  .hero {
+  .help-hero {
     padding: 42px 32px 54px;
     border-top: 14px solid #d9e2ea;
     border-bottom: 14px solid #d9e2ea;
   }
 
-  .hero-title {
+  .help-title {
     font-size: 40px;
     margin-bottom: 28px;
   }
 
-  .search-card {
-    padding: 40px 48px 48px;
-    gap: 28px;
-  }
-
-  .category-icon {
-    font-size: 48px;
-  }
-
-  .category-item p {
-    font-size: 18px;
-  }
-
-  .search-form {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+  .help-search-form {
+    padding: 14px 24px;
     gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .search-form input {
-    width: 295px;
-  }
-
-  .trip-section {
-    padding: 34px 32px 50px;
   }
 
   .section-title {
@@ -424,17 +358,22 @@ body {
     margin-bottom: 34px;
   }
 
-  .trip-grid {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 28px;
+  .faq-section {
+    padding: 34px 32px 50px;
   }
 
-  .trip-card {
-    max-width: none;
-    margin: 0;
+  .faq-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px 32px;
   }
+}
 
-  .trip-card img {
-    height: 225px;
+/* =========================
+   WIDE DESKTOP
+========================= */
+@media (min-width: 1400px) {
+  .faq-grid {
+    grid-template-columns: repeat(5, 1fr); /* Matches the wide multi-column look from the prototype */
+    gap: 61px;
   }
 }
