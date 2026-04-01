@@ -295,6 +295,10 @@ body {
   margin-bottom: 8px;
 }
 
+.form-space {
+  margin-top: 20px;
+}
+
 .form-input,
 .form-select {
   width: 100%;
