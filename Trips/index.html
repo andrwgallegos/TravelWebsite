@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Browser tab title -->
-  <title>Expedia Trips Page</title>
+  <title>Expedia Trips</title>
 
   <!-- Page stylesheet -->
   <link rel="stylesheet" href="style.css" />
@@ -22,8 +22,11 @@
 <body>
   <div class="page">
 
-    <!-- Dark overlay shown behind the mobile menu when it opens -->
+    <!-- Dark overlay shown behind the mobile menu -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Dark overlay behind the sign-up modal -->
+    <div class="modal-overlay" id="modalOverlay"></div>
 
     <!-- Top navigation -->
     <header class="navbar">
@@ -34,7 +37,7 @@
           <h1 class="logo-text">Expedia</h1>
         </a>
 
-        <!-- Only shown on desktop -->
+        <!-- Desktop-only dropdown button -->
         <button class="nav-link dropdown-button desktop-only">Shop travel</button>
       </div>
 
@@ -52,115 +55,209 @@
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
-        <a href="../Trips/index.html" class="nav-link">Trips</a>
-        <button class="sign-in-button">Sign in</button>
+        <a href="index.html" class="nav-link active-link">Trips</a>
+        <button class="sign-in-button" id="openSignInDesktop">Sign in</button>
       </nav>
 
       <!-- Mobile dropdown navigation -->
       <nav class="mobile-nav" id="mobileNav">
-        <a href="index.html" class="nav-link active-link">Homepage</a>
+        <a href="../Homepage/index.html" class="nav-link">Homepage</a>
         <a href="../SearchResults/index.html" class="nav-link">Search Results</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
-        <a href="../Trips/index.html" class="nav-link">Trips</a>
+        <a href="index.html" class="nav-link active-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" id="openSignInMobile">Sign in</button>
       </nav>
     </header>
 
-    <!-- Dark blue hero section -->
+    <!-- Blue trips banner -->
     <section class="hero">
       <h2 class="hero-title">Trips</h2>
 
-      <!-- White card that holds category icons and search form -->
+      <!-- White search card -->
       <div class="search-card">
-        <!-- Search form routes to Search Results -->
-        <form class="search-form" action="../SearchResults/index.html">
-          <input type="text" placeholder="Search itinerary number" />
+        <form class="search-form" id="tripSearchForm">
+          <input
+            type="text"
+            id="tripSearchInput"
+            placeholder="Search itinerary number"
+            aria-label="Search itinerary number"
+          />
           <button type="submit" class="search-button">Search</button>
         </form>
       </div>
     </section>
 
-    <!-- Lower section with trip cards -->
-    <section class="trip-section">
-      <h2 class="section-title">Booked | Saved | Create</h2>
-
-      <div class="trip-grid">
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/houston-texas.jpeg" alt="Houston" />
-            <div class="trip-info">
-              <h3>Houston</h3>
-              <p class="location">Texas, USA</p>
-              <p class="stay">Holiday Inn</p>
-              <p class="price">$175</p>
-              <p class="travel">American Airlines</p>
-              <p class="time">10AM - 3PM</p>
-            </div>
-          </article>
-        </a>
-
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/houston-texas.jpeg" alt="Houston" />
-            <div class="trip-info">
-              <h3>Dublin</h3>
-              <p class="location">Ireland</p>
-              <p class="stay">Temple Bar Inn</p>
-              <p class="price">$120</p>
-              <p class="travel">Japan Airlines</p>
-              <p class="time">2PM -11PM</p>
-            </div>
-          </article>
-        </a>
-
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/houston-texas.jpeg" alt="Houston" />
-            <div class="trip-info">
-              <h3>Kyoto</h3>
-              <p class="location">Japan</p>
-              <p class="stay">Hotel Resol Trinity</p>
-              <p class="price">$84</p>
-              <p class="travel">Japan Airlines</p>
-              <p class="time">7AM - 10AM</p>
-            </div>
-          </article>
-        </a>
-
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/houston-texas.jpeg" alt="Houston" />
-            <div class="trip-info">
-              <h3>Seoul</h3>
-              <p class="location">Korea</p>
-              <p class="stay">Best Stays Hotel</p>
-              <p class="price">$250</p>
-              <p class="travel">International Airlines</p>
-              <p class="time">6AM - 10AM</p>
-            </div>
-          </article>
-        </a>
-
-        <a href="../SearchResults/index.html" class="trip-link">
-          <article class="trip-card">
-            <img src="images/houston-texas.jpeg" alt="Houston" />
-            <div class="trip-info">
-              <h3>Pensacola</h3>
-              <p class="location">Florida, USA</p>
-              <p class="stay">Sleepy Inn</p>
-              <p class="price">$125</p>
-              <p class="travel">American Airlines</p>
-              <p class="time">6AM - 10AM</p>
-            </div>
-          </article>
-        </a>
+    <!-- Trips content -->
+    <main class="trip-section">
+      <!-- Tabs -->
+      <div class="trip-tabs">
+        <button class="trip-tab active" data-tab="booked">Booked</button>
+        <button class="trip-tab" data-tab="saved">Saved</button>
+        <button class="trip-tab" data-tab="create">Create</button>
       </div>
-    </section>
+
+      <!-- Booked trips -->
+      <section class="trip-grid trip-panel active-panel" id="bookedPanel">
+        <article class="trip-card">
+          <img src="images/texas.jpg" alt="Texas" />
+          <div class="trip-info">
+            <h3>Texas</h3>
+            <p class="location">USA</p>
+            <p class="stay">Holiday Inn</p>
+            <p class="price">$175</p>
+            <p class="travel">American Airlines</p>
+            <p class="time">10AM - 3PM</p>
+          </div>
+        </article>
+
+        <article class="trip-card">
+          <img src="images/kyoto.jpg" alt="Kyoto" />
+          <div class="trip-info">
+            <h3>Kyoto</h3>
+            <p class="location">Japan</p>
+            <p class="stay">Hotel Resol Trinity</p>
+            <p class="price">$84</p>
+            <p class="travel">Japan Airlines</p>
+            <p class="time">7AM - 10AM</p>
+          </div>
+        </article>
+
+        <article class="trip-card">
+          <img src="images/dublin.jpg" alt="Dublin" />
+          <div class="trip-info">
+            <h3>Dublin</h3>
+            <p class="location">Ireland</p>
+            <p class="stay">Temple Bar Inn</p>
+            <p class="price">$120</p>
+            <p class="travel">Japan Airlines</p>
+            <p class="time">2PM - 11PM</p>
+          </div>
+        </article>
+
+        <article class="trip-card">
+          <img src="images/seoul.jpg" alt="Seoul" />
+          <div class="trip-info">
+            <h3>Seoul</h3>
+            <p class="location">Korea</p>
+            <p class="stay">Best Stays Hotel</p>
+            <p class="price">$250</p>
+            <p class="travel">International Airlines</p>
+            <p class="time">6AM - 10AM</p>
+          </div>
+        </article>
+
+        <article class="trip-card">
+          <img src="images/pensacola.jpg" alt="Pensacola" />
+          <div class="trip-info">
+            <h3>Pensacola</h3>
+            <p class="location">Florida</p>
+            <p class="stay">Sleepy Inn</p>
+            <p class="price">$125</p>
+            <p class="travel">American Airlines</p>
+            <p class="time">6AM - 10AM</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- Saved trips -->
+      <section class="trip-panel hidden-panel" id="savedPanel">
+        <div class="empty-state">
+          <h3>No saved trips yet</h3>
+          <p>Save destinations and accommodations here to plan future travel.</p>
+        </div>
+      </section>
+
+      <!-- Create trip -->
+      <section class="trip-panel hidden-panel" id="createPanel">
+        <div class="empty-state">
+          <h3>Create a new trip</h3>
+          <p>Start a new itinerary by searching destinations, flights, and hotels.</p>
+          <a href="../Homepage/index.html" class="create-link-button">Go to Homepage</a>
+        </div>
+      </section>
+
+      <!-- Divider -->
+      <div class="divider-line"></div>
+
+      <!-- Ads carousel -->
+      <section class="ads-section">
+        <button class="carousel-arrow" id="prevAd" aria-label="Previous ads">◀</button>
+
+        <div class="ads-window">
+          <div class="ads-container" id="adsContainer">
+            <div class="ad-item">
+              <img src="images/ad-holidayinn.jpg" alt="Holiday Inn Deals" />
+              <p>Holiday Inn Deals</p>
+            </div>
+            <div class="ad-item">
+              <img src="images/ad-car.jpg" alt="Car Rental Deals" />
+              <p>Car Rental Deals</p>
+            </div>
+            <div class="ad-item">
+              <img src="images/ad-flight.jpg" alt="10% Off Flights" />
+              <p>10% Off Flights</p>
+            </div>
+            <div class="ad-item">
+              <img src="images/ad-cabin.jpg" alt="Great Cabin Deals" />
+              <p>Great Cabin Deals</p>
+            </div>
+            <div class="ad-item">
+              <img src="images/ad-group.jpg" alt="Save on Group Travel" />
+              <p>Save on Group Travel</p>
+            </div>
+            <div class="ad-item">
+              <img src="images/ad-resort.jpg" alt="10% Off 3 Nights at Temple Inn" />
+              <p>10% Off 3 Nights at Temple Inn</p>
+            </div>
+            <div class="ad-item">
+              <img src="images/ad-uber.jpg" alt="Ride with Uber" />
+              <p>Ride with Uber</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="carousel-arrow" id="nextAd" aria-label="Next ads">▶</button>
+      </section>
+    </main>
+
+    <!-- Sign-up modal -->
+    <div class="sign-in-modal" id="signInModal">
+      <div class="modal-content">
+        <h2 class="modal-title">Create your free account to start planning trips!</h2>
+
+        <form id="signUpForm" class="sign-up-form">
+          <div class="field">
+            <input type="text" id="firstName" placeholder="First Name..." required />
+          </div>
+
+          <div class="field">
+            <input type="text" id="lastName" placeholder="Last Name..." required />
+          </div>
+
+          <div class="field">
+            <input type="email" id="email" placeholder="Email..." required />
+          </div>
+
+          <div class="field">
+            <input type="password" id="password" placeholder="Password..." required />
+          </div>
+
+          <div class="field">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password..." required />
+          </div>
+
+          <button type="submit" class="sign-up-button">Sign Up!</button>
+        </form>
+
+        <p class="sign-in-link-text">
+          Already have an account? <button id="closeModalLink" class="inline-link">Sign in</button>
+        </p>
+      </div>
+    </div>
   </div>
 
-  <!-- Page script for mobile navigation -->
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,6 +1,5 @@
 /* =========================
    RESET
-   Removes default browser spacing
 ========================= */
 * {
   margin: 0;
@@ -15,12 +14,13 @@ body {
   background-color: #e9f0f5;
   font-family: 'Inter', sans-serif;
   color: #191e3b;
-  overflow-x: hidden; /* Prevents horizontal scroll on mobile */
+  overflow-x: hidden;
 }
 
 .page {
   width: 100%;
   min-height: 100vh;
+  position: relative;
 }
 
 /* =========================
@@ -32,8 +32,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative; /* Needed so mobile menu can position under navbar */
+  position: relative;
   border-bottom: 1px solid #d9e2ea;
+  z-index: 50;
 }
 
 .navbar-left {
@@ -98,13 +99,11 @@ body {
   color: #3b5d7e;
 }
 
-/* Desktop nav is hidden on mobile */
 .desktop-only,
 .desktop-nav {
   display: none;
 }
 
-/* Hamburger is shown on mobile */
 .mobile-only {
   display: inline-flex;
 }
@@ -117,10 +116,10 @@ body {
   cursor: pointer;
 }
 
-/* Overlay shown behind open mobile menu */
+/* Mobile nav overlay */
 .mobile-menu-overlay {
   position: fixed;
-  inset: 0; /* Fills entire screen */
+  inset: 0;
   background: rgba(0, 0, 0, 0.35);
   opacity: 0;
   visibility: hidden;
@@ -133,12 +132,12 @@ body {
   visibility: visible;
 }
 
-/* Hidden mobile menu panel */
+/* Mobile nav dropdown */
 .mobile-nav {
   position: absolute;
   top: 100%;
   right: 16px;
-  width: min(260px, 85vw); /* Keeps menu readable on small screens */
+  width: min(260px, 85vw);
   background: white;
   border-radius: 12px;
   padding: 16px;
@@ -167,8 +166,8 @@ body {
    HERO
 ========================= */
 .hero {
-  background-color: #191e3b;
-  padding: 20px 16px 26px;
+  background-color: #3b5d7e;
+  padding: 24px 16px 28px;
   border-top: 10px solid #d9e2ea;
   border-bottom: 10px solid #d9e2ea;
 }
@@ -179,21 +178,17 @@ body {
   font-size: 28px;
   font-style: italic;
   font-weight: 500;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 .search-card {
   background-color: white;
-  max-width: 1290px;
+  max-width: 1450px;
   margin: 0 auto;
   border-radius: 20px;
-  padding: 24px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
+  padding: 16px;
 }
 
-/* Search form stacks vertically on mobile */
 .search-form {
   display: flex;
   flex-direction: column;
@@ -238,27 +233,49 @@ body {
   padding: 26px 16px 40px;
 }
 
-.section-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: #191e3b;
-  margin-bottom: 24px;
-  max-width: 1440px;
-  margin-left: auto;
-  margin-right: auto;
+/* Tabs */
+.trip-tabs {
+  max-width: 1450px;
+  margin: 0 auto 24px;
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 2px solid #191e3b;
 }
 
-.trip-grid {
-  max-width: 1440px;
+.trip-tab {
+  background-color: #e9f0f5;
+  color: #191e3b;
+  border: none;
+  padding: 14px 20px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trip-tab.active {
+  background-color: #191e3b;
+  color: white;
+}
+
+/* Trip panels */
+.trip-panel {
+  max-width: 1450px;
   margin: 0 auto;
+}
+
+.hidden-panel {
+  display: none;
+}
+
+.active-panel {
+  display: block;
+}
+
+/* Grid of booked trips */
+.trip-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
-}
-
-.trip-link {
-  text-decoration: none;
-  color: inherit;
 }
 
 .trip-card {
@@ -290,24 +307,211 @@ body {
 .trip-info .location {
   font-size: 14px;
   font-weight: 400;
-  color: #191e3b;
   margin-bottom: 6px;
 }
 
-.trip-info .stay, .travel{
+.trip-info .stay,
+.trip-info .travel {
   font-size: 16px;
   font-weight: 600;
-  color: #191e3b;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .trip-info .travel {
   margin-top: 6px;
 }
 
-.trip-info .price, .time {
+.trip-info .price,
+.trip-info .time {
   font-size: 12px;
   font-weight: 400;
+  color: #191e3b;
+}
+
+/* Empty states */
+.empty-state {
+  padding: 40px 16px;
+  text-align: center;
+}
+
+.empty-state h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin-bottom: 18px;
+}
+
+.create-link-button {
+  display: inline-block;
+  background-color: #fbbf23;
+  color: #191e3b;
+  text-decoration: none;
+  border-radius: 20px;
+  padding: 14px 24px;
+  font-weight: 700;
+}
+
+/* Divider */
+.divider-line {
+  max-width: 1450px;
+  margin: 28px auto;
+  height: 2px;
+  background-color: #191e3b;
+}
+
+/* =========================
+   ADS CAROUSEL
+========================= */
+.ads-section {
+  max-width: 1450px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.carousel-arrow {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #1e1e1e;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ads-window {
+  overflow: hidden;
+  flex: 1;
+}
+
+.ads-container {
+  display: flex;
+  gap: 18px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.ad-item {
+  width: 166px;
+  flex-shrink: 0;
+}
+
+.ad-item img {
+  width: 166px;
+  height: 113px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.ad-item p {
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #3b5d7e;
+  text-align: center;
+}
+
+/* =========================
+   SIGN-IN MODAL
+========================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s ease;
+  z-index: 110;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sign-in-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s ease;
+  z-index: 120;
+}
+
+.sign-in-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 13px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  width: min(726px, 100%);
+  padding: 28px 20px;
+}
+
+.modal-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #191e3b;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.sign-up-form .field {
+  margin-bottom: 18px;
+}
+
+.sign-up-form input {
+  width: 100%;
+  height: 58px;
+  border: 1px solid #191e3b;
+  border-radius: 13px;
+  padding: 0 14px;
+  font-size: 22px;
+  font-weight: 300;
+  color: #191e3b;
+}
+
+.sign-up-form input::placeholder {
+  color: #191e3b;
+  opacity: 0.6;
+}
+
+.sign-up-button {
+  background-color: #fbbf23;
+  border: none;
+  border-radius: 13px;
+  width: 100%;
+  min-height: 58px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #191e3b;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.sign-in-link-text {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.inline-link {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  font: inherit;
+  cursor: pointer;
   color: #191e3b;
 }
 
@@ -315,18 +519,13 @@ body {
    TABLET
 ========================= */
 @media (min-width: 700px) {
-  .category-row {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
   .search-form {
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    align-items: center;
   }
 
   .search-form input {
-    width: 80%;
+    flex: 1;
   }
 
   .trip-grid {
@@ -372,37 +571,15 @@ body {
   }
 
   .search-card {
-    padding: 30px 30px 30px;
-    gap: 28px;
-  }
-
-  .search-form {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .search-form input {
-    width: 85%;
-    height: 58px;
-    border: 1px solid #191e3b;
-    border-radius: 20px;
-    padding: 0 16px;
-    font-size: 14px;
-    font-weight: 300;
-    color: #191e3b;
-    outline: none;
+    padding: 14px 24px;
   }
 
   .trip-section {
     padding: 34px 32px 50px;
   }
 
-  .section-title {
-    font-size: 36px;
-    margin-bottom: 34px;
+  .trip-tab {
+    font-size: 38px;
   }
 
   .trip-grid {
@@ -419,13 +596,7 @@ body {
     height: 225px;
   }
 
-/* =========================
-   DESKTOP 2
-========================= */
-@media (min-width: 1250px) {
-  .search-form input {
-    width: 88%;
+  .ads-section {
+    gap: 22px;
   }
-}
-
 }
