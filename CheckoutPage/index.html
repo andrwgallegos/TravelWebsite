@@ -31,8 +31,10 @@
     </div>
 
     <!-- Success modal is hidden until booking succeeds -->
-    <div id="successModal" class="success-modal hidden">
+    <div id="successModal" class="success-modal hidden" aria-hidden="true">
       <div class="success-modal-content">
+        <button class="success-close-button" id="closeSuccessModal" type="button" aria-label="Close booking confirmation">✕</button>
+
         <h2>Your Trip Has Been Booked!</h2>
 
         <!-- Simple success icon -->
@@ -70,6 +72,7 @@
         class="hamburger-button mobile-only"
         id="hamburgerButton"
         aria-label="Open navigation menu"
+        type="button"
       >
         ☰
       </button>
@@ -91,7 +94,7 @@
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" type="button">Sign in</button>
       </nav>
     </header>
 
@@ -247,7 +250,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="form-space" for="billingZip">Billing ZIP code <span class="required-star">*</span></label>
+                  <label for="billingZip">Billing ZIP code <span class="required-star">*</span></label>
                   <input
                     type="text"
                     id="billingZip"
@@ -272,7 +275,6 @@
       <aside class="right-panel">
         <div class="booking-summary">
           <div class="hotel-image">
-            <!-- Replace with local image later if preferred -->
             <img
               src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700&h=400&fit=crop"
               alt="Resort view"
@@ -337,7 +339,6 @@
     </main>
   </div>
 
-  <!-- Page script -->
   <script src="script.js"></script>
 </body>
 </html>

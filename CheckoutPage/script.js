@@ -8,17 +8,27 @@ const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
 
 // Closes the mobile menu
 function closeMobileMenu() {
-  mobileNav.classList.remove('show');
-  mobileMenuOverlay.classList.remove('show');
+  if (mobileNav) {
+    mobileNav.classList.remove('show');
+  }
+
+  if (mobileMenuOverlay) {
+    mobileMenuOverlay.classList.remove('show');
+  }
 }
 
 // Opens or closes the mobile menu
 function toggleMobileMenu() {
-  mobileNav.classList.toggle('show');
-  mobileMenuOverlay.classList.toggle('show');
+  if (mobileNav) {
+    mobileNav.classList.toggle('show');
+  }
+
+  if (mobileMenuOverlay) {
+    mobileMenuOverlay.classList.toggle('show');
+  }
 }
 
-// Guard clauses prevent errors if the elements are missing
+// Guard clauses prevent errors if elements are missing
 if (hamburgerButton && mobileNav && mobileMenuOverlay) {
   hamburgerButton.addEventListener('click', toggleMobileMenu);
   mobileMenuOverlay.addEventListener('click', closeMobileMenu);
@@ -35,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('checkoutForm');
   const errorBanner = document.getElementById('errorBanner');
   const successModal = document.getElementById('successModal');
+  const closeSuccessModal = document.getElementById('closeSuccessModal');
   const paymentMethods = document.querySelectorAll('.payment-method');
   const cardDetailsForm = document.getElementById('cardDetailsForm');
 
@@ -149,21 +160,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const input = document.getElementById(inputId);
     const error = document.getElementById(errorId);
 
-    input.classList.add('error');
+    if (input) {
+      input.classList.add('error');
+    }
 
     if (error) {
       error.style.display = 'block';
-    }
-  }
-
-  function hideError(inputId, errorId) {
-    const input = document.getElementById(inputId);
-    const error = document.getElementById(errorId);
-
-    input.classList.remove('error');
-
-    if (error) {
-      error.style.display = 'none';
     }
   }
 
@@ -181,6 +183,19 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
+
+  // =========================
+  // SUCCESS MODAL HELPERS
+  // =========================
+  function openSuccessModal() {
+    successModal.classList.remove('hidden');
+    successModal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeSuccessModalFn() {
+    successModal.classList.add('hidden');
+    successModal.setAttribute('aria-hidden', 'true');
+  }
 
   // =========================
   // FORM SUBMISSION
@@ -263,20 +278,26 @@ document.addEventListener('DOMContentLoaded', function () {
       errorBanner.classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // Otherwise show success modal
-      successModal.classList.remove('hidden');
-
-      // Automatically hide modal after 3 seconds
-      setTimeout(() => {
-        successModal.classList.add('hidden');
-      }, 3000);
+      openSuccessModal();
     }
   });
 
-  // Allow user to close modal by clicking backdrop
+  // Allow user to close modal by clicking backdrop or close button
+  if (closeSuccessModal) {
+    closeSuccessModal.addEventListener('click', closeSuccessModalFn);
+  }
+
   successModal.addEventListener('click', function (e) {
     if (e.target === successModal) {
-      successModal.classList.add('hidden');
+      closeSuccessModalFn();
+    }
+  });
+
+  // Escape closes success modal or mobile menu
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeSuccessModalFn();
+      closeMobileMenu();
     }
   });
 

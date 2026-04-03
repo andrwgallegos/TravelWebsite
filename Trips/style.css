@@ -123,6 +123,7 @@ body {
   background: rgba(0, 0, 0, 0.35);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none; /* Prevents invisible overlay from blocking taps */
   transition: 0.2s ease;
   z-index: 90;
 }
@@ -130,6 +131,7 @@ body {
 .mobile-menu-overlay.show {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 /* Mobile nav dropdown */
@@ -147,6 +149,7 @@ body {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none; /* Hidden menu cannot block touches */
   transform: translateY(8px);
   transition: 0.2s ease;
   z-index: 100;
@@ -155,6 +158,7 @@ body {
 .mobile-nav.show {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
   transform: translateY(0);
 }
 
@@ -264,7 +268,7 @@ body {
 }
 
 .hidden-panel {
-  display: none !important;
+  display: none;
 }
 
 .active-panel {
@@ -423,6 +427,7 @@ body {
   backdrop-filter: blur(3px);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none; /* Prevent hidden modal layer from blocking page */
   transition: 0.2s ease;
   z-index: 110;
 }
@@ -430,6 +435,7 @@ body {
 .modal-overlay.show {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .sign-in-modal {
@@ -441,6 +447,7 @@ body {
   padding: 20px;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none; /* Hidden modal cannot catch clicks */
   transition: 0.2s ease;
   z-index: 120;
 }
@@ -448,6 +455,7 @@ body {
 .sign-in-modal.show {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .modal-content {
@@ -456,6 +464,19 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   width: min(726px, 100%);
   padding: 28px 20px;
+  position: relative; /* Needed for close button positioning */
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #191e3b;
 }
 
 .modal-title {

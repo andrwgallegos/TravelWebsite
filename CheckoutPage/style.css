@@ -16,7 +16,7 @@ body {
   background-color: #ededed;
   color: #000;
   min-height: 100vh;
-  overflow-x: hidden; /* Prevents horizontal scrolling on phones */
+  overflow-x: hidden;
 }
 
 .page {
@@ -33,7 +33,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative; /* Lets the mobile menu attach below */
+  position: relative;
   border-bottom: 1px solid #d9e2ea;
   z-index: 20;
 }
@@ -96,13 +96,11 @@ body {
   cursor: pointer;
 }
 
-/* Desktop nav hidden on mobile */
 .desktop-only,
 .desktop-nav {
   display: none;
 }
 
-/* Hamburger visible on mobile */
 .mobile-only {
   display: inline-flex;
 }
@@ -122,6 +120,7 @@ body {
   background: rgba(0, 0, 0, 0.35);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: 0.2s ease;
   z-index: 90;
 }
@@ -129,6 +128,7 @@ body {
 .mobile-menu-overlay.show {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 /* Mobile dropdown menu */
@@ -146,6 +146,7 @@ body {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transform: translateY(8px);
   transition: 0.2s ease;
   z-index: 100;
@@ -154,6 +155,7 @@ body {
 .mobile-nav.show {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
   transform: translateY(0);
 }
 
@@ -176,7 +178,7 @@ body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 /* =========================
@@ -199,6 +201,19 @@ body {
   border-radius: 20px;
   text-align: center;
   width: min(800px, 100%);
+  position: relative; /* Allows close button to sit in top right */
+}
+
+.success-close-button {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #191e3b;
 }
 
 .success-modal-content h2 {
@@ -260,7 +275,6 @@ body {
   color: #ff0a0a;
 }
 
-/* Payment section gets more breathing room */
 .payment-section {
   margin-top: 40px;
 }
@@ -284,7 +298,7 @@ body {
 ========================= */
 .form-group {
   margin-bottom: 20px;
-  position: relative; /* Keeps error text tied to each field */
+  position: relative;
 }
 
 .form-group label {
@@ -293,10 +307,6 @@ body {
   font-weight: 600;
   color: rgba(0, 0, 0, 0.9);
   margin-bottom: 8px;
-}
-
-.form-space {
-  margin-top: 20px;
 }
 
 .form-input,
@@ -332,7 +342,6 @@ body {
   max-width: 270px;
 }
 
-/* Custom select arrow */
 .form-select {
   cursor: pointer;
   appearance: none;
@@ -342,7 +351,6 @@ body {
   padding-right: 50px;
 }
 
-/* Two inputs side by side on larger screens */
 .form-row {
   display: grid;
   grid-template-columns: 1fr;
@@ -361,7 +369,6 @@ body {
   font-weight: 400;
 }
 
-/* This sibling selector reveals the message when the field has .error */
 .form-input.error ~ .error-message,
 .form-select.error ~ .error-message {
   display: block;
@@ -394,7 +401,6 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Selected payment gets highlighted */
 .payment-method.selected {
   border-color: #367aea;
   border-width: 3px;
@@ -706,6 +712,6 @@ body {
   }
 
   .btn-edit {
-    float: right; /* Matches the prototype’s right-aligned Edit button */
+    float: right;
   }
 }
