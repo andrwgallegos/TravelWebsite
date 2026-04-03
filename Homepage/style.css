@@ -120,10 +120,11 @@ body {
 /* Overlay shown behind open mobile menu */
 .mobile-menu-overlay {
   position: fixed;
-  inset: 0; /* Fills entire screen */
+  inset: 0;
   background: rgba(0, 0, 0, 0.35);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none; /* Hidden overlay cannot block taps */
   transition: 0.2s ease;
   z-index: 90;
 }
@@ -131,6 +132,7 @@ body {
 .mobile-menu-overlay.show {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 /* Hidden mobile menu panel */
@@ -138,7 +140,7 @@ body {
   position: absolute;
   top: 100%;
   right: 16px;
-  width: min(260px, 85vw); /* Keeps menu readable on small screens */
+  width: min(260px, 85vw);
   background: white;
   border-radius: 12px;
   padding: 16px;
@@ -148,6 +150,7 @@ body {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none; /* Hidden menu cannot block taps */
   transform: translateY(8px);
   transition: 0.2s ease;
   z-index: 100;
@@ -156,6 +159,7 @@ body {
 .mobile-nav.show {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
   transform: translateY(0);
 }
 

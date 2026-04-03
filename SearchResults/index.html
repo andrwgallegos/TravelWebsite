@@ -35,7 +35,7 @@
         </a>
 
         <!-- Desktop-only navigation button -->
-        <button class="nav-link dropdown-button desktop-only">Shop travel</button>
+        <button class="nav-link dropdown-button desktop-only" type="button">Shop travel</button>
       </div>
 
       <!-- Mobile hamburger button -->
@@ -43,6 +43,7 @@
         class="hamburger-button mobile-only"
         id="hamburgerButton"
         aria-label="Open navigation menu"
+        type="button"
       >
         ☰
       </button>
@@ -53,7 +54,7 @@
         <a href="#" class="nav-link">List your property</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
-        <button class="sign-in-button">Sign in</button>
+        <button class="sign-in-button" id="desktopSignInButton" type="button">Sign in</button>
       </nav>
 
       <!-- Mobile dropdown navigation -->
@@ -64,7 +65,7 @@
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">Sign in</button>
       </nav>
     </header>
 
@@ -115,9 +116,9 @@
 
         <!-- Active filters shown below the search fields -->
         <div class="active-filters">
-          <button class="filter-pill">✕ Beachfront</button>
-          <button class="filter-pill">✕ Free cancellation</button>
-          <button class="filter-pill">✕ Under $300</button>
+          <button class="filter-pill" type="button">✕ Beachfront</button>
+          <button class="filter-pill" type="button">✕ Free cancellation</button>
+          <button class="filter-pill" type="button">✕ Under $300</button>
         </div>
       </div>
     </section>
@@ -134,7 +135,7 @@
             <h3>Price</h3>
             <span>▾</span>
           </div>
-          <button class="filter-option selected">$0–$300</button>
+          <button class="filter-option selected" type="button">$0–$300</button>
         </section>
 
         <section class="filter-group">
@@ -142,9 +143,9 @@
             <h3>Property Type</h3>
             <span>▾</span>
           </div>
-          <button class="filter-option selected">Hotels</button>
-          <button class="filter-option">Resorts</button>
-          <button class="filter-option">Vacation rentals</button>
+          <button class="filter-option selected" type="button">Hotels</button>
+          <button class="filter-option" type="button">Resorts</button>
+          <button class="filter-option" type="button">Vacation rentals</button>
         </section>
 
         <section class="filter-group">
@@ -152,20 +153,20 @@
             <h3>Guest Rating</h3>
             <span>▾</span>
           </div>
-          <button class="filter-option selected">Excellent</button>
-          <button class="filter-option">Very good</button>
-          <button class="filter-option">Good</button>
+          <button class="filter-option selected" type="button">Excellent</button>
+          <button class="filter-option" type="button">Very good</button>
+          <button class="filter-option" type="button">Good</button>
         </section>
 
-        <button class="apply-button">Apply</button>
+        <button class="apply-button" type="button">Apply</button>
       </aside>
 
       <!-- Center results grid -->
       <section class="listings-panel">
         <a href="../CheckoutPage/index.html" class="listing-link">
           <article class="listing-card">
-            <div class="listing-image">
-              <img class="listing-image" src="images/sanjuan.jpeg" alt="San Juan" />         
+            <div>
+              <img class="listing-image" src="images/sanjuan.jpeg" alt="San Juan" />
             </div>
             <div class="listing-info">
               <h3>San Juan</h3>
@@ -178,8 +179,8 @@
 
         <a href="../CheckoutPage/index.html" class="listing-link">
           <article class="listing-card">
-            <div class="listing-image">
-              <img class="listing-image" src="images/miami.jpeg" alt="Miami Beach" />         
+            <div>
+              <img class="listing-image" src="images/miami.jpeg" alt="Miami Beach" />
             </div>
             <div class="listing-info">
               <h3>Miami Beach</h3>
@@ -192,8 +193,8 @@
 
         <a href="../CheckoutPage/index.html" class="listing-link">
           <article class="listing-card">
-            <div class="listing-image">
-              <img class="listing-image" src="images/myrtle.jpeg" alt="Myrtle Beach" />         
+            <div>
+              <img class="listing-image" src="images/myrtle.jpeg" alt="Myrtle Beach" />
             </div>
             <div class="listing-info">
               <h3>Myrtle Beach</h3>
@@ -206,8 +207,8 @@
 
         <a href="../CheckoutPage/index.html" class="listing-link">
           <article class="listing-card">
-            <div class="listing-image">
-              <img class="listing-image" src="images/myrtle.jpeg" alt="Myrtle Beach" />         
+            <div>
+              <img class="listing-image" src="images/myrtle.jpeg" alt="Myrtle Beach" />
             </div>
             <div class="listing-info">
               <h3>Myrtle Beach</h3>
@@ -220,8 +221,8 @@
 
         <a href="../CheckoutPage/index.html" class="listing-link">
           <article class="listing-card">
-            <div class="listing-image">
-              <img class="listing-image" src="images/wilmington.jpeg" alt="Wilmington" />         
+            <div>
+              <img class="listing-image" src="images/wilmington.jpeg" alt="Wilmington" />
             </div>
             <div class="listing-info">
               <h3>Wilmington</h3>
@@ -234,8 +235,8 @@
 
         <a href="../CheckoutPage/index.html" class="listing-link">
           <article class="listing-card">
-            <div class="listing-image image-tan">
-              <img class="listing-image" src="images/hilton.jpeg" alt="Hilton Head Island" />         
+            <div>
+              <img class="listing-image" src="images/hilton.jpeg" alt="Hilton Head Island" />
             </div>
             <div class="listing-info">
               <h3>Hilton Head Island</h3>
@@ -252,21 +253,21 @@
         <div class="ads-arrow">↑</div>
 
         <div class="ad-card">
-          <div class="ad-image">
-            <img class="ad-image" src="images/ad-flight.jpeg" alt="10% Off Economy Flights" />         
+          <div>
+            <img class="ad-image" src="images/ad-flight.jpeg" alt="10% Off Economy Flights" />
           </div>
           <p>10% Off Economy Flights</p>
         </div>
 
         <div class="ad-card">
-          <div class="ad-image">
-            <img class="ad-image" src="images/ad-car.jpeg" alt="Car Rental Deals" />  
-          </div>       
+          <div>
+            <img class="ad-image" src="images/ad-car.jpeg" alt="Car Rental Deals" />
+          </div>
           <p>Car Rental Deals</p>
         </div>
 
         <div class="ad-card">
-          <div class="ad-image ad-image-green">                                                       
+          <div>
             <img class="ad-image" src="images/ad-holidayinn.jpeg" alt="Holiday Inn Deals" />
           </div>
           <p>Holiday Inn Deals</p>

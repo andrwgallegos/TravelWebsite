@@ -35,7 +35,7 @@
         </a>
 
         <!-- Only shown on desktop -->
-        <button class="nav-link dropdown-button desktop-only">Shop travel</button>
+        <button class="nav-link dropdown-button desktop-only" type="button">Shop travel</button>
       </div>
 
       <!-- Mobile hamburger button -->
@@ -43,6 +43,7 @@
         class="hamburger-button mobile-only"
         id="hamburgerButton"
         aria-label="Open navigation menu"
+        type="button"
       >
         ☰
       </button>
@@ -53,7 +54,7 @@
         <a href="#" class="nav-link">List your property</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
-        <button class="sign-in-button">Sign in</button>
+        <button class="sign-in-button" id="desktopSignInButton" type="button">Sign in</button>
       </nav>
 
       <!-- Mobile dropdown navigation -->
@@ -64,7 +65,7 @@
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">Sign in</button>
       </nav>
     </header>
 
@@ -121,9 +122,10 @@
       <h2 class="section-title">Ideas for your next trip</h2>
 
       <div class="trip-grid">
-        <a href="../SearchResults/index.html" class="trip-link">
+        <!-- Changed to CheckoutPage for consistency with Search Results -->
+        <a href="../CheckoutPage/index.html" class="trip-link">
           <article class="trip-card">
-            <img src="images/san juan.jpeg" alt="San Juan" /> 
+            <img src="images/san juan.jpeg" alt="San Juan" />
             <div class="trip-info">
               <h3>San Juan</h3>
               <p class="location">Puerto Rico</p>
@@ -133,9 +135,9 @@
           </article>
         </a>
 
-        <a href="../SearchResults/index.html" class="trip-link">
+        <a href="../CheckoutPage/index.html" class="trip-link">
           <article class="trip-card">
-            <img src="images/miami.jpeg" alt="Miami Beach" />       
+            <img src="images/miami.jpeg" alt="Miami Beach" />
             <div class="trip-info">
               <h3>Miami Beach</h3>
               <p class="location">Florida, USA</p>
@@ -145,9 +147,9 @@
           </article>
         </a>
 
-        <a href="../SearchResults/index.html" class="trip-link">
+        <a href="../CheckoutPage/index.html" class="trip-link">
           <article class="trip-card">
-            <img src="images/myrtle.jpeg" alt="Myrtle Beach" />       
+            <img src="images/myrtle.jpeg" alt="Myrtle Beach" />
             <div class="trip-info">
               <h3>Myrtle Beach</h3>
               <p class="location">South Carolina, USA</p>
@@ -157,9 +159,9 @@
           </article>
         </a>
 
-        <a href="../SearchResults/index.html" class="trip-link">
+        <a href="../CheckoutPage/index.html" class="trip-link">
           <article class="trip-card">
-            <img src="images/wilmington.jpeg" alt="Wilmington" />       
+            <img src="images/wilmington.jpeg" alt="Wilmington" />
             <div class="trip-info">
               <h3>Wilmington</h3>
               <p class="location">North Carolina, USA</p>
@@ -169,9 +171,9 @@
           </article>
         </a>
 
-        <a href="../SearchResults/index.html" class="trip-link">
+        <a href="../CheckoutPage/index.html" class="trip-link">
           <article class="trip-card">
-            <img src="images/hilton.jpeg" alt="Hilton Head Island" />       
+            <img src="images/hilton.jpeg" alt="Hilton Head Island" />
             <div class="trip-info">
               <h3>Hilton Head Island</h3>
               <p class="location">South Carolina, USA</p>
