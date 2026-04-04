@@ -276,7 +276,7 @@ body {
 }
 
 .hidden-panel {
-  display: none;
+  display: none !important;
 }
 
 .active-panel {
