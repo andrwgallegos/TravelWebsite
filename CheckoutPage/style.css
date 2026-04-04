@@ -1,15 +1,17 @@
-/* =========================
+/* =========================================================
    RESET
-========================= */
+   Removes default spacing and makes sizing consistent
+   ========================================================= */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* =========================
+/* =========================================================
    BASE / MOBILE-FIRST
-========================= */
+   Core page styles used across all screen sizes
+   ========================================================= */
 body {
   font-family: 'Inter', sans-serif;
   background-color: #ededed;
@@ -23,9 +25,10 @@ body {
   min-height: 100vh;
 }
 
-/* =========================
+/* =========================================================
    NAVBAR
-========================= */
+   Top navigation shared across the page
+   ========================================================= */
 .navbar {
   background-color: white;
   padding: 18px 16px;
@@ -95,6 +98,10 @@ body {
   cursor: pointer;
 }
 
+.sign-in-button:hover {
+  opacity: 0.95;
+}
+
 .desktop-only,
 .desktop-nav {
   display: none;
@@ -160,9 +167,17 @@ body {
   width: 100%;
 }
 
-/* =========================
+/* =========================================================
+   UTILITY / COMMON STATES
+   ========================================================= */
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
    ERROR BANNER
-========================= */
+   Top sticky warning shown when validation fails
+   ========================================================= */
 .error-banner {
   background-color: #dc2626;
   color: white;
@@ -174,13 +189,10 @@ body {
   z-index: 30;
 }
 
-.hidden {
-  display: none !important;
-}
-
-/* =========================
+/* =========================================================
    SUCCESS MODAL
-========================= */
+   Booking confirmation overlay
+   ========================================================= */
 .success-modal {
   position: fixed;
   inset: 0;
@@ -230,9 +242,10 @@ body {
   height: 100%;
 }
 
-/* =========================
-   MAIN CONTENT
-========================= */
+/* =========================================================
+   MAIN LAYOUT
+   Main two-column checkout layout
+   ========================================================= */
 .checkout-layout {
   display: grid;
   grid-template-columns: 1fr;
@@ -242,9 +255,10 @@ body {
   padding: 20px 16px;
 }
 
-/* =========================
+/* =========================================================
    LEFT PANEL
-========================= */
+   Form section
+   ========================================================= */
 .left-panel {
   background-color: white;
   border-radius: 8px;
@@ -290,9 +304,10 @@ body {
   margin-bottom: 24px;
 }
 
-/* =========================
+/* =========================================================
    FORM ELEMENTS
-========================= */
+   Inputs, labels, errors, and layout
+   ========================================================= */
 .form-group {
   margin-bottom: 20px;
   position: relative;
@@ -366,14 +381,16 @@ body {
   font-weight: 400;
 }
 
+/* Show error text when field is marked invalid */
 .form-input.error ~ .error-message,
 .form-select.error ~ .error-message {
   display: block;
 }
 
-/* =========================
+/* =========================================================
    PAYMENT METHODS
-========================= */
+   Button group for choosing payment type
+   ========================================================= */
 .payment-methods {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -409,16 +426,18 @@ body {
   text-align: center;
 }
 
-/* =========================
+/* =========================================================
    CARD DETAILS
-========================= */
+   Container for card fields only
+   ========================================================= */
 .card-details-form {
   margin-top: 24px;
 }
 
-/* =========================
+/* =========================================================
    BOOK BUTTON
-========================= */
+   Main submit action
+   ========================================================= */
 .btn-book-now {
   background-color: #fbbf23;
   color: #191e3b;
@@ -436,9 +455,10 @@ body {
   background-color: #f5b500;
 }
 
-/* =========================
+/* =========================================================
    RIGHT PANEL
-========================= */
+   Booking summary card
+   ========================================================= */
 .right-panel {
   background-color: white;
   border-radius: 8px;
@@ -602,9 +622,13 @@ body {
 }
 
 .special-requests {
+  width: 100%;
+  background: none;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  text-align: left;
   font-size: 16px;
   color: #000;
   cursor: pointer;
@@ -616,9 +640,74 @@ body {
   line-height: 1;
 }
 
-/* =========================
+/* =========================================================
+   SIGN IN MODAL
+   Shared modal styles for sign in / sign up prompt
+   ========================================================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px 24px;
+  border-radius: 16px;
+  width: min(400px, 90%);
+  text-align: center;
+  position: relative;
+}
+
+.modal-content h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.modal-button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-button.primary {
+  background: #191e3b;
+  color: white;
+}
+
+.modal-button.secondary {
+  background: #fbbf23;
+  color: #191e3b;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* =========================================================
    TABLET
-========================= */
+   Small layout improvements for medium screens
+   ========================================================= */
 @media (min-width: 700px) {
   .form-row {
     grid-template-columns: 1fr 1fr;
@@ -633,9 +722,10 @@ body {
   }
 }
 
-/* =========================
+/* =========================================================
    DESKTOP
-========================= */
+   Desktop navigation and two-column layout
+   ========================================================= */
 @media (min-width: 1100px) {
   .mobile-only,
   .mobile-nav,
@@ -703,72 +793,4 @@ body {
   .btn-edit {
     float: none;
   }
-}
-/* =========================
-   SIGN IN MODAL
-========================= */
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  z-index: 2000;
-}
-
-.modal.hidden {
-  display: none;
-}
-
-.modal-content {
-  background: white;
-  padding: 30px 24px;
-  border-radius: 16px;
-  width: min(400px, 90%);
-  text-align: center;
-  position: relative;
-}
-
-.modal-content h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.modal-content p {
-  margin-bottom: 20px;
-  color: #555;
-}
-
-.modal-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.modal-button.primary {
-  background: #191e3b;
-  color: white;
-}
-
-.modal-button.secondary {
-  background: #fbbf23;
-  color: #191e3b;
-}
-
-.modal-close {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 20px;
-  border: none;
-  background: none;
-  cursor: pointer;
 }

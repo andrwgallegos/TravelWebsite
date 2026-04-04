@@ -1,262 +1,320 @@
-// =========================
-// MOBILE NAVIGATION
-// Shared mobile menu logic
-// =========================
-const hamburgerButton = document.getElementById('hamburgerButton');
-const mobileNav = document.getElementById('mobileNav');
-const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+document.addEventListener('DOMContentLoaded', function () {
+  /* =========================================================
+     MOBILE NAVIGATION
+     Shared mobile menu logic
+     ========================================================= */
 
-// Closes the mobile menu
-function closeMobileMenu() {
-  if (mobileNav) {
-    mobileNav.classList.remove('show');
+  const hamburgerButton = document.getElementById('hamburgerButton');
+  const mobileNav = document.getElementById('mobileNav');
+  const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+  // Opens the mobile menu
+  function openMobileMenu() {
+    if (mobileNav) {
+      mobileNav.classList.add('show');
+    }
+
+    if (mobileMenuOverlay) {
+      mobileMenuOverlay.classList.add('show');
+    }
+
+    if (hamburgerButton) {
+      hamburgerButton.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  // Closes the mobile menu
+  function closeMobileMenu() {
+    if (mobileNav) {
+      mobileNav.classList.remove('show');
+    }
+
+    if (mobileMenuOverlay) {
+      mobileMenuOverlay.classList.remove('show');
+    }
+
+    if (hamburgerButton) {
+      hamburgerButton.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  // Opens or closes the mobile menu
+  function toggleMobileMenu() {
+    if (!mobileNav) {
+      return;
+    }
+
+    if (mobileNav.classList.contains('show')) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
+  }
+
+  // Guard clauses prevent errors if a shared nav element is missing
+  if (hamburgerButton) {
+    hamburgerButton.addEventListener('click', toggleMobileMenu);
   }
 
   if (mobileMenuOverlay) {
-    mobileMenuOverlay.classList.remove('show');
+    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
   }
-}
 
-// Opens or closes the mobile menu
-function toggleMobileMenu() {
   if (mobileNav) {
-    mobileNav.classList.toggle('show');
+    mobileNav.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', closeMobileMenu);
+    });
   }
 
-  if (mobileMenuOverlay) {
-    mobileMenuOverlay.classList.toggle('show');
-  }
-}
+  /* =========================================================
+     SIGN-IN / SIGN-UP MODAL
+     Handles showing and hiding the account modal
+     ========================================================= */
 
-// Guard clauses prevent errors if a shared nav element is missing
-if (hamburgerButton && mobileNav && mobileMenuOverlay) {
-  hamburgerButton.addEventListener('click', toggleMobileMenu);
-  mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+  const openSignInDesktop = document.getElementById('openSignInDesktop');
+  const openSignInMobile = document.getElementById('openSignInMobile');
+  const signInModal = document.getElementById('signInModal');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const closeModalLink = document.getElementById('closeModalLink');
+  const closeModalButton = document.getElementById('closeModalButton');
 
-  mobileNav.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', closeMobileMenu);
-  });
-}
+  // Opens the modal and overlay together
+  function openModal() {
+    if (signInModal) {
+      signInModal.classList.add('show');
+      signInModal.setAttribute('aria-hidden', 'false');
+    }
 
-// =========================
-// SIGN-IN MODAL
-// Handles showing and hiding the sign-up prompt
-// =========================
-const openSignInDesktop = document.getElementById('openSignInDesktop');
-const openSignInMobile = document.getElementById('openSignInMobile');
-const signInModal = document.getElementById('signInModal');
-const modalOverlay = document.getElementById('modalOverlay');
-const closeModalLink = document.getElementById('closeModalLink');
-const closeModalButton = document.getElementById('closeModalButton');
+    if (modalOverlay) {
+      modalOverlay.classList.add('show');
+    }
 
-// Opens the modal and overlay together
-function openModal() {
-  if (signInModal) {
-    signInModal.classList.add('show');
-    signInModal.setAttribute('aria-hidden', 'false');
-  }
-
-  if (modalOverlay) {
-    modalOverlay.classList.add('show');
-  }
-
-  closeMobileMenu();
-}
-
-// Closes the modal and overlay together
-function closeModal() {
-  if (signInModal) {
-    signInModal.classList.remove('show');
-    signInModal.setAttribute('aria-hidden', 'true');
-  }
-
-  if (modalOverlay) {
-    modalOverlay.classList.remove('show');
-  }
-}
-
-if (openSignInDesktop) {
-  openSignInDesktop.addEventListener('click', openModal);
-}
-
-if (openSignInMobile) {
-  openSignInMobile.addEventListener('click', openModal);
-}
-
-if (modalOverlay) {
-  modalOverlay.addEventListener('click', closeModal);
-}
-
-if (closeModalLink) {
-  closeModalLink.addEventListener('click', closeModal);
-}
-
-if (closeModalButton) {
-  closeModalButton.addEventListener('click', closeModal);
-}
-
-// Allow Escape key to close modal/menu
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    closeModal();
+    // If opened from mobile, clean up the mobile nav first
     closeMobileMenu();
   }
-});
 
-// =========================
-// SIGN-UP FORM
-// Simple prototype validation before “success” behavior
-// =========================
-const signUpForm = document.getElementById('signUpForm');
-const firstName = document.getElementById('firstName');
-const password = document.getElementById('password');
-const confirmPassword = document.getElementById('confirmPassword');
+  // Closes the modal and overlay together
+  function closeModal() {
+    if (signInModal) {
+      signInModal.classList.remove('show');
+      signInModal.setAttribute('aria-hidden', 'true');
+    }
 
-if (signUpForm && firstName && password && confirmPassword) {
-  signUpForm.addEventListener('submit', (event) => {
-    event.preventDefault();
+    if (modalOverlay) {
+      modalOverlay.classList.remove('show');
+    }
+  }
 
-    if (password.value !== confirmPassword.value) {
-      alert('Passwords do not match.');
+  if (openSignInDesktop) {
+    openSignInDesktop.addEventListener('click', openModal);
+  }
+
+  if (openSignInMobile) {
+    openSignInMobile.addEventListener('click', openModal);
+  }
+
+  if (modalOverlay) {
+    modalOverlay.addEventListener('click', closeModal);
+  }
+
+  if (closeModalLink) {
+    closeModalLink.addEventListener('click', closeModal);
+  }
+
+  if (closeModalButton) {
+    closeModalButton.addEventListener('click', closeModal);
+  }
+
+  // Close modal if user clicks outside the modal box
+  if (signInModal) {
+    signInModal.addEventListener('click', function (event) {
+      if (event.target === signInModal) {
+        closeModal();
+      }
+    });
+  }
+
+  /* =========================================================
+     SIGN-UP FORM
+     Simple prototype validation before success behavior
+     ========================================================= */
+
+  const signUpForm = document.getElementById('signUpForm');
+  const firstName = document.getElementById('firstName');
+  const password = document.getElementById('password');
+  const confirmPassword = document.getElementById('confirmPassword');
+
+  if (signUpForm && firstName && password && confirmPassword) {
+    signUpForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      if (password.value !== confirmPassword.value) {
+        alert('Passwords do not match.');
+        return;
+      }
+
+      if (password.value.length < 6) {
+        alert('Password must be at least 6 characters long.');
+        return;
+      }
+
+      alert('Account created successfully! Welcome, ' + firstName.value + '!');
+      closeModal();
+    });
+  }
+
+  /* =========================================================
+     TRIPS TAB SWITCHING
+     Shows one panel at a time
+     ========================================================= */
+
+  const tripTabs = document.querySelectorAll('.trip-tab');
+  const bookedPanel = document.getElementById('bookedPanel');
+  const savedPanel = document.getElementById('savedPanel');
+  const createPanel = document.getElementById('createPanel');
+
+  // Hides every panel and removes active tab state
+  function resetTripPanels() {
+    tripTabs.forEach(function (tab) {
+      tab.classList.remove('active');
+    });
+
+    if (bookedPanel) {
+      bookedPanel.classList.remove('active-panel');
+      bookedPanel.classList.add('hidden-panel');
+    }
+
+    if (savedPanel) {
+      savedPanel.classList.remove('active-panel');
+      savedPanel.classList.add('hidden-panel');
+    }
+
+    if (createPanel) {
+      createPanel.classList.remove('active-panel');
+      createPanel.classList.add('hidden-panel');
+    }
+  }
+
+  // Shows the matching panel for the clicked tab
+  tripTabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      resetTripPanels();
+      tab.classList.add('active');
+
+      const selectedTab = tab.dataset.tab;
+
+      if (selectedTab === 'booked' && bookedPanel) {
+        bookedPanel.classList.add('active-panel');
+        bookedPanel.classList.remove('hidden-panel');
+      } else if (selectedTab === 'saved' && savedPanel) {
+        savedPanel.classList.add('active-panel');
+        savedPanel.classList.remove('hidden-panel');
+      } else if (selectedTab === 'create' && createPanel) {
+        createPanel.classList.add('active-panel');
+        createPanel.classList.remove('hidden-panel');
+      }
+    });
+  });
+
+  /* =========================================================
+     ADS CAROUSEL
+     Moves the row of ads left and right
+     ========================================================= */
+
+  const adsContainer = document.getElementById('adsContainer');
+  const prevAd = document.getElementById('prevAd');
+  const nextAd = document.getElementById('nextAd');
+  const adItems = document.querySelectorAll('.ad-item');
+
+  let currentAdIndex = 0;
+
+  // Number of visible ads depends on screen width
+  function getVisibleAds() {
+    if (window.innerWidth >= 1100) {
+      return 5;
+    }
+
+    if (window.innerWidth >= 700) {
+      return 3;
+    }
+
+    return 1;
+  }
+
+  // Moves the carousel based on the current index
+  function updateAdDisplay() {
+    if (!adsContainer) {
       return;
     }
 
-    if (password.value.length < 6) {
-      alert('Password must be at least 6 characters long.');
-      return;
-    }
-
-    alert(`Account created successfully! Welcome, ${firstName.value}!`);
-    closeModal();
-  });
-}
-
-// =========================
-// TRIPS TAB SWITCHING
-// Shows one panel at a time
-// =========================
-const tripTabs = document.querySelectorAll('.trip-tab');
-const bookedPanel = document.getElementById('bookedPanel');
-const savedPanel = document.getElementById('savedPanel');
-const createPanel = document.getElementById('createPanel');
-
-// Hides every panel and removes active tab state
-function resetTripPanels() {
-  tripTabs.forEach((tab) => tab.classList.remove('active'));
-
-  if (bookedPanel) {
-    bookedPanel.classList.remove('active-panel');
-    bookedPanel.classList.add('hidden-panel');
-  }
-
-  if (savedPanel) {
-    savedPanel.classList.remove('active-panel');
-    savedPanel.classList.add('hidden-panel');
-  }
-
-  if (createPanel) {
-    createPanel.classList.remove('active-panel');
-    createPanel.classList.add('hidden-panel');
-  }
-}
-
-// Shows the matching panel for the clicked tab
-tripTabs.forEach((tab) => {
-  tab.addEventListener('click', () => {
-    resetTripPanels();
-    tab.classList.add('active');
-
-    const selectedTab = tab.dataset.tab;
-
-    if (selectedTab === 'booked' && bookedPanel) {
-      bookedPanel.classList.add('active-panel');
-      bookedPanel.classList.remove('hidden-panel');
-    } else if (selectedTab === 'saved' && savedPanel) {
-      savedPanel.classList.add('active-panel');
-      savedPanel.classList.remove('hidden-panel');
-    } else if (selectedTab === 'create' && createPanel) {
-      createPanel.classList.add('active-panel');
-      createPanel.classList.remove('hidden-panel');
-    }
-  });
-});
-
-// =========================
-// ADS CAROUSEL
-// Moves the row of ads left and right
-// =========================
-const adsContainer = document.getElementById('adsContainer');
-const prevAd = document.getElementById('prevAd');
-const nextAd = document.getElementById('nextAd');
-const adItems = document.querySelectorAll('.ad-item');
-
-let currentAdIndex = 0;
-
-// Number of visible ads depends on screen width
-function getVisibleAds() {
-  if (window.innerWidth >= 1100) return 5;
-  if (window.innerWidth >= 700) return 3;
-  return 1;
-}
-
-// Moves the carousel based on the current index
-function updateAdDisplay() {
-  if (!adsContainer) return;
-
-  const adWidth = 184; // Approx image width + gap space
-  const maxIndex = Math.max(0, adItems.length - getVisibleAds());
-
-  if (currentAdIndex > maxIndex) {
-    currentAdIndex = maxIndex;
-  }
-
-  const offset = -(currentAdIndex * adWidth);
-  adsContainer.style.transform = `translateX(${offset}px)`;
-}
-
-// Move left only if not already at the start
-if (prevAd) {
-  prevAd.addEventListener('click', () => {
-    if (currentAdIndex > 0) {
-      currentAdIndex--;
-      updateAdDisplay();
-    }
-  });
-}
-
-// Move right only if there are more hidden ads ahead
-if (nextAd) {
-  nextAd.addEventListener('click', () => {
+    const adWidth = 184;
     const maxIndex = Math.max(0, adItems.length - getVisibleAds());
 
-    if (currentAdIndex < maxIndex) {
-      currentAdIndex++;
-      updateAdDisplay();
+    if (currentAdIndex > maxIndex) {
+      currentAdIndex = maxIndex;
+    }
+
+    const offset = -(currentAdIndex * adWidth);
+    adsContainer.style.transform = 'translateX(' + offset + 'px)';
+  }
+
+  // Move left only if not already at the start
+  if (prevAd) {
+    prevAd.addEventListener('click', function () {
+      if (currentAdIndex > 0) {
+        currentAdIndex--;
+        updateAdDisplay();
+      }
+    });
+  }
+
+  // Move right only if there are more hidden ads ahead
+  if (nextAd) {
+    nextAd.addEventListener('click', function () {
+      const maxIndex = Math.max(0, adItems.length - getVisibleAds());
+
+      if (currentAdIndex < maxIndex) {
+        currentAdIndex++;
+        updateAdDisplay();
+      }
+    });
+  }
+
+  // Recalculate ad position if screen size changes
+  window.addEventListener('resize', updateAdDisplay);
+
+  /* =========================================================
+     TRIP SEARCH FORM
+     Keeps the prototype from refreshing
+     ========================================================= */
+
+  const tripSearchForm = document.getElementById('tripSearchForm');
+  const tripSearchInput = document.getElementById('tripSearchInput');
+
+  if (tripSearchForm && tripSearchInput) {
+    tripSearchForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const searchTerm = tripSearchInput.value.trim();
+
+      if (searchTerm) {
+        alert('Searching itinerary: ' + searchTerm);
+      }
+    });
+  }
+
+  /* =========================================================
+     GLOBAL KEYBOARD SHORTCUTS
+     ========================================================= */
+
+  // Allow Escape key to close modal/menu
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeModal();
+      closeMobileMenu();
     }
   });
-}
 
-// Recalculate ad position if screen size changes
-window.addEventListener('resize', updateAdDisplay);
-
-// =========================
-// TRIP SEARCH FORM
-// Keeps the prototype from refreshing and shows placeholder feedback
-// =========================
-const tripSearchForm = document.getElementById('tripSearchForm');
-const tripSearchInput = document.getElementById('tripSearchInput');
-
-if (tripSearchForm && tripSearchInput) {
-  tripSearchForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const searchTerm = tripSearchInput.value.trim();
-
-    if (searchTerm) {
-      alert(`Searching itinerary: ${searchTerm}`);
-    }
-  });
-}
-
-// Initialize carousel position on load
-updateAdDisplay();
+  // Initialize carousel position on load
+  updateAdDisplay();
+});

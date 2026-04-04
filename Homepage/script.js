@@ -1,100 +1,149 @@
-const hamburgerButton = document.getElementById('hamburgerButton');
-const mobileNav = document.getElementById('mobileNav');
-const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+document.addEventListener('DOMContentLoaded', function () {
+  /* =========================================================
+     MOBILE NAVIGATION
+     ========================================================= */
 
-// Closes the mobile menu
-function closeMobileMenu() {
-  if (mobileNav) {
-    mobileNav.classList.remove('show');
+  // Main mobile navigation elements
+  const hamburgerButton = document.getElementById('hamburgerButton');
+  const mobileNav = document.getElementById('mobileNav');
+  const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+  // Opens the mobile menu
+  function openMobileMenu() {
+    if (mobileNav) {
+      mobileNav.classList.add('show');
+    }
+
+    if (mobileMenuOverlay) {
+      mobileMenuOverlay.classList.add('show');
+    }
+
+    if (hamburgerButton) {
+      hamburgerButton.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  // Closes the mobile menu
+  function closeMobileMenu() {
+    if (mobileNav) {
+      mobileNav.classList.remove('show');
+    }
+
+    if (mobileMenuOverlay) {
+      mobileMenuOverlay.classList.remove('show');
+    }
+
+    if (hamburgerButton) {
+      hamburgerButton.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  // Opens or closes the mobile menu
+  function toggleMobileMenu() {
+    if (!mobileNav) {
+      return;
+    }
+
+    if (mobileNav.classList.contains('show')) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
+  }
+
+  // Attach mobile menu events
+  if (hamburgerButton) {
+    hamburgerButton.addEventListener('click', toggleMobileMenu);
   }
 
   if (mobileMenuOverlay) {
-    mobileMenuOverlay.classList.remove('show');
+    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
   }
-}
 
-// Opens or closes the mobile menu
-function toggleMobileMenu() {
   if (mobileNav) {
-    mobileNav.classList.toggle('show');
+    mobileNav.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', closeMobileMenu);
+    });
   }
 
-  if (mobileMenuOverlay) {
-    mobileMenuOverlay.classList.toggle('show');
+  /* =========================================================
+     SIGN IN MODAL
+     ========================================================= */
+
+  // Sign in modal elements
+  const signInModal = document.getElementById('signInModal');
+  const closeSignInModal = document.getElementById('closeSignInModal');
+  const signInSubmit = document.getElementById('signInSubmit');
+  const signUpSubmit = document.getElementById('signUpSubmit');
+
+  // Buttons that open the modal
+  const desktopSignInButton = document.getElementById('desktopSignInButton');
+  const mobileSignInButton = document.getElementById('mobileSignInButton');
+
+  // Opens the modal
+  function openSignInModal() {
+    if (signInModal) {
+      signInModal.classList.remove('hidden');
+      signInModal.setAttribute('aria-hidden', 'false');
+    }
+
+    // Close the mobile menu if sign in was opened from there
+    closeMobileMenu();
   }
-}
 
-if (hamburgerButton && mobileNav && mobileMenuOverlay) {
-  hamburgerButton.addEventListener('click', toggleMobileMenu);
-  mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+  // Closes the modal
+  function closeSignInModalFn() {
+    if (signInModal) {
+      signInModal.classList.add('hidden');
+      signInModal.setAttribute('aria-hidden', 'true');
+    }
+  }
 
-  mobileNav.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', closeMobileMenu);
-  });
-}
+  // Attach open events
+  if (desktopSignInButton) {
+    desktopSignInButton.addEventListener('click', openSignInModal);
+  }
 
-// SIGN IN MODAL ELEMENTS
-const signInModal = document.getElementById('signInModal');
-const closeSignInModal = document.getElementById('closeSignInModal');
-const signInSubmit = document.getElementById('signInSubmit');
-const signUpSubmit = document.getElementById('signUpSubmit');
+  if (mobileSignInButton) {
+    mobileSignInButton.addEventListener('click', openSignInModal);
+  }
 
-// EXISTING BUTTONS
-const desktopSignInButton = document.getElementById('desktopSignInButton');
-const mobileSignInButton = document.getElementById('mobileSignInButton');
+  // Close from X button
+  if (closeSignInModal) {
+    closeSignInModal.addEventListener('click', closeSignInModalFn);
+  }
 
-// OPEN MODAL
-function openSignInModal() {
+  // Close when clicking outside the modal content
   if (signInModal) {
-    signInModal.classList.remove('hidden');
+    signInModal.addEventListener('click', function (event) {
+      if (event.target === signInModal) {
+        closeSignInModalFn();
+      }
+    });
   }
-}
 
-// CLOSE MODAL
-function closeSignInModalFn() {
-  if (signInModal) {
-    signInModal.classList.add('hidden');
+  // Prototype behavior: both buttons go to Trips
+  if (signInSubmit) {
+    signInSubmit.addEventListener('click', function () {
+      window.location.href = '../Trips/index.html';
+    });
   }
-}
 
-// ATTACH EVENTS TO NAV BUTTONS
-if (desktopSignInButton) {
-  desktopSignInButton.addEventListener('click', openSignInModal);
-}
+  if (signUpSubmit) {
+    signUpSubmit.addEventListener('click', function () {
+      window.location.href = '../Trips/index.html';
+    });
+  }
 
-if (mobileSignInButton) {
-  mobileSignInButton.addEventListener('click', openSignInModal);
-}
+  /* =========================================================
+     GLOBAL KEYBOARD SHORTCUTS
+     ========================================================= */
 
-// CLOSE BUTTON
-if (closeSignInModal) {
-  closeSignInModal.addEventListener('click', closeSignInModalFn);
-}
-
-// CLICK OUTSIDE CLOSES MODAL
-if (signInModal) {
-  signInModal.addEventListener('click', (e) => {
-    if (e.target === signInModal) {
+  // Escape key closes overlays
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeMobileMenu();
       closeSignInModalFn();
     }
   });
-}
-
-// SIGN IN / SIGN UP → GO TO TRIPS
-if (signInSubmit) {
-  signInSubmit.addEventListener('click', () => {
-    window.location.href = "../Trips/index.html";
-  });
-}
-
-if (signUpSubmit) {
-  signUpSubmit.addEventListener('click', () => {
-    window.location.href = "../Trips/index.html";
-  });
-}
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    closeMobileMenu();
-  }
 });

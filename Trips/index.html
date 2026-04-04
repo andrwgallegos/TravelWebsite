@@ -38,7 +38,9 @@
         </a>
 
         <!-- Desktop-only dropdown button -->
-        <button class="nav-link dropdown-button desktop-only">Shop travel</button>
+        <button class="nav-link dropdown-button desktop-only" type="button">
+          Shop travel
+        </button>
       </div>
 
       <!-- Mobile hamburger button -->
@@ -46,13 +48,15 @@
         class="hamburger-button mobile-only"
         id="hamburgerButton"
         aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileNav"
         type="button"
       >
         ☰
       </button>
 
       <!-- Desktop navigation -->
-      <nav class="navbar-right desktop-nav">
+      <nav class="navbar-right desktop-nav" aria-label="Desktop navigation">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
@@ -68,7 +72,9 @@
         <a href="index.html" class="nav-link active-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in" id="openSignInMobile" type="button">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" id="openSignInMobile" type="button">
+          Sign in
+        </button>
       </nav>
     </header>
 
@@ -92,14 +98,14 @@
 
     <!-- Trips content -->
     <main class="trip-section">
-      <!-- Tabs -->
-      <div class="trip-tabs">
+      <!-- Trip tabs -->
+      <div class="trip-tabs" role="tablist" aria-label="Trip categories">
         <button class="trip-tab active" data-tab="booked" type="button">Booked</button>
         <button class="trip-tab" data-tab="saved" type="button">Saved</button>
         <button class="trip-tab" data-tab="create" type="button">Create</button>
       </div>
 
-      <!-- Booked trips -->
+      <!-- Booked trips panel -->
       <section class="trip-grid trip-panel active-panel" id="bookedPanel">
         <article class="trip-card">
           <img src="images/texas.jpg" alt="Texas" />
@@ -162,7 +168,7 @@
         </article>
       </section>
 
-      <!-- Saved trips -->
+      <!-- Saved trips panel -->
       <section class="trip-panel hidden-panel" id="savedPanel">
         <div class="empty-state">
           <h3>No saved trips yet</h3>
@@ -170,7 +176,7 @@
         </div>
       </section>
 
-      <!-- Create trip -->
+      <!-- Create trip panel -->
       <section class="trip-panel hidden-panel" id="createPanel">
         <div class="empty-state">
           <h3>Create a new trip</h3>
@@ -223,12 +229,30 @@
       </section>
     </main>
 
-    <!-- Sign-up modal -->
-    <div class="sign-in-modal" id="signInModal" aria-hidden="true">
+    <!-- Sign-up / sign-in modal
+         IMPORTANT: only one modal system is kept on this page -->
+    <div
+      class="sign-in-modal"
+      id="signInModal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="signInModalTitle"
+    >
       <div class="modal-content">
-        <button class="modal-close-button" id="closeModalButton" type="button" aria-label="Close sign in modal">✕</button>
+        <!-- Close button -->
+        <button
+          class="modal-close-button"
+          id="closeModalButton"
+          type="button"
+          aria-label="Close sign in modal"
+        >
+          ✕
+        </button>
 
-        <h2 class="modal-title">Create your free account to start planning trips!</h2>
+        <h2 class="modal-title" id="signInModalTitle">
+          Create your free account to start planning trips!
+        </h2>
 
         <form id="signUpForm" class="sign-up-form">
           <div class="field">
@@ -255,28 +279,14 @@
         </form>
 
         <p class="sign-in-link-text">
-          Already have an account? <button id="closeModalLink" class="inline-link" type="button">Sign in</button>
+          Already have an account?
+          <button id="closeModalLink" class="inline-link" type="button">Sign in</button>
         </p>
       </div>
     </div>
   </div>
 
+  <!-- Page JavaScript -->
   <script src="script.js"></script>
-  <!-- SIGN IN MODAL -->
-<div id="signInModal" class="modal hidden">
-  <div class="modal-content">
-    
-    <!-- Close button -->
-    <button class="modal-close" id="closeSignInModal">✕</button>
-
-    <h2>Welcome Back</h2>
-    <p>Please sign in or create an account</p>
-
-    <!-- Buttons -->
-    <button id="signInSubmit" class="modal-button primary">Sign In</button>
-    <button id="signUpSubmit" class="modal-button secondary">Sign Up</button>
-
-  </div>
-</div>
 </body>
 </html>

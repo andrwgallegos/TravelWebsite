@@ -1,127 +1,190 @@
-const hamburgerButton = document.getElementById('hamburgerButton');
-const mobileNav = document.getElementById('mobileNav');
-const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+document.addEventListener('DOMContentLoaded', function () {
+  /* =========================================================
+     MOBILE NAVIGATION
+     ========================================================= */
 
-const faqQuestions = document.querySelectorAll('.faq-question');
-const helpSearchForm = document.getElementById('helpSearchForm');
-const helpSearchInput = document.getElementById('helpSearchInput');
+  // Main mobile menu elements
+  const hamburgerButton = document.getElementById('hamburgerButton');
+  const mobileNav = document.getElementById('mobileNav');
+  const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
 
-// Closes the mobile navigation menu
-function closeMobileMenu() {
-  if (mobileNav) {
-    mobileNav.classList.remove('show');
+  // Opens the mobile menu
+  function openMobileMenu() {
+    if (mobileNav) {
+      mobileNav.classList.add('show');
+    }
+
+    if (mobileMenuOverlay) {
+      mobileMenuOverlay.classList.add('show');
+    }
+
+    if (hamburgerButton) {
+      hamburgerButton.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  // Closes the mobile menu
+  function closeMobileMenu() {
+    if (mobileNav) {
+      mobileNav.classList.remove('show');
+    }
+
+    if (mobileMenuOverlay) {
+      mobileMenuOverlay.classList.remove('show');
+    }
+
+    if (hamburgerButton) {
+      hamburgerButton.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  // Opens or closes the mobile menu depending on its current state
+  function toggleMobileMenu() {
+    if (!mobileNav) {
+      return;
+    }
+
+    if (mobileNav.classList.contains('show')) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
+  }
+
+  // Attach mobile menu events
+  if (hamburgerButton) {
+    hamburgerButton.addEventListener('click', toggleMobileMenu);
   }
 
   if (mobileMenuOverlay) {
-    mobileMenuOverlay.classList.remove('show');
+    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
   }
-}
 
-// Opens or closes the mobile menu
-function toggleMobileMenu() {
   if (mobileNav) {
-    mobileNav.classList.toggle('show');
+    mobileNav.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', closeMobileMenu);
+    });
   }
 
-  if (mobileMenuOverlay) {
-    mobileMenuOverlay.classList.toggle('show');
+  /* =========================================================
+     SIGN IN MODAL
+     ========================================================= */
+
+  // Modal elements
+  const signInModal = document.getElementById('signInModal');
+  const closeSignInModal = document.getElementById('closeSignInModal');
+  const signInSubmit = document.getElementById('signInSubmit');
+  const signUpSubmit = document.getElementById('signUpSubmit');
+
+  // Buttons that open the modal
+  const desktopSignInButton = document.getElementById('desktopSignInButton');
+  const mobileSignInButton = document.getElementById('mobileSignInButton');
+
+  // Opens the modal
+  function openSignInModal() {
+    if (signInModal) {
+      signInModal.classList.remove('hidden');
+      signInModal.setAttribute('aria-hidden', 'false');
+    }
+
+    // If the user opened sign in from the mobile menu,
+    // close the menu so the screen stays clean
+    closeMobileMenu();
   }
-}
 
-if (hamburgerButton && mobileNav && mobileMenuOverlay) {
-  hamburgerButton.addEventListener('click', toggleMobileMenu);
-  mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+  // Closes the modal
+  function closeSignInModalFn() {
+    if (signInModal) {
+      signInModal.classList.add('hidden');
+      signInModal.setAttribute('aria-hidden', 'true');
+    }
+  }
 
-  mobileNav.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', closeMobileMenu);
+  // Attach modal open events
+  if (desktopSignInButton) {
+    desktopSignInButton.addEventListener('click', openSignInModal);
+  }
+
+  if (mobileSignInButton) {
+    mobileSignInButton.addEventListener('click', openSignInModal);
+  }
+
+  // Close modal with the X button
+  if (closeSignInModal) {
+    closeSignInModal.addEventListener('click', closeSignInModalFn);
+  }
+
+  // Close modal when clicking outside the modal box
+  if (signInModal) {
+    signInModal.addEventListener('click', function (event) {
+      if (event.target === signInModal) {
+        closeSignInModalFn();
+      }
+    });
+  }
+
+  // Prototype behavior: both buttons send the user to Trips
+  if (signInSubmit) {
+    signInSubmit.addEventListener('click', function () {
+      window.location.href = '../Trips/index.html';
+    });
+  }
+
+  if (signUpSubmit) {
+    signUpSubmit.addEventListener('click', function () {
+      window.location.href = '../Trips/index.html';
+    });
+  }
+
+  /* =========================================================
+     FAQ TOGGLE BEHAVIOR
+     ========================================================= */
+
+  const faqQuestions = document.querySelectorAll('.faq-question');
+
+  // Toggle each answer open/closed when its question is clicked
+  faqQuestions.forEach(function (question) {
+    question.addEventListener('click', function () {
+      const answer = question.nextElementSibling;
+
+      if (answer) {
+        const isOpen = answer.classList.contains('show');
+
+        answer.classList.toggle('show');
+        question.setAttribute('aria-expanded', String(!isOpen));
+      }
+    });
   });
-}
 
-// SIGN IN MODAL ELEMENTS
-const signInModal = document.getElementById('signInModal');
-const closeSignInModal = document.getElementById('closeSignInModal');
-const signInSubmit = document.getElementById('signInSubmit');
-const signUpSubmit = document.getElementById('signUpSubmit');
+  /* =========================================================
+     HELP SEARCH FORM
+     ========================================================= */
 
-// EXISTING BUTTONS
-const desktopSignInButton = document.getElementById('desktopSignInButton');
-const mobileSignInButton = document.getElementById('mobileSignInButton');
+  const helpSearchForm = document.getElementById('helpSearchForm');
+  const helpSearchInput = document.getElementById('helpSearchInput');
 
-// OPEN MODAL
-function openSignInModal() {
-  if (signInModal) {
-    signInModal.classList.remove('hidden');
+  // Prevent a real page refresh because this is a prototype
+  if (helpSearchForm && helpSearchInput) {
+    helpSearchForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const searchTerm = helpSearchInput.value.trim();
+
+      if (searchTerm) {
+        alert('Searching for: ' + searchTerm);
+      }
+    });
   }
-}
 
-// CLOSE MODAL
-function closeSignInModalFn() {
-  if (signInModal) {
-    signInModal.classList.add('hidden');
-  }
-}
+  /* =========================================================
+     GLOBAL KEYBOARD SHORTCUTS
+     ========================================================= */
 
-// ATTACH EVENTS TO NAV BUTTONS
-if (desktopSignInButton) {
-  desktopSignInButton.addEventListener('click', openSignInModal);
-}
-
-if (mobileSignInButton) {
-  mobileSignInButton.addEventListener('click', openSignInModal);
-}
-
-// CLOSE BUTTON
-if (closeSignInModal) {
-  closeSignInModal.addEventListener('click', closeSignInModalFn);
-}
-
-// CLICK OUTSIDE CLOSES MODAL
-if (signInModal) {
-  signInModal.addEventListener('click', (e) => {
-    if (e.target === signInModal) {
+  // Escape key closes open overlays
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeMobileMenu();
       closeSignInModalFn();
     }
   });
-}
-
-// SIGN IN / SIGN UP → GO TO TRIPS
-if (signInSubmit) {
-  signInSubmit.addEventListener('click', () => {
-    window.location.href = "../Trips/index.html";
-  });
-}
-
-if (signUpSubmit) {
-  signUpSubmit.addEventListener('click', () => {
-    window.location.href = "../Trips/index.html";
-  });
-}
-
-// Toggle each FAQ answer
-faqQuestions.forEach((question) => {
-  question.addEventListener('click', () => {
-    const answer = question.nextElementSibling;
-    if (answer) {
-      answer.classList.toggle('show');
-    }
-  });
-});
-
-// Prevent refresh for prototype search
-if (helpSearchForm && helpSearchInput) {
-  helpSearchForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const searchTerm = helpSearchInput.value.trim();
-
-    if (searchTerm) {
-      alert(`Searching for: ${searchTerm}`);
-    }
-  });
-}
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    closeMobileMenu();
-  }
 });

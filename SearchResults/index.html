@@ -28,24 +28,32 @@
     <!-- Top navigation -->
     <header class="navbar">
       <div class="navbar-left">
+        <!-- Expedia logo linking back to homepage -->
         <a href="../Homepage/index.html" class="logo-link">
           <div class="logo-box">↗</div>
           <h1 class="logo-text">Expedia</h1>
         </a>
 
-        <button class="nav-link dropdown-button desktop-only" type="button">Shop travel</button>
+        <!-- Desktop-only navigation button -->
+        <button class="nav-link dropdown-button desktop-only" type="button">
+          Shop travel
+        </button>
       </div>
 
+      <!-- Mobile hamburger button -->
       <button
         class="hamburger-button mobile-only"
         id="hamburgerButton"
         aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileNav"
         type="button"
       >
         ☰
       </button>
 
-      <nav class="navbar-right desktop-nav">
+      <!-- Desktop navigation -->
+      <nav class="navbar-right desktop-nav" aria-label="Desktop navigation">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
@@ -53,19 +61,24 @@
         <button class="sign-in-button" id="desktopSignInButton" type="button">Sign in</button>
       </nav>
 
-      <nav class="mobile-nav" id="mobileNav">
+      <!-- Mobile dropdown navigation -->
+      <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
         <a href="../Homepage/index.html" class="nav-link">Homepage</a>
         <a href="index.html" class="nav-link active-link">Search Results</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">
+          Sign in
+        </button>
       </nav>
     </header>
 
+    <!-- Search/filter hero section -->
     <section class="search-hero">
       <div class="search-card">
+        <!-- Travel category icons -->
         <div class="category-row">
           <div class="category-item">
             <div class="category-icon">🛏️</div>
@@ -98,13 +111,15 @@
           </div>
         </div>
 
+        <!-- Prototype search form -->
         <form class="search-form" action="index.html">
-          <input type="text" placeholder="Where to?" />
-          <input type="text" placeholder="Dates" />
-          <input type="text" placeholder="Travelers" />
+          <input type="text" placeholder="Where to?" aria-label="Destination" />
+          <input type="text" placeholder="Dates" aria-label="Dates" />
+          <input type="text" placeholder="Travelers" aria-label="Travelers" />
           <button type="submit" class="search-button">Search</button>
         </form>
 
+        <!-- Example active filters -->
         <div class="active-filters">
           <button class="filter-pill" type="button">✕ Beachfront</button>
           <button class="filter-pill" type="button">✕ Free cancellation</button>
@@ -113,7 +128,9 @@
       </div>
     </section>
 
+    <!-- Main results layout -->
     <main class="results-layout">
+      <!-- Left filter panel -->
       <aside class="filters-panel">
         <h2 class="filters-title">Search Filters</h2>
 
@@ -148,6 +165,7 @@
         <button class="apply-button" type="button">Apply</button>
       </aside>
 
+      <!-- Center hotel/property listings -->
       <section class="listings-panel">
         <a href="../CheckoutPage/index.html" class="listing-link">
           <article class="listing-card">
@@ -234,6 +252,7 @@
         </a>
       </section>
 
+      <!-- Right ad panel -->
       <aside class="ads-panel">
         <div class="ads-arrow">↑</div>
 
@@ -263,22 +282,37 @@
     </main>
   </div>
 
-  <script src="script.js"></script>
-  <!-- SIGN IN MODAL -->
-<div id="signInModal" class="modal hidden">
-  <div class="modal-content">
-    
-    <!-- Close button -->
-    <button class="modal-close" id="closeSignInModal">✕</button>
+  <!-- SIGN IN MODAL
+       This must be above the script tag so JavaScript can find it correctly -->
+  <div
+    id="signInModal"
+    class="modal hidden"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="signInModalTitle"
+  >
+    <div class="modal-content">
+      <!-- Close button -->
+      <button
+        class="modal-close"
+        id="closeSignInModal"
+        type="button"
+        aria-label="Close sign in modal"
+      >
+        ✕
+      </button>
 
-    <h2>Welcome Back</h2>
-    <p>Please sign in or create an account</p>
+      <h2 id="signInModalTitle">Welcome Back</h2>
+      <p>Please sign in or create an account</p>
 
-    <!-- Buttons -->
-    <button id="signInSubmit" class="modal-button primary">Sign In</button>
-    <button id="signUpSubmit" class="modal-button secondary">Sign Up</button>
-
+      <!-- Prototype modal actions -->
+      <button id="signInSubmit" class="modal-button primary" type="button">Sign In</button>
+      <button id="signUpSubmit" class="modal-button secondary" type="button">Sign Up</button>
+    </div>
   </div>
-</div>
+
+  <!-- Page JavaScript -->
+  <script src="script.js"></script>
 </body>
 </html>

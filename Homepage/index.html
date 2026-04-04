@@ -34,8 +34,10 @@
           <h1 class="logo-text">Expedia</h1>
         </a>
 
-        <!-- Only shown on desktop -->
-        <button class="nav-link dropdown-button desktop-only" type="button">Shop travel</button>
+        <!-- Desktop-only navigation button -->
+        <button class="nav-link dropdown-button desktop-only" type="button">
+          Shop travel
+        </button>
       </div>
 
       <!-- Mobile hamburger button -->
@@ -43,13 +45,15 @@
         class="hamburger-button mobile-only"
         id="hamburgerButton"
         aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileNav"
         type="button"
       >
         ☰
       </button>
 
       <!-- Desktop navigation -->
-      <nav class="navbar-right desktop-nav">
+      <nav class="navbar-right desktop-nav" aria-label="Desktop navigation">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
@@ -58,14 +62,16 @@
       </nav>
 
       <!-- Mobile dropdown navigation -->
-      <nav class="mobile-nav" id="mobileNav">
+      <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
         <a href="index.html" class="nav-link active-link">Homepage</a>
         <a href="../SearchResults/index.html" class="nav-link">Search Results</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">
+          Sign in
+        </button>
       </nav>
     </header>
 
@@ -109,9 +115,9 @@
 
         <!-- Search form routes to Search Results -->
         <form class="search-form" action="../SearchResults/index.html">
-          <input type="text" placeholder="Where to?" />
-          <input type="text" placeholder="Dates" />
-          <input type="text" placeholder="Travelers" />
+          <input type="text" placeholder="Where to?" aria-label="Destination" />
+          <input type="text" placeholder="Dates" aria-label="Dates" />
+          <input type="text" placeholder="Travelers" aria-label="Travelers" />
           <button type="submit" class="search-button">Search</button>
         </form>
       </div>
@@ -185,22 +191,37 @@
     </section>
   </div>
 
-  <script src="script.js"></script>
-  <!-- SIGN IN MODAL -->
-<div id="signInModal" class="modal hidden">
-  <div class="modal-content">
-    
-    <!-- Close button -->
-    <button class="modal-close" id="closeSignInModal">✕</button>
+  <!-- SIGN IN MODAL
+       This must be above the script tag so JavaScript can find it correctly -->
+  <div
+    id="signInModal"
+    class="modal hidden"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="signInModalTitle"
+  >
+    <div class="modal-content">
+      <!-- Close button -->
+      <button
+        class="modal-close"
+        id="closeSignInModal"
+        type="button"
+        aria-label="Close sign in modal"
+      >
+        ✕
+      </button>
 
-    <h2>Welcome Back</h2>
-    <p>Please sign in or create an account</p>
+      <h2 id="signInModalTitle">Welcome Back</h2>
+      <p>Please sign in or create an account</p>
 
-    <!-- Buttons -->
-    <button id="signInSubmit" class="modal-button primary">Sign In</button>
-    <button id="signUpSubmit" class="modal-button secondary">Sign Up</button>
-
+      <!-- Prototype modal actions -->
+      <button id="signInSubmit" class="modal-button primary" type="button">Sign In</button>
+      <button id="signUpSubmit" class="modal-button secondary" type="button">Sign Up</button>
+    </div>
   </div>
-</div>
+
+  <!-- Page JavaScript -->
+  <script src="script.js"></script>
 </body>
 </html>

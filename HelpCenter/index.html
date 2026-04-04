@@ -22,28 +22,38 @@
 <body>
   <div class="page">
 
+    <!-- Dark overlay shown behind the mobile dropdown menu -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
+    <!-- Top site navigation -->
     <header class="navbar">
       <div class="navbar-left">
+        <!-- Logo that links back to the homepage -->
         <a href="../Homepage/index.html" class="logo-link">
           <div class="logo-box">↗</div>
           <h1 class="logo-text">Expedia</h1>
         </a>
 
-        <button class="nav-link dropdown-button desktop-only" type="button">Shop travel</button>
+        <!-- Desktop-only navigation button -->
+        <button class="nav-link dropdown-button desktop-only" type="button">
+          Shop travel
+        </button>
       </div>
 
+      <!-- Hamburger menu button for smaller screens -->
       <button
         class="hamburger-button mobile-only"
         id="hamburgerButton"
         aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileNav"
         type="button"
       >
         ☰
       </button>
 
-      <nav class="navbar-right desktop-nav">
+      <!-- Desktop navigation -->
+      <nav class="navbar-right desktop-nav" aria-label="Desktop navigation">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="index.html" class="nav-link active-link">Help Center</a>
@@ -51,20 +61,25 @@
         <button class="sign-in-button" id="desktopSignInButton" type="button">Sign in</button>
       </nav>
 
-      <nav class="mobile-nav" id="mobileNav">
+      <!-- Mobile dropdown navigation -->
+      <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
         <a href="../Homepage/index.html" class="nav-link">Homepage</a>
         <a href="../SearchResults/index.html" class="nav-link">Search Results</a>
         <a href="index.html" class="nav-link active-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">
+          Sign in
+        </button>
       </nav>
     </header>
 
+    <!-- Hero section -->
     <section class="help-hero">
       <h2 class="help-title">How can we help?</h2>
 
+      <!-- Search form for prototype interaction -->
       <form class="help-search-form" id="helpSearchForm">
         <input
           type="text"
@@ -76,150 +91,192 @@
       </form>
     </section>
 
+    <!-- FAQ content -->
     <main class="faq-section">
       <h2 class="section-title">Frequently Asked Questions</h2>
 
       <div class="faq-grid">
+        <!-- Category 1 -->
         <section class="faq-category">
           <h3 class="category-title">Booking &amp; Reservations</h3>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">How do I manage my booking?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              How do I manage my booking?
+            </button>
             <p class="faq-answer">
               You can review and update your reservation details from your trip dashboard after signing in.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Can I change my hotel dates?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Can I change my hotel dates?
+            </button>
             <p class="faq-answer">
               Date changes depend on the property’s availability and booking rules shown before checkout.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Where can I find my confirmation?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Where can I find my confirmation?
+            </button>
             <p class="faq-answer">
               Confirmation details are usually sent by email and also appear in your account under trips.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Can I book for someone else?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Can I book for someone else?
+            </button>
             <p class="faq-answer">
               Yes, but make sure the traveler information matches the guest or passenger who will be checking in.
             </p>
           </article>
         </section>
 
+        <!-- Category 2 -->
         <section class="faq-category">
           <h3 class="category-title">Cancellations &amp; Refunds</h3>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">How do I cancel a reservation?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              How do I cancel a reservation?
+            </button>
             <p class="faq-answer">
               Open your booking details and choose the cancellation option if your reservation qualifies.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">How long do refunds take?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              How long do refunds take?
+            </button>
             <p class="faq-answer">
               Refund times vary by provider and payment method, but many are processed within several business days.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Will I be charged a fee?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Will I be charged a fee?
+            </button>
             <p class="faq-answer">
               Fees depend on the cancellation policy shown at booking and may differ by hotel, airline, or package.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Can I get travel credits instead?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Can I get travel credits instead?
+            </button>
             <p class="faq-answer">
               Some bookings may offer credits or partial refunds depending on provider rules and timing.
             </p>
           </article>
         </section>
 
+        <!-- Category 3 -->
         <section class="faq-category">
           <h3 class="category-title">Payment Methods</h3>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">What payment methods are accepted?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              What payment methods are accepted?
+            </button>
             <p class="faq-answer">
               Accepted payment methods may include major credit cards, debit cards, and other supported options.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Can I split my payment?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Can I split my payment?
+            </button>
             <p class="faq-answer">
               Split payment availability depends on the specific booking type and checkout options offered.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Why was my payment declined?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Why was my payment declined?
+            </button>
             <p class="faq-answer">
               Double-check the billing details, card expiration date, and available funds before trying again.
             </p>
           </article>
         </section>
 
+        <!-- Category 4 -->
         <section class="faq-category">
           <h3 class="category-title">Travel Documents</h3>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Do I need a passport?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Do I need a passport?
+            </button>
             <p class="faq-answer">
               Passport requirements depend on your destination, citizenship, and the kind of trip you booked.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Do I need a visa?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Do I need a visa?
+            </button>
             <p class="faq-answer">
               Visa rules vary by country and traveler status, so always review official requirements before travel.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">What ID can I use for check-in?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              What ID can I use for check-in?
+            </button>
             <p class="faq-answer">
               Most providers require a valid government-issued ID, and international trips may require a passport.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">Where do I upload documents?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              Where do I upload documents?
+            </button>
             <p class="faq-answer">
               If documents are needed, the provider usually explains the process in your trip details or confirmation.
             </p>
           </article>
         </section>
 
+        <!-- Category 5 -->
         <section class="faq-category">
           <h3 class="category-title">Check-in &amp; Trip Details</h3>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">When can I check in?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              When can I check in?
+            </button>
             <p class="faq-answer">
               Check-in times vary by property or travel provider and are listed in the booking details.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">How do I view my itinerary?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              How do I view my itinerary?
+            </button>
             <p class="faq-answer">
               You can open your trip page after signing in to review your full itinerary and booking summary.
             </p>
           </article>
 
           <article class="faq-item">
-            <button class="faq-question" type="button">What if my trip changes?</button>
+            <button class="faq-question" type="button" aria-expanded="false">
+              What if my trip changes?
+            </button>
             <p class="faq-answer">
               Updates are usually sent by email and may also appear on your booking or trip dashboard.
             </p>
@@ -229,22 +286,37 @@
     </main>
   </div>
 
-  <script src="script.js"></script>
-  <!-- SIGN IN MODAL -->
-<div id="signInModal" class="modal hidden">
-  <div class="modal-content">
-    
-    <!-- Close button -->
-    <button class="modal-close" id="closeSignInModal">✕</button>
+  <!-- SIGN IN MODAL
+       This must be placed above the script tag so JavaScript can find it correctly -->
+  <div
+    id="signInModal"
+    class="modal hidden"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="signInModalTitle"
+  >
+    <div class="modal-content">
+      <!-- Close button -->
+      <button
+        class="modal-close"
+        id="closeSignInModal"
+        type="button"
+        aria-label="Close sign in modal"
+      >
+        ✕
+      </button>
 
-    <h2>Welcome Back</h2>
-    <p>Please sign in or create an account</p>
+      <h2 id="signInModalTitle">Welcome Back</h2>
+      <p>Please sign in or create an account</p>
 
-    <!-- Buttons -->
-    <button id="signInSubmit" class="modal-button primary">Sign In</button>
-    <button id="signUpSubmit" class="modal-button secondary">Sign Up</button>
-
+      <!-- Prototype modal actions -->
+      <button id="signInSubmit" class="modal-button primary" type="button">Sign In</button>
+      <button id="signUpSubmit" class="modal-button secondary" type="button">Sign Up</button>
+    </div>
   </div>
-</div>
+
+  <!-- Page JavaScript -->
+  <script src="script.js"></script>
 </body>
 </html>

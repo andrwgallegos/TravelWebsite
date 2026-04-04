@@ -22,18 +22,30 @@
 <body>
   <div class="page">
 
+    <!-- Dark background overlay shown when the mobile menu is open -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
-    <div id="errorBanner" class="error-banner hidden">
+    <!-- Error banner shown when form validation fails -->
+    <div id="errorBanner" class="error-banner hidden" aria-live="polite">
       To continue, please correct the errors below.
     </div>
 
-    <div id="successModal" class="success-modal hidden" aria-hidden="true">
+    <!-- Success modal shown after a valid booking form submission -->
+    <div id="successModal" class="success-modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
       <div class="success-modal-content">
-        <button class="success-close-button" id="closeSuccessModal" type="button" aria-label="Close booking confirmation">✕</button>
+        <!-- Button to close the success modal -->
+        <button
+          class="success-close-button"
+          id="closeSuccessModal"
+          type="button"
+          aria-label="Close booking confirmation"
+        >
+          ✕
+        </button>
 
-        <h2>Your Trip Has Been Booked!</h2>
+        <h2 id="successModalTitle">Your Trip Has Been Booked!</h2>
 
+        <!-- Decorative checkmark graphic -->
         <div class="success-checkmark">
           <svg viewBox="0 0 52 52" aria-hidden="true">
             <circle cx="26" cy="26" r="25" fill="none" stroke="#10b981" stroke-width="2"></circle>
@@ -50,26 +62,35 @@
       </div>
     </div>
 
+    <!-- Site navigation -->
     <header class="navbar">
       <div class="navbar-left">
+        <!-- Logo / home link -->
         <a href="../Homepage/index.html" class="logo-link">
           <div class="logo-box">↗</div>
           <h1 class="logo-text">Expedia</h1>
         </a>
 
-        <button class="nav-link dropdown-button desktop-only" type="button">Shop travel</button>
+        <!-- Desktop-only button -->
+        <button class="nav-link dropdown-button desktop-only" type="button">
+          Shop travel
+        </button>
       </div>
 
+      <!-- Mobile hamburger button -->
       <button
         class="hamburger-button mobile-only"
         id="hamburgerButton"
         aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileNav"
         type="button"
       >
         ☰
       </button>
 
-      <nav class="navbar-right desktop-nav">
+      <!-- Desktop navigation -->
+      <nav class="navbar-right desktop-nav" aria-label="Desktop navigation">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
@@ -77,24 +98,31 @@
         <button class="sign-in-button" id="desktopSignInButton" type="button">Sign in</button>
       </nav>
 
-      <nav class="mobile-nav" id="mobileNav">
+      <!-- Mobile dropdown navigation -->
+      <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
         <a href="../Homepage/index.html" class="nav-link">Homepage</a>
         <a href="../SearchResults/index.html" class="nav-link">Search Results</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">
+          Sign in
+        </button>
       </nav>
     </header>
 
+    <!-- Main checkout layout -->
     <main class="checkout-layout">
+      <!-- Left side: form -->
       <section class="left-panel">
         <div class="form-container">
           <h1 class="form-title">Who’s checking in?</h1>
-          <p class="required-text"><span class="required-star">*</span>Required</p>
+          <p class="required-text"><span class="required-star">*</span> Required</p>
 
-          <form id="checkoutForm">
+          <!-- Checkout form -->
+          <form id="checkoutForm" novalidate>
+            <!-- First name -->
             <div class="form-group">
               <label for="firstName">First Name <span class="required-star">*</span></label>
               <input
@@ -107,6 +135,7 @@
               <span class="error-message" id="firstNameError">Please enter a first name.</span>
             </div>
 
+            <!-- Last name -->
             <div class="form-group">
               <label for="lastName">Last Name <span class="required-star">*</span></label>
               <input
@@ -119,6 +148,7 @@
               <span class="error-message" id="lastNameError">Please enter a last name.</span>
             </div>
 
+            <!-- Email -->
             <div class="form-group">
               <label for="email">Email address <span class="required-star">*</span></label>
               <input
@@ -133,6 +163,7 @@
               </span>
             </div>
 
+            <!-- Phone row -->
             <div class="form-row">
               <div class="form-group form-group-half">
                 <label for="phoneCountry">Phone country/region <span class="required-star">*</span></label>
@@ -158,12 +189,14 @@
               </div>
             </div>
 
+            <!-- Payment section -->
             <div class="payment-section">
               <h2 class="section-title">Payment details</h2>
               <p class="section-subtitle">
                 Safe, secure transactions. Your personal information is protected.
               </p>
 
+              <!-- Payment method options -->
               <div class="payment-methods">
                 <button type="button" class="payment-method selected" data-method="card">
                   <span class="payment-method-label">Card</span>
@@ -182,6 +215,7 @@
                 </button>
               </div>
 
+              <!-- Card-only fields -->
               <div id="cardDetailsForm" class="card-details-form">
                 <div class="form-group">
                   <label for="cardNumber">Card number <span class="required-star">*</span></label>
@@ -246,11 +280,13 @@
               </div>
             </div>
 
+            <!-- Submit button -->
             <button type="submit" class="btn-book-now">Book Now</button>
           </form>
         </div>
       </section>
 
+      <!-- Right side: booking summary -->
       <aside class="right-panel">
         <div class="booking-summary">
           <div class="hotel-image placeholder-image">
@@ -302,31 +338,34 @@
 
           <div class="divider"></div>
 
-          <div class="special-requests">
+          <button class="special-requests" type="button">
             <span>Any special/accessibility requests?</span>
             <span class="arrow-icon">›</span>
-          </div>
+          </button>
         </div>
       </aside>
     </main>
   </div>
 
-  <script src="script.js"></script>
-  <!-- SIGN IN MODAL -->
-<div id="signInModal" class="modal hidden">
-  <div class="modal-content">
-    
-    <!-- Close button -->
-    <button class="modal-close" id="closeSignInModal">✕</button>
+  <!-- SIGN IN MODAL
+       IMPORTANT: this modal is above the script tag so JavaScript can find it correctly -->
+  <div id="signInModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="signInModalTitle">
+    <div class="modal-content">
+      <!-- Close button -->
+      <button class="modal-close" id="closeSignInModal" type="button" aria-label="Close sign in modal">
+        ✕
+      </button>
 
-    <h2>Welcome Back</h2>
-    <p>Please sign in or create an account</p>
+      <h2 id="signInModalTitle">Welcome Back</h2>
+      <p>Please sign in or create an account</p>
 
-    <!-- Buttons -->
-    <button id="signInSubmit" class="modal-button primary">Sign In</button>
-    <button id="signUpSubmit" class="modal-button secondary">Sign Up</button>
-
+      <!-- Modal action buttons -->
+      <button id="signInSubmit" class="modal-button primary" type="button">Sign In</button>
+      <button id="signUpSubmit" class="modal-button secondary" type="button">Sign Up</button>
+    </div>
   </div>
-</div>
+
+  <!-- Page JavaScript -->
+  <script src="script.js"></script>
 </body>
 </html>
