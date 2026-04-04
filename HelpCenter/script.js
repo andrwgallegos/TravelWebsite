@@ -1,8 +1,6 @@
 const hamburgerButton = document.getElementById('hamburgerButton');
 const mobileNav = document.getElementById('mobileNav');
 const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-const desktopSignInButton = document.getElementById('desktopSignInButton');
-const mobileSignInButton = document.getElementById('mobileSignInButton');
 
 const faqQuestions = document.querySelectorAll('.faq-question');
 const helpSearchForm = document.getElementById('helpSearchForm');
@@ -39,18 +37,64 @@ if (hamburgerButton && mobileNav && mobileMenuOverlay) {
   });
 }
 
-// Simple prototype sign-in behavior
-function handleSignInClick() {
-  closeMobileMenu();
-  alert('Sign in flow is not implemented in this prototype.');
+// SIGN IN MODAL ELEMENTS
+const signInModal = document.getElementById('signInModal');
+const closeSignInModal = document.getElementById('closeSignInModal');
+const signInSubmit = document.getElementById('signInSubmit');
+const signUpSubmit = document.getElementById('signUpSubmit');
+
+// EXISTING BUTTONS
+const desktopSignInButton = document.getElementById('desktopSignInButton');
+const mobileSignInButton = document.getElementById('mobileSignInButton');
+
+// OPEN MODAL
+function openSignInModal() {
+  if (signInModal) {
+    signInModal.classList.remove('hidden');
+  }
 }
 
+// CLOSE MODAL
+function closeSignInModalFn() {
+  if (signInModal) {
+    signInModal.classList.add('hidden');
+  }
+}
+
+// ATTACH EVENTS TO NAV BUTTONS
 if (desktopSignInButton) {
-  desktopSignInButton.addEventListener('click', handleSignInClick);
+  desktopSignInButton.addEventListener('click', openSignInModal);
 }
 
 if (mobileSignInButton) {
-  mobileSignInButton.addEventListener('click', handleSignInClick);
+  mobileSignInButton.addEventListener('click', openSignInModal);
+}
+
+// CLOSE BUTTON
+if (closeSignInModal) {
+  closeSignInModal.addEventListener('click', closeSignInModalFn);
+}
+
+// CLICK OUTSIDE CLOSES MODAL
+if (signInModal) {
+  signInModal.addEventListener('click', (e) => {
+    if (e.target === signInModal) {
+      closeSignInModalFn();
+    }
+  });
+}
+
+// SIGN IN / SIGN UP → GO TO TRIPS
+if (signInSubmit) {
+  signInSubmit.addEventListener('click', () => {
+    window.location.href = "../Trips/index.html";
+  });
+}
+
+if (signUpSubmit) {
+  signUpSubmit.addEventListener('click', () => {
+    window.location.href = "../Trips/index.html";
+  });
 }
 
 // Toggle each FAQ answer

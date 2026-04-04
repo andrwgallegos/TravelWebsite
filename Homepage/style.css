@@ -1,6 +1,5 @@
 /* =========================
    RESET
-   Removes default browser spacing
 ========================= */
 * {
   margin: 0;
@@ -15,7 +14,7 @@ body {
   background-color: #e9f0f5;
   font-family: 'Inter', sans-serif;
   color: #191e3b;
-  overflow-x: hidden; /* Prevents horizontal scroll on mobile */
+  overflow-x: hidden;
 }
 
 .page {
@@ -32,7 +31,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative; /* Needed so mobile menu can position under navbar */
+  position: relative;
   border-bottom: 1px solid #d9e2ea;
 }
 
@@ -98,13 +97,11 @@ body {
   color: #3b5d7e;
 }
 
-/* Desktop nav is hidden on mobile */
 .desktop-only,
 .desktop-nav {
   display: none;
 }
 
-/* Hamburger is shown on mobile */
 .mobile-only {
   display: inline-flex;
 }
@@ -117,14 +114,13 @@ body {
   cursor: pointer;
 }
 
-/* Overlay shown behind open mobile menu */
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.35);
   opacity: 0;
   visibility: hidden;
-  pointer-events: none; /* Hidden overlay cannot block taps */
+  pointer-events: none;
   transition: 0.2s ease;
   z-index: 90;
 }
@@ -135,7 +131,6 @@ body {
   pointer-events: auto;
 }
 
-/* Hidden mobile menu panel */
 .mobile-nav {
   position: absolute;
   top: 100%;
@@ -150,7 +145,7 @@ body {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
   opacity: 0;
   visibility: hidden;
-  pointer-events: none; /* Hidden menu cannot block taps */
+  pointer-events: none;
   transform: translateY(8px);
   transition: 0.2s ease;
   z-index: 100;
@@ -165,6 +160,125 @@ body {
 
 .mobile-sign-in {
   width: 100%;
+}
+
+/* =========================
+   SHARED SIGN-IN MODAL
+========================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: 0.2s ease;
+  z-index: 110;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.sign-in-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: 0.2s ease;
+  z-index: 120;
+}
+
+.sign-in-modal.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 13px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  width: min(726px, 100%);
+  padding: 28px 20px;
+  position: relative;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #191e3b;
+}
+
+.modal-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #191e3b;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.sign-up-form .field {
+  margin-bottom: 18px;
+}
+
+.sign-up-form input {
+  width: 100%;
+  height: 58px;
+  border: 1px solid #191e3b;
+  border-radius: 13px;
+  padding: 0 14px;
+  font-size: 18px;
+  font-weight: 300;
+  color: #191e3b;
+}
+
+.sign-up-form input::placeholder {
+  color: #191e3b;
+  opacity: 0.6;
+}
+
+.sign-up-button {
+  background-color: #fbbf23;
+  border: none;
+  border-radius: 13px;
+  width: 100%;
+  min-height: 58px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #191e3b;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.sign-in-link-text {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.inline-link {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  font: inherit;
+  cursor: pointer;
+  color: #191e3b;
 }
 
 /* =========================
@@ -197,7 +311,6 @@ body {
   gap: 22px;
 }
 
-/* Category icons arranged in a compact grid on mobile */
 .category-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -220,7 +333,6 @@ body {
   color: black;
 }
 
-/* Search form stacks vertically on mobile */
 .search-form {
   display: flex;
   flex-direction: column;
@@ -441,4 +553,72 @@ body {
   .trip-card img {
     height: 225px;
   }
+}
+/* =========================
+   SIGN IN MODAL
+========================= */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 2000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px 24px;
+  border-radius: 16px;
+  width: min(400px, 90%);
+  text-align: center;
+  position: relative;
+}
+
+.modal-content h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.modal-button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-button.primary {
+  background: #191e3b;
+  color: white;
+}
+
+.modal-button.secondary {
+  background: #fbbf23;
+  color: #191e3b;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
 }
