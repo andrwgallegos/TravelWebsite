@@ -28,17 +28,14 @@
     <!-- Top navigation -->
     <header class="navbar">
       <div class="navbar-left">
-        <!-- Clickable logo that returns to the homepage -->
         <a href="../Homepage/index.html" class="logo-link">
           <div class="logo-box">↗</div>
           <h1 class="logo-text">Expedia</h1>
         </a>
 
-        <!-- Desktop-only navigation button -->
         <button class="nav-link dropdown-button desktop-only" type="button">Shop travel</button>
       </div>
 
-      <!-- Mobile hamburger button -->
       <button
         class="hamburger-button mobile-only"
         id="hamburgerButton"
@@ -48,7 +45,6 @@
         ☰
       </button>
 
-      <!-- Desktop navigation -->
       <nav class="navbar-right desktop-nav">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
@@ -57,7 +53,6 @@
         <button class="sign-in-button" id="desktopSignInButton" type="button">Sign in</button>
       </nav>
 
-      <!-- Mobile dropdown navigation -->
       <nav class="mobile-nav" id="mobileNav">
         <a href="../Homepage/index.html" class="nav-link">Homepage</a>
         <a href="index.html" class="nav-link active-link">Search Results</a>
@@ -69,11 +64,8 @@
       </nav>
     </header>
 
-    <!-- Dark blue search section -->
     <section class="search-hero">
       <div class="search-card">
-
-        <!-- Travel categories row -->
         <div class="category-row">
           <div class="category-item">
             <div class="category-icon">🛏️</div>
@@ -106,7 +98,6 @@
           </div>
         </div>
 
-        <!-- Search form stays on the same page for now -->
         <form class="search-form" action="index.html">
           <input type="text" placeholder="Where to?" />
           <input type="text" placeholder="Dates" />
@@ -114,7 +105,6 @@
           <button type="submit" class="search-button">Search</button>
         </form>
 
-        <!-- Active filters shown below the search fields -->
         <div class="active-filters">
           <button class="filter-pill" type="button">✕ Beachfront</button>
           <button class="filter-pill" type="button">✕ Free cancellation</button>
@@ -123,10 +113,7 @@
       </div>
     </section>
 
-    <!-- Main page layout -->
     <main class="results-layout">
-
-      <!-- Left filter sidebar -->
       <aside class="filters-panel">
         <h2 class="filters-title">Search Filters</h2>
 
@@ -161,7 +148,6 @@
         <button class="apply-button" type="button">Apply</button>
       </aside>
 
-      <!-- Center results grid -->
       <section class="listings-panel">
         <a href="../CheckoutPage/index.html" class="listing-link">
           <article class="listing-card">
@@ -248,7 +234,6 @@
         </a>
       </section>
 
-      <!-- Right ad sidebar -->
       <aside class="ads-panel">
         <div class="ads-arrow">↑</div>
 
@@ -275,11 +260,9 @@
 
         <div class="ads-arrow">↓</div>
       </aside>
-
     </main>
   </div>
 
-  <!-- Page script for mobile navigation -->
   <script src="script.js"></script>
 </body>
 </html>

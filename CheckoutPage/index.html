@@ -22,22 +22,18 @@
 <body>
   <div class="page">
 
-    <!-- Dark overlay shown behind the mobile menu -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
-    <!-- Error banner is hidden until validation fails -->
     <div id="errorBanner" class="error-banner hidden">
       To continue, please correct the errors below.
     </div>
 
-    <!-- Success modal is hidden until booking succeeds -->
     <div id="successModal" class="success-modal hidden" aria-hidden="true">
       <div class="success-modal-content">
         <button class="success-close-button" id="closeSuccessModal" type="button" aria-label="Close booking confirmation">✕</button>
 
         <h2>Your Trip Has Been Booked!</h2>
 
-        <!-- Simple success icon -->
         <div class="success-checkmark">
           <svg viewBox="0 0 52 52" aria-hidden="true">
             <circle cx="26" cy="26" r="25" fill="none" stroke="#10b981" stroke-width="2"></circle>
@@ -54,20 +50,16 @@
       </div>
     </div>
 
-    <!-- Top navigation -->
     <header class="navbar">
       <div class="navbar-left">
-        <!-- Clickable logo that returns to homepage -->
         <a href="../Homepage/index.html" class="logo-link">
           <div class="logo-box">↗</div>
           <h1 class="logo-text">Expedia</h1>
         </a>
 
-        <!-- Desktop-only shop travel button -->
-        <button class="nav-link dropdown-button desktop-only">Shop travel</button>
+        <button class="nav-link dropdown-button desktop-only" type="button">Shop travel</button>
       </div>
 
-      <!-- Mobile hamburger button -->
       <button
         class="hamburger-button mobile-only"
         id="hamburgerButton"
@@ -77,16 +69,14 @@
         ☰
       </button>
 
-      <!-- Desktop navigation -->
       <nav class="navbar-right desktop-nav">
         <a href="#" class="nav-link">USD</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="../HelpCenter/index.html" class="nav-link">Help Center</a>
         <a href="../Trips/index.html" class="nav-link">Trips</a>
-        <button class="sign-in-button">Sign in</button>
+        <button class="sign-in-button" id="desktopSignInButton" type="button">Sign in</button>
       </nav>
 
-      <!-- Mobile dropdown navigation -->
       <nav class="mobile-nav" id="mobileNav">
         <a href="../Homepage/index.html" class="nav-link">Homepage</a>
         <a href="../SearchResults/index.html" class="nav-link">Search Results</a>
@@ -94,22 +84,17 @@
         <a href="../Trips/index.html" class="nav-link">Trips</a>
         <a href="#" class="nav-link">List your property</a>
         <a href="#" class="nav-link">USD</a>
-        <button class="sign-in-button mobile-sign-in" type="button">Sign in</button>
+        <button class="sign-in-button mobile-sign-in" id="mobileSignInButton" type="button">Sign in</button>
       </nav>
     </header>
 
-    <!-- Main checkout content -->
     <main class="checkout-layout">
-
-      <!-- Left panel: traveler and payment form -->
       <section class="left-panel">
         <div class="form-container">
           <h1 class="form-title">Who’s checking in?</h1>
           <p class="required-text"><span class="required-star">*</span>Required</p>
 
           <form id="checkoutForm">
-
-            <!-- Personal details -->
             <div class="form-group">
               <label for="firstName">First Name <span class="required-star">*</span></label>
               <input
@@ -148,7 +133,6 @@
               </span>
             </div>
 
-            <!-- Two-column row on larger screens -->
             <div class="form-row">
               <div class="form-group form-group-half">
                 <label for="phoneCountry">Phone country/region <span class="required-star">*</span></label>
@@ -174,14 +158,12 @@
               </div>
             </div>
 
-            <!-- Payment section -->
             <div class="payment-section">
               <h2 class="section-title">Payment details</h2>
               <p class="section-subtitle">
                 Safe, secure transactions. Your personal information is protected.
               </p>
 
-              <!-- Selectable payment methods -->
               <div class="payment-methods">
                 <button type="button" class="payment-method selected" data-method="card">
                   <span class="payment-method-label">Card</span>
@@ -200,7 +182,6 @@
                 </button>
               </div>
 
-              <!-- Card form is only shown when Card is selected -->
               <div id="cardDetailsForm" class="card-details-form">
                 <div class="form-group">
                   <label for="cardNumber">Card number <span class="required-star">*</span></label>
@@ -265,65 +246,57 @@
               </div>
             </div>
 
-            <!-- Final submit button -->
             <button type="submit" class="btn-book-now">Book Now</button>
           </form>
         </div>
       </section>
 
-      <!-- Right panel: summary card -->
       <aside class="right-panel">
         <div class="booking-summary">
-          <div class="hotel-image">
-            <img
-              src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700&h=400&fit=crop"
-              alt="Resort view"
-            />
+          <div class="hotel-image placeholder-image">
+            <span class="placeholder-text">Image Placeholder</span>
           </div>
 
           <div class="hotel-info">
-            <h2 class="hotel-name">Four Seasons Resort Puerto Rico</h2>
-            <p class="hotel-address">
-              State Road 187 Kilometer 4.2, Río Grande, 00745
-            </p>
+            <h2 class="hotel-name">Trip / Property Name</h2>
+            <p class="hotel-address">City, State / Country</p>
           </div>
 
           <div class="hotel-rating">
-            <div class="rating-badge">9.8</div>
-            <span class="rating-text">Exceptional</span>
+            <div class="rating-badge">--</div>
+            <span class="rating-text">Description Placeholder</span>
           </div>
 
-          <div class="review-count">25 Reviews</div>
+          <div class="review-count">Details will appear here</div>
 
-          <!-- Scrolls user back to form -->
           <button class="btn-edit" type="button">Edit</button>
 
           <div class="check-details">
             <div class="check-in">
               <div class="check-label">Check-in</div>
-              <div class="check-date">Fri, Mar 27, 2026</div>
-              <div class="check-time">4:00pm</div>
+              <div class="check-date">Placeholder date</div>
+              <div class="check-time">Placeholder time</div>
             </div>
 
             <div class="check-out">
               <div class="check-label">Check-out</div>
-              <div class="check-date">Sun, Mar 29, 2026</div>
-              <div class="check-time">12:00pm</div>
+              <div class="check-date">Placeholder date</div>
+              <div class="check-time">Placeholder time</div>
             </div>
 
             <div class="nights">
               <div class="check-label">Nights</div>
-              <div class="nights-count">2</div>
+              <div class="nights-count">--</div>
             </div>
           </div>
 
           <div class="property-highlights">
             <h3>Property Highlights</h3>
             <div class="highlights-grid">
-              <div class="highlight-item">Pool</div>
-              <div class="highlight-item">Spa</div>
-              <div class="highlight-item">Pet friendly</div>
-              <div class="highlight-item">Restaurant</div>
+              <div class="highlight-item">Placeholder</div>
+              <div class="highlight-item">Placeholder</div>
+              <div class="highlight-item">Placeholder</div>
+              <div class="highlight-item">Placeholder</div>
             </div>
           </div>
 
@@ -335,7 +308,6 @@
           </div>
         </div>
       </aside>
-
     </main>
   </div>
 

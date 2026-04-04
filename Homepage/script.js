@@ -1,7 +1,3 @@
-// =========================
-// MOBILE NAVIGATION
-// Shared mobile menu behavior
-// =========================
 const hamburgerButton = document.getElementById('hamburgerButton');
 const mobileNav = document.getElementById('mobileNav');
 const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
@@ -30,7 +26,6 @@ function toggleMobileMenu() {
   }
 }
 
-// Only attach listeners if the elements exist
 if (hamburgerButton && mobileNav && mobileMenuOverlay) {
   hamburgerButton.addEventListener('click', toggleMobileMenu);
   mobileMenuOverlay.addEventListener('click', closeMobileMenu);
@@ -40,7 +35,7 @@ if (hamburgerButton && mobileNav && mobileMenuOverlay) {
   });
 }
 
-// Placeholder sign-in behavior so button does not feel broken
+// Simple prototype sign-in behavior
 function handleSignInClick() {
   closeMobileMenu();
   alert('Sign in flow is not implemented in this prototype.');
@@ -54,7 +49,6 @@ if (mobileSignInButton) {
   mobileSignInButton.addEventListener('click', handleSignInClick);
 }
 
-// Escape key closes mobile menu
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     closeMobileMenu();

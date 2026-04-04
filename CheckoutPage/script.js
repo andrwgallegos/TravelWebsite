@@ -1,10 +1,8 @@
-// =========================
-// MOBILE NAVIGATION
-// Same shared nav behavior used on your other pages
-// =========================
 const hamburgerButton = document.getElementById('hamburgerButton');
 const mobileNav = document.getElementById('mobileNav');
 const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+const desktopSignInButton = document.getElementById('desktopSignInButton');
+const mobileSignInButton = document.getElementById('mobileSignInButton');
 
 // Closes the mobile menu
 function closeMobileMenu() {
@@ -28,7 +26,6 @@ function toggleMobileMenu() {
   }
 }
 
-// Guard clauses prevent errors if elements are missing
 if (hamburgerButton && mobileNav && mobileMenuOverlay) {
   hamburgerButton.addEventListener('click', toggleMobileMenu);
   mobileMenuOverlay.addEventListener('click', closeMobileMenu);
@@ -38,9 +35,20 @@ if (hamburgerButton && mobileNav && mobileMenuOverlay) {
   });
 }
 
-// =========================
-// FORM VALIDATION + INTERACTIONS
-// =========================
+// Simple prototype sign-in behavior
+function handleSignInClick() {
+  closeMobileMenu();
+  alert('Sign in flow is not implemented in this prototype.');
+}
+
+if (desktopSignInButton) {
+  desktopSignInButton.addEventListener('click', handleSignInClick);
+}
+
+if (mobileSignInButton) {
+  mobileSignInButton.addEventListener('click', handleSignInClick);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('checkoutForm');
   const errorBanner = document.getElementById('errorBanner');
@@ -49,10 +57,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const paymentMethods = document.querySelectorAll('.payment-method');
   const cardDetailsForm = document.getElementById('cardDetailsForm');
 
-  // =========================
-  // PAYMENT METHOD TOGGLE
-  // Only show full card fields when "Card" is selected
-  // =========================
   paymentMethods.forEach((method) => {
     method.addEventListener('click', function () {
       paymentMethods.forEach((m) => m.classList.remove('selected'));
@@ -68,24 +72,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // =========================
-  // CARD NUMBER FORMATTING
-  // Adds spaces every 4 digits
-  // =========================
   const cardNumberInput = document.getElementById('cardNumber');
-
   cardNumberInput.addEventListener('input', function (e) {
     let value = e.target.value.replace(/\s/g, '');
     let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
     e.target.value = formattedValue;
   });
 
-  // =========================
-  // EXPIRATION DATE FORMATTING
-  // Converts 0326 into 03/26 while typing
-  // =========================
   const expirationInput = document.getElementById('expirationDate');
-
   expirationInput.addEventListener('input', function (e) {
     let value = e.target.value.replace(/\D/g, '');
 
@@ -96,10 +90,6 @@ document.addEventListener('DOMContentLoaded', function () {
     e.target.value = value;
   });
 
-  // =========================
-  // ONLY ALLOW NUMBERS
-  // Security code and phone should stay numeric
-  // =========================
   const securityCodeInput = document.getElementById('securityCode');
   const phoneNumberInput = document.getElementById('phoneNumber');
   const billingZipInput = document.getElementById('billingZip');
@@ -116,9 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
     e.target.value = e.target.value.replace(/\D/g, '');
   });
 
-  // =========================
-  // VALIDATION HELPERS
-  // =========================
   function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -153,9 +140,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return zip.length >= 5;
   }
 
-  // =========================
-  // ERROR HANDLING HELPERS
-  // =========================
   function showError(inputId, errorId) {
     const input = document.getElementById(inputId);
     const error = document.getElementById(errorId);
@@ -169,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Clear error styling while user types
   const inputs = form.querySelectorAll('input, select');
 
   inputs.forEach((input) => {
@@ -184,9 +167,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // =========================
-  // SUCCESS MODAL HELPERS
-  // =========================
   function openSuccessModal() {
     successModal.classList.remove('hidden');
     successModal.setAttribute('aria-hidden', 'false');
@@ -197,15 +177,11 @@ document.addEventListener('DOMContentLoaded', function () {
     successModal.setAttribute('aria-hidden', 'true');
   }
 
-  // =========================
-  // FORM SUBMISSION
-  // =========================
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     let hasErrors = false;
 
-    // Reset previous errors before validating again
     errorBanner.classList.add('hidden');
     document.querySelectorAll('.error-message').forEach((el) => {
       el.style.display = 'none';
@@ -214,35 +190,30 @@ document.addEventListener('DOMContentLoaded', function () {
       el.classList.remove('error');
     });
 
-    // First name validation
     const firstName = document.getElementById('firstName').value.trim();
     if (!firstName) {
       showError('firstName', 'firstNameError');
       hasErrors = true;
     }
 
-    // Last name validation
     const lastName = document.getElementById('lastName').value.trim();
     if (!lastName) {
       showError('lastName', 'lastNameError');
       hasErrors = true;
     }
 
-    // Email validation
     const email = document.getElementById('email').value.trim();
     if (!email || !validateEmail(email)) {
       showError('email', 'emailError');
       hasErrors = true;
     }
 
-    // Phone number validation
     const phoneNumber = document.getElementById('phoneNumber').value.trim();
     if (!phoneNumber) {
       showError('phoneNumber', 'phoneNumberError');
       hasErrors = true;
     }
 
-    // Only validate card details if "Card" is selected
     const selectedPaymentMethod = document
       .querySelector('.payment-method.selected')
       .getAttribute('data-method');
@@ -273,7 +244,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    // If validation fails, show banner and scroll up
     if (hasErrors) {
       errorBanner.classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -282,7 +252,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Allow user to close modal by clicking backdrop or close button
   if (closeSuccessModal) {
     closeSuccessModal.addEventListener('click', closeSuccessModalFn);
   }
@@ -293,7 +262,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Escape closes success modal or mobile menu
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       closeSuccessModalFn();
@@ -301,9 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Edit button scrolls back to top of form
   const editButton = document.querySelector('.btn-edit');
-
   if (editButton) {
     editButton.addEventListener('click', function () {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -311,9 +277,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Placeholder interaction for special requests
   const specialRequests = document.querySelector('.special-requests');
-
   if (specialRequests) {
     specialRequests.addEventListener('click', function () {
       alert('Special requests feature would open here.');

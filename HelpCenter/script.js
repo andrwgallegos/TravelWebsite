@@ -1,17 +1,10 @@
-// =========================
-// MOBILE NAVIGATION
-// Shared mobile menu behavior
-// =========================
 const hamburgerButton = document.getElementById('hamburgerButton');
 const mobileNav = document.getElementById('mobileNav');
 const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
 const desktopSignInButton = document.getElementById('desktopSignInButton');
 const mobileSignInButton = document.getElementById('mobileSignInButton');
 
-// Get FAQ question buttons
 const faqQuestions = document.querySelectorAll('.faq-question');
-
-// Get the help search form and input
 const helpSearchForm = document.getElementById('helpSearchForm');
 const helpSearchInput = document.getElementById('helpSearchInput');
 
@@ -37,7 +30,6 @@ function toggleMobileMenu() {
   }
 }
 
-// Open or close menu when hamburger is clicked
 if (hamburgerButton && mobileNav && mobileMenuOverlay) {
   hamburgerButton.addEventListener('click', toggleMobileMenu);
   mobileMenuOverlay.addEventListener('click', closeMobileMenu);
@@ -47,7 +39,7 @@ if (hamburgerButton && mobileNav && mobileMenuOverlay) {
   });
 }
 
-// Placeholder sign-in behavior so the button does not feel broken
+// Simple prototype sign-in behavior
 function handleSignInClick() {
   closeMobileMenu();
   alert('Sign in flow is not implemented in this prototype.');
@@ -61,7 +53,7 @@ if (mobileSignInButton) {
   mobileSignInButton.addEventListener('click', handleSignInClick);
 }
 
-// Toggle each FAQ answer when its question is clicked
+// Toggle each FAQ answer
 faqQuestions.forEach((question) => {
   question.addEventListener('click', () => {
     const answer = question.nextElementSibling;
@@ -71,7 +63,7 @@ faqQuestions.forEach((question) => {
   });
 });
 
-// Prevent the form from refreshing the page for now
+// Prevent refresh for prototype search
 if (helpSearchForm && helpSearchInput) {
   helpSearchForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -84,7 +76,6 @@ if (helpSearchForm && helpSearchInput) {
   });
 }
 
-// Escape key closes mobile menu
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     closeMobileMenu();
