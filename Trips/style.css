@@ -34,7 +34,7 @@ body {
   align-items: center;
   position: relative;
   border-bottom: 1px solid #d9e2ea;
-  z-index: 50;
+  z-index: 200;
 }
 
 .navbar-left {
@@ -129,7 +129,7 @@ body {
   visibility: hidden;
   pointer-events: none;
   transition: 0.2s ease;
-  z-index: 90;
+  z-index: 150;
 }
 
 .mobile-menu-overlay.show {
@@ -156,7 +156,7 @@ body {
   pointer-events: none;
   transform: translateY(8px);
   transition: 0.2s ease;
-  z-index: 100;
+  z-index: 210;
 }
 
 .mobile-nav.show {
