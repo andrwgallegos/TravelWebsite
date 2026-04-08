@@ -141,6 +141,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Form and checkout elements
   const form = document.getElementById('checkoutForm');
+  const checkoutSubmitButton = document.getElementById('checkoutSubmitButton');
+  const checkoutSpinner = document.getElementById('checkoutSpinner');
+  const checkoutButtonText = document.getElementById('checkoutButtonText');
   const errorBanner = document.getElementById('errorBanner');
   const successModal = document.getElementById('successModal');
   const closeSuccessModal = document.getElementById('closeSuccessModal');
@@ -460,7 +463,37 @@ document.addEventListener('DOMContentLoaded', function () {
         behavior: 'smooth'
       });
     } else {
-      openSuccessModal();
+      // SHOW LOADING STATE
+      if (checkoutSpinner) {
+        checkoutSpinner.classList.remove('hidden');
+      }
+
+      if (checkoutButtonText) {
+        checkoutButtonText.textContent = 'Processing...';
+      }
+
+      if (checkoutSubmitButton) {
+        checkoutSubmitButton.disabled = true;
+      }
+
+      // SIMULATE PROCESSING DELAY
+      setTimeout(function () {
+        // reset button
+        if (checkoutSpinner) {
+          checkoutSpinner.classList.add('hidden');
+        }
+
+        if (checkoutButtonText) {
+          checkoutButtonText.textContent = 'Book Now';
+        }
+
+        if (checkoutSubmitButton) {
+          checkoutSubmitButton.disabled = false;
+        }
+
+        // THEN show success modal
+        openSuccessModal();
+      }, 2000);
     }
   });
 
