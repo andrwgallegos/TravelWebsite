@@ -172,6 +172,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const bookedPanel = document.getElementById('bookedPanel');
   const savedPanel = document.getElementById('savedPanel');
   const createPanel = document.getElementById('createPanel');
+  const tripSearchForm = document.getElementById('tripSearchForm');
+  const tripSearchInput = document.getElementById('tripSearchInput');
+
+  // The search controller is filled later so the tabs can reset any active search.
+  let tripSearchController = null;
 
   // Hides every panel and removes active tab state
   function resetTripPanels() {
@@ -195,24 +200,48 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Shows the matching panel for the clicked tab
+  // Returns the currently selected tab name so search can restore it after clearing.
+  function getActiveTripTabName() {
+    const activeTab = document.querySelector('.trip-tab.active');
+    return activeTab ? activeTab.dataset.tab : 'booked';
+  }
+
+  // Activates one tab and its matching content panel.
+  function activateTripTab(tabName) {
+    const selectedTabButton = Array.from(tripTabs).find(function (tab) {
+      return tab.dataset.tab === tabName;
+    });
+
+    resetTripPanels();
+
+    if (selectedTabButton) {
+      selectedTabButton.classList.add('active');
+    }
+
+    if (tabName === 'booked' && bookedPanel) {
+      bookedPanel.classList.add('active-panel');
+      bookedPanel.classList.remove('hidden-panel');
+    } else if (tabName === 'saved' && savedPanel) {
+      savedPanel.classList.add('active-panel');
+      savedPanel.classList.remove('hidden-panel');
+    } else if (tabName === 'create' && createPanel) {
+      createPanel.classList.add('active-panel');
+      createPanel.classList.remove('hidden-panel');
+    }
+  }
+
+  // Clicking a tab clears any active trip search so the user can browse panels normally again.
   tripTabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
-      resetTripPanels();
-      tab.classList.add('active');
+      if (tripSearchInput && tripSearchInput.value.trim()) {
+        tripSearchInput.value = '';
 
-      const selectedTab = tab.dataset.tab;
-
-      if (selectedTab === 'booked' && bookedPanel) {
-        bookedPanel.classList.add('active-panel');
-        bookedPanel.classList.remove('hidden-panel');
-      } else if (selectedTab === 'saved' && savedPanel) {
-        savedPanel.classList.add('active-panel');
-        savedPanel.classList.remove('hidden-panel');
-      } else if (selectedTab === 'create' && createPanel) {
-        createPanel.classList.add('active-panel');
-        createPanel.classList.remove('hidden-panel');
+        if (tripSearchController) {
+          tripSearchController.applyFilter('');
+        }
       }
+
+      activateTripTab(tab.dataset.tab);
     });
   });
 
@@ -284,22 +313,97 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('resize', updateAdDisplay);
 
   /* =========================================================
-     TRIP SEARCH FORM
-     Keeps the prototype from refreshing
+     LIVE TRIP SEARCH
+     Filters booked trips in real time and surfaces suggestions
+     for itinerary number, destination, hotel, and airline.
      ========================================================= */
 
-  const tripSearchForm = document.getElementById('tripSearchForm');
-  const tripSearchInput = document.getElementById('tripSearchInput');
+  const bookedTripCards = bookedPanel ? Array.from(bookedPanel.querySelectorAll('.trip-card')) : [];
+  let tabBeforeSearch = '';
 
-  if (tripSearchForm && tripSearchInput) {
-    tripSearchForm.addEventListener('submit', function (event) {
-      event.preventDefault();
+  // Add stable prototype itinerary numbers so the search field can match the current placeholder.
+  bookedTripCards.forEach(function (tripCard, index) {
+    tripCard.dataset.itineraryNumber = 'TRP-' + String(2041 + index);
+  });
 
-      const searchTerm = tripSearchInput.value.trim();
+  // Update the placeholder so it matches the broader search behavior.
+  if (tripSearchInput) {
+    tripSearchInput.placeholder = 'Search itinerary, destination, hotel, or airline';
+  }
 
-      if (searchTerm) {
-        alert('Searching itinerary: ' + searchTerm);
-      }
+  if (window.TravelWebsiteUtils && tripSearchForm && tripSearchInput && bookedTripCards.length) {
+    tripSearchController = window.TravelWebsiteUtils.initLiveSearch({
+      formElement: tripSearchForm,
+      inputElement: tripSearchInput,
+      itemElements: bookedTripCards,
+      noResultsMount: bookedPanel,
+
+      // Build a searchable record from each booked trip card.
+      getItemData: function (tripCard) {
+        const destinationElement = tripCard.querySelector('h3');
+        const locationElement = tripCard.querySelector('.location');
+        const stayElement = tripCard.querySelector('.stay');
+        const priceElement = tripCard.querySelector('.price');
+        const airlineElement = tripCard.querySelector('.travel');
+        const timeElement = tripCard.querySelector('.time');
+        const destination = destinationElement ? destinationElement.textContent.trim() : '';
+        const location = locationElement ? locationElement.textContent.trim() : '';
+        const stay = stayElement ? stayElement.textContent.trim() : '';
+        const price = priceElement ? priceElement.textContent.trim() : '';
+        const airline = airlineElement ? airlineElement.textContent.trim() : '';
+        const time = timeElement ? timeElement.textContent.trim() : '';
+        const itineraryNumber = tripCard.dataset.itineraryNumber || '';
+
+        return {
+          title: destination,
+          subtitle: itineraryNumber,
+          suggestionMeta: itineraryNumber + ' • ' + stay + ' • ' + airline,
+          searchValue: destination,
+          searchText: [destination, location, stay, price, airline, time, itineraryNumber].join(' ')
+        };
+      },
+
+      getStatusText: function (state) {
+        if (!state.query) {
+          return 'Showing all ' + state.totalCount + ' booked trips.';
+        }
+
+        return (
+          'Showing ' +
+          state.matchCount +
+          ' ' +
+          (state.matchCount === 1 ? 'trip' : 'trips') +
+          ' for “' +
+          state.query +
+          '”.'
+        );
+      },
+
+      noResultsTitle: 'No booked trips matched your search',
+      noResultsDescription: 'Try an itinerary number, destination, hotel name, or airline.',
+
+      // Searching always focuses the Booked tab because that is where the trip cards live.
+      afterFilter: function (state) {
+        const searchIsActive = Boolean(state.query);
+
+        if (searchIsActive) {
+          if (!tabBeforeSearch) {
+            tabBeforeSearch = getActiveTripTabName();
+          }
+
+          activateTripTab('booked');
+          return;
+        }
+
+        if (tabBeforeSearch && tabBeforeSearch !== 'booked') {
+          activateTripTab(tabBeforeSearch);
+        }
+
+        tabBeforeSearch = '';
+      },
+
+      // Submit stays client-side because the list is already filtering live.
+      onSubmit: function () {}
     });
   }
 

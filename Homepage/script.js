@@ -136,6 +136,75 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* =========================================================
+     LIVE DESTINATION SEARCH
+     Filters featured trips in real time and still supports
+     navigating to Search Results on submit.
+     ========================================================= */
+
+  // The Homepage search uses the first destination input inside the shared search form.
+  const homepageSearchForm = document.querySelector('.search-form');
+  const homepageDestinationInput = document.querySelector('.search-form input[aria-label="Destination"]');
+  const homepageTripLinks = Array.from(document.querySelectorAll('.trip-grid .trip-link'));
+
+  if (window.TravelWebsiteUtils && homepageSearchForm && homepageDestinationInput && homepageTripLinks.length) {
+    window.TravelWebsiteUtils.initLiveSearch({
+      formElement: homepageSearchForm,
+      inputElement: homepageDestinationInput,
+      itemElements: homepageTripLinks,
+
+      // Build a clean search record from each destination card.
+      getItemData: function (tripLink) {
+        const titleElement = tripLink.querySelector('h3');
+        const locationElement = tripLink.querySelector('.location');
+        const priceElement = tripLink.querySelector('.price');
+        const title = titleElement ? titleElement.textContent.trim() : '';
+        const location = locationElement ? locationElement.textContent.trim() : '';
+        const price = priceElement ? priceElement.textContent.trim() : '';
+
+        return {
+          title: title,
+          subtitle: location,
+          suggestionMeta: location + (price ? ' • ' + price + ' per night' : ''),
+          searchValue: title,
+          searchText: [title, location, price].join(' ')
+        };
+      },
+
+      // This line keeps the search feedback specific to the Homepage section.
+      getStatusText: function (state) {
+        if (!state.query) {
+          return 'Showing all ' + state.totalCount + ' featured destinations.';
+        }
+
+        return (
+          'Showing ' +
+          state.matchCount +
+          ' ' +
+          (state.matchCount === 1 ? 'destination' : 'destinations') +
+          ' for “' +
+          state.query +
+          '”.'
+        );
+      },
+
+      noResultsTitle: 'No featured destinations matched your search',
+      noResultsDescription: 'Try a different city, state, country, or beach destination.',
+      noResultsMount: document.querySelector('.trip-section'),
+
+      // Submitting the Homepage search still routes the user to the Search Results page.
+      onSubmit: function (state) {
+        const searchResultsUrl = '../SearchResults/index.html';
+
+        if (state.query) {
+          window.location.href = searchResultsUrl + '?destination=' + encodeURIComponent(state.query);
+        } else {
+          window.location.href = searchResultsUrl;
+        }
+      }
+    });
+  }
+
+  /* =========================================================
      GLOBAL KEYBOARD SHORTCUTS
      ========================================================= */
 

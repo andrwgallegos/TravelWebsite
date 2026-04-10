@@ -136,13 +136,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* =========================================================
-     FILTER / SEARCH INTERACTIONS
+     FILTER INTERACTIONS
      ========================================================= */
 
   const filterPills = document.querySelectorAll('.filter-pill');
   const filterOptions = document.querySelectorAll('.filter-option');
   const applyButton = document.querySelector('.apply-button');
-  const searchForm = document.querySelector('.search-form');
 
   // Let users remove active filter pills for prototype interaction
   filterPills.forEach(function (pill) {
@@ -158,18 +157,90 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Prototype apply button interaction
+  // The apply button simply confirms the current UI state for this front-end prototype.
   if (applyButton) {
     applyButton.addEventListener('click', function () {
-      alert('Filters applied for prototype.');
+      if (window.TravelWebsiteUtils) {
+        window.TravelWebsiteUtils.showToast('Filters applied to the current prototype results.');
+      }
     });
   }
 
-  // Prevent page reload for prototype search interaction
-  if (searchForm) {
-    searchForm.addEventListener('submit', function (event) {
-      event.preventDefault();
-      alert('Search updated for prototype.');
+  /* =========================================================
+     LIVE SEARCH RESULTS FILTERING
+     Filters listing cards as the user types and keeps
+     the destination query synced to the page URL.
+     ========================================================= */
+
+  const searchForm = document.querySelector('.search-form');
+  const destinationInput = document.querySelector('.search-form input[aria-label="Destination"]');
+  const listingsPanel = document.querySelector('.listings-panel');
+  const listingLinks = Array.from(document.querySelectorAll('.listings-panel .listing-link'));
+  const initialDestinationQuery = window.TravelWebsiteUtils
+    ? window.TravelWebsiteUtils.getPageQueryValue('destination')
+    : '';
+
+  // Prefill the destination field when the user came from the Homepage search.
+  if (destinationInput && initialDestinationQuery) {
+    destinationInput.value = initialDestinationQuery;
+  }
+
+  if (window.TravelWebsiteUtils && searchForm && destinationInput && listingsPanel && listingLinks.length) {
+    window.TravelWebsiteUtils.initLiveSearch({
+      formElement: searchForm,
+      inputElement: destinationInput,
+      itemElements: listingLinks,
+      initialQuery: initialDestinationQuery,
+      noResultsMount: listingsPanel,
+
+      // Build the search index for each property card.
+      getItemData: function (listingLink) {
+        const titleElement = listingLink.querySelector('h3');
+        const locationElement = listingLink.querySelector('.location');
+        const priceElement = listingLink.querySelector('.price');
+        const title = titleElement ? titleElement.textContent.trim() : '';
+        const location = locationElement ? locationElement.textContent.trim() : '';
+        const price = priceElement ? priceElement.textContent.trim() : '';
+
+        return {
+          title: title,
+          subtitle: location,
+          suggestionMeta: location + (price ? ' • ' + price + ' per night' : ''),
+          suggestionKey: title + '|' + location,
+          searchValue: title,
+          searchText: [title, location, price].join(' ')
+        };
+      },
+
+      // The status text is tuned to the Search Results page instead of the Homepage copy.
+      getStatusText: function (state) {
+        if (!state.query) {
+          return 'Showing all ' + state.totalCount + ' available stays.';
+        }
+
+        return (
+          'Showing ' +
+          state.matchCount +
+          ' ' +
+          (state.matchCount === 1 ? 'stay' : 'stays') +
+          ' for “' +
+          state.query +
+          '”.'
+        );
+      },
+
+      noResultsTitle: 'No stays matched your destination search',
+      noResultsDescription: 'Try another destination name or clear the search to see every available stay.',
+
+      // Keep the current destination query shareable in the page URL.
+      afterFilter: function (state) {
+        window.TravelWebsiteUtils.updatePageQueryValue('destination', state.query);
+      },
+
+      // Submit keeps the experience client-side while staying in sync with the URL.
+      onSubmit: function (state) {
+        window.TravelWebsiteUtils.updatePageQueryValue('destination', state.query);
+      }
     });
   }
 

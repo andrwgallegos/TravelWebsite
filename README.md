@@ -19,11 +19,14 @@ A responsive multi-page travel website built using HTML, CSS, and JavaScript.
 - Mobile hamburger menu (open/close functionality)
 - Working links between all pages
 - Interactive UI elements:
-  - Search form
+  - Live client-side search with real-time suggestions
+  - Search empty states and no-results handling
   - Filters
   - FAQ expand/collapse
   - Trips modal and carousel
   - Checkout validation and success modal
+  - Shared currency toggle with demo price conversion
+  - Prototype notice for "List your property"
 
 ---
 
@@ -85,16 +88,21 @@ Mobile:
 ## Page Functionality
 
 Homepage:
-- Search bar redirects to Search Results
+- Live destination search filters featured trips in real time
+- Search submit can route to Search Results with the destination query
 
 Search Results:
+- Live destination search filters listing cards in real time
+- URL query stays in sync with the current destination search
 - Displays cards and filters
 
 Help Center:
 - FAQ sections expand/collapse
+- Live help-topic search filters FAQs and expands matching answers
 
 Trips:
 - Tabs (Booked, Saved, Create)
+- Live trip search filters booked trips and itinerary suggestions
 - Modal and carousel
 
 Checkout Page:
@@ -107,5 +115,7 @@ Checkout Page:
 ## Notes
 
 - This is a front-end prototype (no backend)
+- Currency conversion uses static demo rates on the client side
+- "List your property" intentionally shows a not-integrated prototype message
 - Some features are simulated for demonstration
 - Images may be placeholders
