@@ -260,7 +260,6 @@ body {
   color: #191e3b;
 }
 
-/* One-column layout on phones */
 .faq-grid {
   max-width: 1600px;
   margin: 0 auto;
@@ -273,6 +272,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faq-category:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
 }
 
 .category-title {
@@ -281,42 +286,58 @@ body {
   color: #191e3b;
 }
 
-/* Each FAQ item is grouped for spacing and interaction */
 .faq-item {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Question is a button for keyboard and touch support */
+/* QUESTION HOVER FIX */
 .faq-question {
   background: none;
   border: none;
-  padding: 0;
   text-align: left;
   font-size: 17px;
   font-weight: 600;
   color: #191e3b;
   cursor: pointer;
   line-height: 1.4;
+  transition: color 0.25s ease, transform 0.2s ease;
 }
 
-/* Optional hover effect for clarity */
 .faq-question:hover {
   color: #3b5d7e;
+  transform: translateX(5px);
 }
 
-/* Hidden by default so JS can reveal the answer */
+/* FAQ ANIMATION FIX */
 .faq-answer {
-  display: none;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
   font-size: 13px;
   line-height: 1.45;
   color: #191e3b;
 }
 
-/* Added by JavaScript when answer is open */
 .faq-answer.show {
-  display: block;
+  max-height: 200px;
+  opacity: 1;
+}
+
+/* BUTTON MICRO-INTERACTION */
+.search-button,
+.sign-in-button,
+.modal-button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-button:hover,
+.sign-in-button:hover,
+.modal-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
 /* =========================================================
@@ -437,11 +458,6 @@ body {
     margin-bottom: 28px;
   }
 
-  .help-search-form {
-    padding: 14px 24px;
-    gap: 24px;
-  }
-
   .section-title {
     font-size: 36px;
     margin-bottom: 34px;
@@ -470,22 +486,11 @@ body {
 /* =========================================================
    NAVBAR FADE-IN 
    ========================================================= */
-
 .navbar * {
   opacity: 0;
   transform: translateY(-8px);
   animation: navFadeIn 1s ease forwards;
 }
-
-.navbar-left {
-  animation-delay: 0.2s;
-}
-
-.navbar-right > *:nth-child(1) { animation-delay: 0.4s; }
-.navbar-right > *:nth-child(2) { animation-delay: 0.6s; }
-.navbar-right > *:nth-child(3) { animation-delay: 0.8s; }
-.navbar-right > *:nth-child(4) { animation-delay: 1s; }
-.navbar-right > *:nth-child(5) { animation-delay: 1.2s; }
 
 @keyframes navFadeIn {
   to {
