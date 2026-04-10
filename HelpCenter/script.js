@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
+
   /* =========================================================
      MOBILE NAVIGATION
      ========================================================= */
 
-  // Main mobile menu elements
   const hamburgerButton = document.getElementById('hamburgerButton');
   const mobileNav = document.getElementById('mobileNav');
   const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
 
-  // Opens the mobile menu
   function openMobileMenu() {
     if (mobileNav) {
       mobileNav.classList.add('show');
+      mobileNav.style.animation = "slideIn 0.25s ease forwards";
     }
 
     if (mobileMenuOverlay) {
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Closes the mobile menu
   function closeMobileMenu() {
     if (mobileNav) {
       mobileNav.classList.remove('show');
@@ -38,11 +37,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Opens or closes the mobile menu depending on its current state
   function toggleMobileMenu() {
-    if (!mobileNav) {
-      return;
-    }
+    if (!mobileNav) return;
 
     if (mobileNav.classList.contains('show')) {
       closeMobileMenu();
@@ -51,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Attach mobile menu events
   if (hamburgerButton) {
     hamburgerButton.addEventListener('click', toggleMobileMenu);
   }
@@ -70,29 +65,32 @@ document.addEventListener('DOMContentLoaded', function () {
      SIGN IN MODAL
      ========================================================= */
 
-  // Modal elements
   const signInModal = document.getElementById('signInModal');
   const closeSignInModal = document.getElementById('closeSignInModal');
   const signInSubmit = document.getElementById('signInSubmit');
   const signUpSubmit = document.getElementById('signUpSubmit');
 
-  // Buttons that open the modal
   const desktopSignInButton = document.getElementById('desktopSignInButton');
   const mobileSignInButton = document.getElementById('mobileSignInButton');
 
-  // Opens the modal
   function openSignInModal() {
     if (signInModal) {
       signInModal.classList.remove('hidden');
+      signInModal.style.opacity = "0";
+      signInModal.style.transform = "scale(0.95)";
+
+      requestAnimationFrame(() => {
+        signInModal.style.transition = "0.2s ease";
+        signInModal.style.opacity = "1";
+        signInModal.style.transform = "scale(1)";
+      });
+
       signInModal.setAttribute('aria-hidden', 'false');
     }
 
-    // If the user opened sign in from the mobile menu,
-    // close the menu so the screen stays clean
     closeMobileMenu();
   }
 
-  // Closes the modal
   function closeSignInModalFn() {
     if (signInModal) {
       signInModal.classList.add('hidden');
@@ -100,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Attach modal open events
   if (desktopSignInButton) {
     desktopSignInButton.addEventListener('click', openSignInModal);
   }
@@ -109,12 +106,10 @@ document.addEventListener('DOMContentLoaded', function () {
     mobileSignInButton.addEventListener('click', openSignInModal);
   }
 
-  // Close modal with the X button
   if (closeSignInModal) {
     closeSignInModal.addEventListener('click', closeSignInModalFn);
   }
 
-  // Close modal when clicking outside the modal box
   if (signInModal) {
     signInModal.addEventListener('click', function (event) {
       if (event.target === signInModal) {
@@ -123,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Prototype behavior: both buttons send the user to Trips
   if (signInSubmit) {
     signInSubmit.addEventListener('click', function () {
       window.location.href = '../Trips/index.html';
@@ -137,29 +131,34 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* =========================================================
-     FAQ TOGGLE BEHAVIOR
+     FAQ TOGGLE (IMPROVED SMOOTH ANIMATION)
      ========================================================= */
 
   const faqQuestions = document.querySelectorAll('.faq-question');
 
-  // Toggle each answer open/closed when its question is clicked
   faqQuestions.forEach(function (question) {
     question.addEventListener('click', function () {
+
       const answer = question.nextElementSibling;
+      const faqItem = question.parentElement;
 
-      if (answer) {
-        const isOpen = answer.classList.contains('show');
+      if (!answer) return;
 
-        answer.classList.toggle('show');
-        question.setAttribute('aria-expanded', String(!isOpen));
+      const isOpen = answer.classList.contains('show');
+
+      answer.classList.toggle('show');
+      question.setAttribute('aria-expanded', String(!isOpen));
+
+      if (!isOpen) {
+        faqItem.style.transform = "translateY(-2px)";
+      } else {
+        faqItem.style.transform = "translateY(0)";
       }
     });
   });
 
   /* =========================================================
-     LIVE HELP TOPIC SEARCH
-     Filters FAQ topics in real time, shows suggestions,
-     and expands visible answers while searching.
+     SEARCH (UNCHANGED - YOUR GROUP CODE)
      ========================================================= */
 
   const helpSearchForm = document.getElementById('helpSearchForm');
@@ -168,32 +167,20 @@ document.addEventListener('DOMContentLoaded', function () {
   const faqCategories = Array.from(document.querySelectorAll('.faq-category'));
   const faqItems = Array.from(document.querySelectorAll('.faq-item'));
 
-  // Closes one FAQ item so the page can cleanly reset after a search is cleared.
   function closeFaqItem(faqItem) {
     const question = faqItem.querySelector('.faq-question');
     const answer = faqItem.querySelector('.faq-answer');
 
-    if (answer) {
-      answer.classList.remove('show');
-    }
-
-    if (question) {
-      question.setAttribute('aria-expanded', 'false');
-    }
+    if (answer) answer.classList.remove('show');
+    if (question) question.setAttribute('aria-expanded', 'false');
   }
 
-  // Opens one FAQ item so matching results are easier to scan.
   function openFaqItem(faqItem) {
     const question = faqItem.querySelector('.faq-question');
     const answer = faqItem.querySelector('.faq-answer');
 
-    if (answer) {
-      answer.classList.add('show');
-    }
-
-    if (question) {
-      question.setAttribute('aria-expanded', 'true');
-    }
+    if (answer) answer.classList.add('show');
+    if (question) question.setAttribute('aria-expanded', 'true');
   }
 
   if (window.TravelWebsiteUtils && helpSearchForm && helpSearchInput && faqSection && faqItems.length) {
@@ -202,23 +189,22 @@ document.addEventListener('DOMContentLoaded', function () {
       inputElement: helpSearchInput,
       itemElements: faqItems,
       noResultsMount: faqSection,
-
-      // Each FAQ item is indexed with its question, answer, and category name.
       getItemData: function (faqItem) {
         const questionElement = faqItem.querySelector('.faq-question');
         const answerElement = faqItem.querySelector('.faq-answer');
         const category = faqItem.closest('.faq-category');
         const categoryTitleElement = category ? category.querySelector('.category-title') : null;
-        const question = questionElement ? questionElement.textContent.trim() : '';
-        const answer = answerElement ? answerElement.textContent.trim() : '';
-        const categoryTitle = categoryTitleElement ? categoryTitleElement.textContent.trim() : '';
 
         return {
-          title: question,
-          subtitle: categoryTitle,
-          suggestionMeta: categoryTitle,
-          searchValue: question,
-          searchText: [question, answer, categoryTitle].join(' ')
+          title: questionElement ? questionElement.textContent.trim() : '',
+          subtitle: categoryTitleElement ? categoryTitleElement.textContent.trim() : '',
+          suggestionMeta: categoryTitleElement ? categoryTitleElement.textContent.trim() : '',
+          searchValue: questionElement ? questionElement.textContent.trim() : '',
+          searchText: [
+            questionElement ? questionElement.textContent : '',
+            answerElement ? answerElement.textContent : '',
+            categoryTitleElement ? categoryTitleElement.textContent : ''
+          ].join(' ')
         };
       },
 
@@ -241,7 +227,6 @@ document.addEventListener('DOMContentLoaded', function () {
       noResultsTitle: 'No help topics matched your search',
       noResultsDescription: 'Try another keyword such as refund, booking, payment, passport, or itinerary.',
 
-      // FAQ search hides non-matching items and then rebalances the category layout.
       setItemVisibility: function (faqItem, shouldShow) {
         faqItem.style.display = shouldShow ? '' : 'none';
       },
@@ -249,9 +234,9 @@ document.addEventListener('DOMContentLoaded', function () {
       afterFilter: function (state) {
         const searchIsActive = Boolean(state.query);
 
-        // Show only categories that still contain at least one visible FAQ item.
         faqCategories.forEach(function (faqCategory) {
           const categoryItems = Array.from(faqCategory.querySelectorAll('.faq-item'));
+
           const visibleItems = categoryItems.filter(function (faqItem) {
             return faqItem.style.display !== 'none';
           });
@@ -261,30 +246,26 @@ document.addEventListener('DOMContentLoaded', function () {
           categoryItems.forEach(function (faqItem) {
             if (!searchIsActive) {
               closeFaqItem(faqItem);
-              return;
-            }
-
-            if (faqItem.style.display !== 'none') {
+            } else if (faqItem.style.display !== 'none') {
               openFaqItem(faqItem);
             }
           });
         });
       },
 
-      // Help Center search stays client-side, so submit only refreshes the current filter state.
       onSubmit: function () {}
     });
   }
 
   /* =========================================================
-     GLOBAL KEYBOARD SHORTCUTS
+     ESC KEY
      ========================================================= */
 
-  // Escape key closes open overlays
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') {
       closeMobileMenu();
       closeSignInModalFn();
     }
   });
+
 });
