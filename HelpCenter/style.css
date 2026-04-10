@@ -466,25 +466,25 @@ body {
 }
 
 /* =========================================================
-   NAVBAR FADE-IN ANIMATION
+   NAVBAR FADE-IN 
    ========================================================= */
 
-/*Start*/
-.navbar-right .nav-link,
-.navbar-right .sign-in-button {
+.navbar * {
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(-8px);
   animation: navFadeIn 1s ease forwards;
 }
 
-/* Delays*/
-.navbar-right .nav-link:nth-child(1) { animation-delay: 0.2s; }
-.navbar-right .nav-link:nth-child(2) { animation-delay: 0.4s; }
-.navbar-right .nav-link:nth-child(3) { animation-delay: 0.6s; }
-.navbar-right .nav-link:nth-child(4) { animation-delay: 0.8s; }
-.navbar-right .sign-in-button       { animation-delay: 1s; }
+.navbar-left {
+  animation-delay: 0.2s;
+}
 
-/* End */
+.navbar-right > *:nth-child(1) { animation-delay: 0.4s; }
+.navbar-right > *:nth-child(2) { animation-delay: 0.6s; }
+.navbar-right > *:nth-child(3) { animation-delay: 0.8s; }
+.navbar-right > *:nth-child(4) { animation-delay: 1s; }
+.navbar-right > *:nth-child(5) { animation-delay: 1.2s; }
+
 @keyframes navFadeIn {
   to {
     opacity: 1;
