@@ -321,32 +321,142 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // When the user edits a field, remove that field's error state
-  const inputs = form.querySelectorAll('input, select');
+  // Before - When the user edits a field, remove that field's error state
+  // After - When the user edits a field, validate it in real-time and show/hide errors as they type 
+  const liveValidationFields = [
+  'firstName',
+  'lastName',
+  'email',
+  'phoneNumber',
+  'cardNumber',
+  'expirationDate',
+  'securityCode',
+  'billingZip'
+];
 
-  inputs.forEach(function (input) {
-    input.addEventListener('input', function () {
-      this.classList.remove('error');
+liveValidationFields.forEach(function (fieldId) {
+  const field = document.getElementById(fieldId);
 
-      const errorId = this.id + 'Error';
-      const errorElement = document.getElementById(errorId);
+  if (!field) {
+    return;
+  }
 
-      if (errorElement) {
-        errorElement.style.display = 'none';
-      }
-    });
+  field.addEventListener('input', function () {
+    // only live-validate card fields if card is selected
+    const selectedPaymentMethodButton = document.querySelector('.payment-method.selected');
+    const selectedPaymentMethod = selectedPaymentMethodButton
+      ? selectedPaymentMethodButton.getAttribute('data-method')
+      : 'card';
 
-    input.addEventListener('change', function () {
-      this.classList.remove('error');
+    const cardFields = ['cardNumber', 'expirationDate', 'securityCode', 'billingZip'];
 
-      const errorId = this.id + 'Error';
-      const errorElement = document.getElementById(errorId);
+    if (cardFields.includes(fieldId) && selectedPaymentMethod !== 'card') {
+      hideError(fieldId, fieldId + 'Error');
+      return;
+    }
 
-      if (errorElement) {
-        errorElement.style.display = 'none';
-      }
-    });
+    validateField(fieldId);
   });
+
+  field.addEventListener('blur', function () {
+    validateField(fieldId);
+  });
+});
+
+ /* =========================================================
+     INSTANT VALIDATION
+     ========================================================= */
+function hideError(inputId, errorId) {
+  const input = document.getElementById(inputId);
+  const error = document.getElementById(errorId);
+
+  if (input) {
+    input.classList.remove('error');
+  }
+
+  if (error) {
+    error.style.display = 'none';
+  }
+}
+
+function validateField(fieldId) {
+  const field = document.getElementById(fieldId);
+
+  if (!field) {
+    return true;
+  }
+
+  const value = field.value.trim();
+
+  switch (fieldId) {
+    case 'firstName':
+      if (!value) {
+        showError('firstName', 'firstNameError');
+        return false;
+      }
+      hideError('firstName', 'firstNameError');
+      return true;
+
+    case 'lastName':
+      if (!value) {
+        showError('lastName', 'lastNameError');
+        return false;
+      }
+      hideError('lastName', 'lastNameError');
+      return true;
+
+    case 'email':
+      if (!value || !validateEmail(value)) {
+        showError('email', 'emailError');
+        return false;
+      }
+      hideError('email', 'emailError');
+      return true;
+
+    case 'phoneNumber':
+      if (!value) {
+        showError('phoneNumber', 'phoneNumberError');
+        return false;
+      }
+      hideError('phoneNumber', 'phoneNumberError');
+      return true;
+
+    case 'cardNumber':
+      if (!value || !validateCardNumber(value)) {
+        showError('cardNumber', 'cardNumberError');
+        return false;
+      }
+      hideError('cardNumber', 'cardNumberError');
+      return true;
+
+    case 'expirationDate':
+      if (!value || !validateExpirationDate(value)) {
+        showError('expirationDate', 'expirationDateError');
+        return false;
+      }
+      hideError('expirationDate', 'expirationDateError');
+      return true;
+
+    case 'securityCode':
+      if (!value || !validateSecurityCode(value)) {
+        showError('securityCode', 'securityCodeError');
+        return false;
+      }
+      hideError('securityCode', 'securityCodeError');
+      return true;
+
+    case 'billingZip':
+      if (!value || !validateZipCode(value)) {
+        showError('billingZip', 'billingZipError');
+        return false;
+      }
+      hideError('billingZip', 'billingZipError');
+      return true;
+
+    default:
+      return true;
+  }
+}
 
   /* =========================================================
      SUCCESS MODAL
@@ -397,26 +507,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const email = document.getElementById('email').value.trim();
     const phoneNumber = document.getElementById('phoneNumber').value.trim();
 
-    // Basic required field checks
-    if (!firstName) {
-      showError('firstName', 'firstNameError');
-      hasErrors = true;
-    }
-
-    if (!lastName) {
-      showError('lastName', 'lastNameError');
-      hasErrors = true;
-    }
-
-    if (!email || !validateEmail(email)) {
-      showError('email', 'emailError');
-      hasErrors = true;
-    }
-
-    if (!phoneNumber) {
-      showError('phoneNumber', 'phoneNumberError');
-      hasErrors = true;
-    }
+    // Basic required field checks (simplified for assignment 12)
+    if (!validateField('firstName')) hasErrors = true;
+    if (!validateField('lastName')) hasErrors = true;
+    if (!validateField('email')) hasErrors = true;
+    if (!validateField('phoneNumber')) hasErrors = true;
 
     // Find the selected payment method
     const selectedPaymentMethodButton = document.querySelector('.payment-method.selected');
@@ -431,25 +526,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const securityCode = document.getElementById('securityCode').value.trim();
       const billingZip = document.getElementById('billingZip').value.trim();
 
-      if (!cardNumber || !validateCardNumber(cardNumber)) {
-        showError('cardNumber', 'cardNumberError');
-        hasErrors = true;
-      }
-
-      if (!expirationDate || !validateExpirationDate(expirationDate)) {
-        showError('expirationDate', 'expirationDateError');
-        hasErrors = true;
-      }
-
-      if (!securityCode || !validateSecurityCode(securityCode)) {
-        showError('securityCode', 'securityCodeError');
-        hasErrors = true;
-      }
-
-      if (!billingZip || !validateZipCode(billingZip)) {
-        showError('billingZip', 'billingZipError');
-        hasErrors = true;
-      }
+      if (selectedPaymentMethod === 'card') {
+        if (!validateField('cardNumber')) hasErrors = true;
+        if (!validateField('expirationDate')) hasErrors = true;
+        if (!validateField('securityCode')) hasErrors = true;
+        if (!validateField('billingZip')) hasErrors = true;
+      } 
     }
 
     // Show error banner or success modal
