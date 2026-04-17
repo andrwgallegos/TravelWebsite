@@ -7,6 +7,9 @@ window.TravelWebsiteUtils = (function () {
   // Stores the user's selected currency so the choice persists between pages.
   const CURRENCY_STORAGE_KEY = 'travelWebsitePreferredCurrency';
 
+  // Stores the preferred color theme so it stays consistent across pages.
+  const THEME_STORAGE_KEY = 'travelWebsiteTheme';
+
   // Defines the supported demo currencies and the rate used to convert from USD.
   const CURRENCY_MAP = {
     USD: { code: 'USD', locale: 'en-US', rate: 1 },
@@ -37,6 +40,30 @@ window.TravelWebsiteUtils = (function () {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, ' ')
       .trim();
+  }
+
+  // Safely reads the stored theme without breaking if localStorage is unavailable.
+  function getStoredTheme() {
+    try {
+      const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+
+      if (storedTheme === 'dark' || storedTheme === 'light') {
+        return storedTheme;
+      }
+    } catch (error) {
+      // File-based demos can block storage in some environments, so failure is ignored.
+    }
+
+    return 'light';
+  }
+
+  // Saves the selected theme for the next page load.
+  function setStoredTheme(themeName) {
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, themeName);
+    } catch (error) {
+      // Storage failure should not stop the current page from updating.
+    }
   }
 
   // Safely reads the stored currency without breaking if localStorage is unavailable.
@@ -114,6 +141,80 @@ window.TravelWebsiteUtils = (function () {
     toastTimeoutId = window.setTimeout(function () {
       toastElement.classList.remove('show');
     }, 2600);
+  }
+
+
+  // Returns the correct homepage path for the current page depth.
+  function getHomepageHref() {
+    const currentPath = String(window.location.pathname || '');
+    return currentPath.includes('/Homepage/') ? 'index.html' : '../Homepage/index.html';
+  }
+
+  // Updates the visible theme-toggle button labels to reflect the active theme.
+  function updateThemeToggleLabels(themeName) {
+    const themeToggleButtons = document.querySelectorAll('.theme-toggle');
+    const nextThemeName = themeName === 'dark' ? 'light' : 'dark';
+
+    themeToggleButtons.forEach(function (button) {
+      button.textContent = themeName === 'dark' ? '☀️' : '🌙';
+      button.setAttribute('aria-label', 'Switch to ' + nextThemeName + ' mode.');
+      button.setAttribute('title', 'Switch to ' + nextThemeName + ' mode.');
+    });
+  }
+
+  // Applies the currently selected theme to the page.
+  function applyTheme(themeName) {
+    const resolvedTheme = themeName === 'dark' ? 'dark' : 'light';
+    document.body.classList.toggle('theme-dark', resolvedTheme === 'dark');
+    updateThemeToggleLabels(resolvedTheme);
+  }
+
+  // Adds the shared home shortcut and dark-mode toggle to each page navigation.
+  function ensureSharedNavigationFeatures() {
+    const navbarLeft = document.querySelector('.navbar-left');
+
+    if (navbarLeft && !navbarLeft.querySelector('.home-icon-link')) {
+      const homeLink = document.createElement('a');
+      const logoLink = navbarLeft.querySelector('.logo-link');
+      homeLink.href = getHomepageHref();
+      homeLink.className = 'nav-link nav-utility-link home-icon-link';
+      homeLink.setAttribute('aria-label', 'Go to homepage');
+      homeLink.setAttribute('title', 'Go to homepage');
+      homeLink.textContent = '⌂';
+
+      if (logoLink && logoLink.nextSibling) {
+        navbarLeft.insertBefore(homeLink, logoLink.nextSibling);
+      } else {
+        navbarLeft.appendChild(homeLink);
+      }
+    }
+
+    ['.desktop-nav', '.mobile-nav'].forEach(function (selector) {
+      const navElement = document.querySelector(selector);
+
+      if (!navElement || navElement.querySelector('.theme-toggle')) {
+        return;
+      }
+
+      const themeToggleButton = document.createElement('button');
+      themeToggleButton.type = 'button';
+      themeToggleButton.className = 'nav-link nav-utility-link theme-toggle';
+      themeToggleButton.addEventListener('click', function () {
+        const nextTheme = getStoredTheme() === 'dark' ? 'light' : 'dark';
+        setStoredTheme(nextTheme);
+        applyTheme(nextTheme);
+      });
+
+      const signInButton = navElement.querySelector('.sign-in-button');
+
+      if (signInButton) {
+        navElement.insertBefore(themeToggleButton, signInButton);
+      } else {
+        navElement.appendChild(themeToggleButton);
+      }
+    });
+
+    updateThemeToggleLabels(getStoredTheme());
   }
 
   /* =========================================================
@@ -290,10 +391,27 @@ window.TravelWebsiteUtils = (function () {
     suggestionsHeading.className = 'visually-hidden';
     suggestionsHeading.textContent = 'Search suggestions';
 
+    const loadingElement = document.createElement('div');
+    loadingElement.className = 'search-loading search-ui-hidden';
+    loadingElement.setAttribute('role', 'status');
+    loadingElement.setAttribute('aria-live', 'polite');
+
+    const loadingSpinner = document.createElement('span');
+    loadingSpinner.className = 'search-loading-spinner';
+    loadingSpinner.setAttribute('aria-hidden', 'true');
+
+    const loadingText = document.createElement('span');
+    loadingText.className = 'search-loading-text';
+    loadingText.textContent = config.loadingText || 'Loading suggestions…';
+
+    loadingElement.appendChild(loadingSpinner);
+    loadingElement.appendChild(loadingText);
+
     const suggestionsList = document.createElement('div');
     suggestionsList.className = 'search-suggestion-list';
 
     suggestionsElement.appendChild(suggestionsHeading);
+    suggestionsElement.appendChild(loadingElement);
     suggestionsElement.appendChild(suggestionsList);
     formElement.insertAdjacentElement('afterend', suggestionsElement);
 
@@ -352,8 +470,26 @@ window.TravelWebsiteUtils = (function () {
       });
     }
 
+    let filterDelayTimeoutId = null;
+    let latestFilterRequestId = 0;
+
+    // Shows or hides the loading indicator inside the suggestion dropdown.
+    function setLoadingState(shouldShow, query) {
+      const hasQuery = Boolean(String(query || '').trim());
+      const isVisible = shouldShow && hasQuery;
+
+      loadingElement.classList.toggle('search-ui-hidden', !isVisible);
+
+      if (isVisible) {
+        suggestionsList.innerHTML = '';
+        suggestionsElement.classList.remove('search-ui-hidden');
+      }
+    }
+
     // Hides the suggestion dropdown completely.
     function hideSuggestions() {
+      window.clearTimeout(filterDelayTimeoutId);
+      setLoadingState(false, '');
       suggestionsElement.classList.add('search-ui-hidden');
       suggestionsList.innerHTML = '';
     }
@@ -395,6 +531,33 @@ window.TravelWebsiteUtils = (function () {
       });
 
       return suggestionButton;
+    }
+
+    // Schedules a short loading state before updating the suggestion list.
+    function scheduleFilter(query) {
+      const trimmedQuery = String(query || '').trim();
+      const loadingDelay = Number(config.loadingDelay || 180);
+
+      window.clearTimeout(filterDelayTimeoutId);
+      latestFilterRequestId += 1;
+
+      if (!trimmedQuery) {
+        hideSuggestions();
+        applyFilter('');
+        return;
+      }
+
+      const currentRequestId = latestFilterRequestId;
+      setLoadingState(true, trimmedQuery);
+
+      filterDelayTimeoutId = window.setTimeout(function () {
+        if (currentRequestId !== latestFilterRequestId) {
+          return;
+        }
+
+        setLoadingState(false, trimmedQuery);
+        applyFilter(trimmedQuery);
+      }, loadingDelay);
     }
 
     // Rebuilds the visible suggestion list from the best current matches.
@@ -489,12 +652,12 @@ window.TravelWebsiteUtils = (function () {
 
     // Re-runs the filter whenever the user types or clears the field.
     inputElement.addEventListener('input', function () {
-      applyFilter(inputElement.value);
+      scheduleFilter(inputElement.value);
     });
 
     // Some browsers fire a dedicated event when the built-in search clear button is used.
     inputElement.addEventListener('search', function () {
-      applyFilter(inputElement.value);
+      scheduleFilter(inputElement.value);
     });
 
     // Refocus should reveal the latest suggestions again when a query is still present.
@@ -507,6 +670,10 @@ window.TravelWebsiteUtils = (function () {
     // Prevents the form from refreshing the page unless a page-specific submit handler takes over.
     formElement.addEventListener('submit', function (event) {
       const currentQuery = inputElement.value.trim();
+
+      window.clearTimeout(filterDelayTimeoutId);
+      setLoadingState(false, currentQuery);
+
       const matches = applyFilter(currentQuery);
 
       event.preventDefault();
@@ -552,9 +719,11 @@ window.TravelWebsiteUtils = (function () {
 
   // Applies the shared currency/property behavior once the DOM is ready.
   document.addEventListener('DOMContentLoaded', function () {
+    ensureSharedNavigationFeatures();
     bindCurrencyToggles();
     bindPropertyTriggers();
     applyCurrencyToPage(getStoredCurrency());
+    applyTheme(getStoredTheme());
   });
 
   return {

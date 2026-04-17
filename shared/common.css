@@ -111,3 +111,234 @@
   opacity: 1;
   transform: translate(-50%, 0);
 }
+
+.search-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.95rem 1rem;
+  color: #334155;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.search-loading-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(51, 65, 85, 0.2);
+  border-top-color: #334155;
+  border-radius: 999px;
+  animation: searchSpinner 0.8s linear infinite;
+}
+
+@keyframes searchSpinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.nav-utility-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  min-height: 42px;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-utility-link:hover,
+.nav-utility-link:focus-visible {
+  background: rgba(25, 30, 59, 0.08);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.home-icon-link {
+  margin-left: 12px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.theme-toggle {
+  font-size: 18px;
+  line-height: 1;
+}
+
+body.theme-dark {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+body.theme-dark .navbar,
+body.theme-dark .search-card,
+body.theme-dark .trip-section,
+body.theme-dark .filters-panel,
+body.theme-dark .listings-panel,
+body.theme-dark .ads-panel,
+body.theme-dark .faq-section,
+body.theme-dark .faq-item,
+body.theme-dark .trip-card,
+body.theme-dark .listing-card,
+body.theme-dark .ad-card,
+body.theme-dark .booking-summary,
+body.theme-dark .left-panel,
+body.theme-dark .right-panel,
+body.theme-dark .form-container,
+body.theme-dark .payment-section,
+body.theme-dark .modal-content,
+body.theme-dark .success-modal-content,
+body.theme-dark .help-search-form,
+body.theme-dark .search-no-results,
+body.theme-dark .search-suggestions,
+body.theme-dark .search-loading,
+body.theme-dark .empty-state {
+  background-color: #111827 !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
+}
+
+body.theme-dark .hero,
+body.theme-dark .search-hero,
+body.theme-dark .help-hero {
+  background-color: #10253f !important;
+  border-color: #334155 !important;
+}
+
+body.theme-dark .logo-text,
+body.theme-dark .nav-link,
+body.theme-dark .dropdown-button,
+body.theme-dark .hero-title,
+body.theme-dark .help-title,
+body.theme-dark .section-title,
+body.theme-dark .filters-title,
+body.theme-dark .category-item p,
+body.theme-dark .trip-info h3,
+body.theme-dark .trip-info .location,
+body.theme-dark .trip-info .stay,
+body.theme-dark .trip-info .travel,
+body.theme-dark .trip-info .price,
+body.theme-dark .trip-info .time,
+body.theme-dark .modal-title,
+body.theme-dark .sign-in-link-text,
+body.theme-dark .faq-question,
+body.theme-dark .faq-answer,
+body.theme-dark .category-title,
+body.theme-dark .listing-info h3,
+body.theme-dark .listing-info p,
+body.theme-dark .hotel-name,
+body.theme-dark .hotel-address,
+body.theme-dark .rating-text,
+body.theme-dark .review-count,
+body.theme-dark .check-label,
+body.theme-dark .check-date,
+body.theme-dark .check-time,
+body.theme-dark .nights-count,
+body.theme-dark .required-text,
+body.theme-dark .section-subtitle,
+body.theme-dark .search-suggestion-title,
+body.theme-dark .search-results-status,
+body.theme-dark .search-no-results h3,
+body.theme-dark .search-loading,
+body.theme-dark .field-label,
+body.theme-dark .form-group label,
+body.theme-dark .property-highlights h3,
+body.theme-dark .highlight-item,
+body.theme-dark .filter-option,
+body.theme-dark .placeholder-text {
+  color: #e2e8f0 !important;
+}
+
+body.theme-dark .search-suggestion-meta,
+body.theme-dark .search-no-results p,
+body.theme-dark .search-loading-text,
+body.theme-dark .trip-info .location,
+body.theme-dark .hotel-address,
+body.theme-dark .review-count,
+body.theme-dark .section-subtitle,
+body.theme-dark .search-no-results p,
+body.theme-dark .filter-description {
+  color: #cbd5e1 !important;
+}
+
+body.theme-dark .logo-box {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+body.theme-dark .mobile-nav {
+  background: #111827 !important;
+}
+
+body.theme-dark .search-suggestion-button:hover,
+body.theme-dark .search-suggestion-button:focus-visible,
+body.theme-dark .trip-card:hover,
+body.theme-dark .listing-card:hover,
+body.theme-dark .faq-category:hover,
+body.theme-dark .payment-method:hover {
+  background: #1e293b !important;
+}
+
+body.theme-dark .nav-utility-link:hover,
+body.theme-dark .nav-utility-link:focus-visible {
+  background: rgba(226, 232, 240, 0.08);
+}
+
+body.theme-dark input,
+body.theme-dark select,
+body.theme-dark textarea,
+body.theme-dark .form-input,
+body.theme-dark .form-select,
+body.theme-dark .sign-up-form input,
+body.theme-dark .help-search-form input,
+body.theme-dark .search-form input {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: #475569 !important;
+}
+
+body.theme-dark input::placeholder,
+body.theme-dark select::placeholder,
+body.theme-dark textarea::placeholder,
+body.theme-dark .sign-up-form input::placeholder,
+body.theme-dark .help-search-form input::placeholder,
+body.theme-dark .search-form input::placeholder {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark .search-button,
+body.theme-dark .sign-up-button,
+body.theme-dark .btn-book-now,
+body.theme-dark .create-link-button,
+body.theme-dark .sign-in-button,
+body.theme-dark .filter-pill,
+body.theme-dark .trip-tab.active,
+body.theme-dark .payment-method.selected,
+body.theme-dark .btn-edit {
+  box-shadow: none;
+}
+
+body.theme-dark .dropdown-button::after {
+  color: #e2e8f0;
+}
+
+body.theme-dark .payment-method,
+body.theme-dark .trip-tab,
+body.theme-dark .filter-option,
+body.theme-dark .highlight-item,
+body.theme-dark .btn-edit {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
+}
+
+body.theme-dark .success-close-button,
+body.theme-dark .modal-close,
+body.theme-dark .modal-close-button {
+  color: #e2e8f0 !important;
+}
+
+body.theme-dark .search-loading-spinner {
+  border-color: rgba(226, 232, 240, 0.2);
+  border-top-color: #e2e8f0;
+}

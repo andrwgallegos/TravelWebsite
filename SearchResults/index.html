@@ -116,9 +116,15 @@
 
         <!-- Prototype search form -->
         <form class="search-form" action="index.html">
-          <input type="text" placeholder="Where to?" aria-label="Destination" />
-          <input type="text" placeholder="Dates" aria-label="Dates" />
-          <input type="text" placeholder="Travelers" aria-label="Travelers" />
+          <input type="text" name="destination" placeholder="Where to?" aria-label="Destination" />
+          <input
+            type="text"
+            name="dates"
+            placeholder="YYYY-MM-DD to YYYY-MM-DD"
+            aria-label="Dates"
+            title="Enter dates as YYYY-MM-DD to YYYY-MM-DD"
+          />
+          <input type="number" name="travelers" min="1" placeholder="Travelers" aria-label="Travelers" />
           <button type="submit" class="search-button">Search</button>
         </form>
 
@@ -170,7 +176,13 @@
 
       <!-- Center hotel/property listings -->
       <section class="listings-panel">
-        <a href="../CheckoutPage/index.html" class="listing-link">
+        <a
+          href="../CheckoutPage/index.html"
+          class="listing-link"
+          data-available-start="2026-05-01"
+          data-available-end="2026-12-20"
+          data-max-travelers="4"
+        >
           <article class="listing-card">
             <div>
               <img class="listing-image" src="images/sanjuan.jpeg" alt="San Juan" />
@@ -180,11 +192,18 @@
               <p class="location">Puerto Rico</p>
               <p class="price">$248</p>
               <p class="note">per night</p>
+              <p class="listing-meta">Sleeps up to 4 • Available 2026-05-01 to 2026-12-20</p>
             </div>
           </article>
         </a>
 
-        <a href="../CheckoutPage/index.html" class="listing-link">
+        <a
+          href="../CheckoutPage/index.html"
+          class="listing-link"
+          data-available-start="2026-06-10"
+          data-available-end="2026-08-31"
+          data-max-travelers="2"
+        >
           <article class="listing-card">
             <div>
               <img class="listing-image" src="images/miami.jpeg" alt="Miami Beach" />
@@ -194,11 +213,18 @@
               <p class="location">Florida, USA</p>
               <p class="price">$331</p>
               <p class="note">per night</p>
+              <p class="listing-meta">Sleeps up to 2 • Available 2026-06-10 to 2026-08-31</p>
             </div>
           </article>
         </a>
 
-        <a href="../CheckoutPage/index.html" class="listing-link">
+        <a
+          href="../CheckoutPage/index.html"
+          class="listing-link"
+          data-available-start="2026-05-15"
+          data-available-end="2026-09-20"
+          data-max-travelers="5"
+        >
           <article class="listing-card">
             <div>
               <img class="listing-image" src="images/myrtle.jpeg" alt="Myrtle Beach" />
@@ -208,11 +234,18 @@
               <p class="location">South Carolina, USA</p>
               <p class="price">$146</p>
               <p class="note">per night</p>
+              <p class="listing-meta">Sleeps up to 5 • Available 2026-05-15 to 2026-09-20</p>
             </div>
           </article>
         </a>
 
-        <a href="../CheckoutPage/index.html" class="listing-link">
+        <a
+          href="../CheckoutPage/index.html"
+          class="listing-link"
+          data-available-start="2026-09-21"
+          data-available-end="2026-12-15"
+          data-max-travelers="3"
+        >
           <article class="listing-card">
             <div>
               <img class="listing-image" src="images/myrtle.jpeg" alt="Myrtle Beach" />
@@ -222,11 +255,18 @@
               <p class="location">South Carolina, USA</p>
               <p class="price">$146</p>
               <p class="note">per night</p>
+              <p class="listing-meta">Sleeps up to 3 • Available 2026-09-21 to 2026-12-15</p>
             </div>
           </article>
         </a>
 
-        <a href="../CheckoutPage/index.html" class="listing-link">
+        <a
+          href="../CheckoutPage/index.html"
+          class="listing-link"
+          data-available-start="2026-04-20"
+          data-available-end="2026-10-31"
+          data-max-travelers="2"
+        >
           <article class="listing-card">
             <div>
               <img class="listing-image" src="images/wilmington.jpeg" alt="Wilmington" />
@@ -236,11 +276,18 @@
               <p class="location">North Carolina, USA</p>
               <p class="price">$143</p>
               <p class="note">per night</p>
+              <p class="listing-meta">Sleeps up to 2 • Available 2026-04-20 to 2026-10-31</p>
             </div>
           </article>
         </a>
 
-        <a href="../CheckoutPage/index.html" class="listing-link">
+        <a
+          href="../CheckoutPage/index.html"
+          class="listing-link"
+          data-available-start="2026-06-01"
+          data-available-end="2026-11-10"
+          data-max-travelers="6"
+        >
           <article class="listing-card">
             <div>
               <img class="listing-image" src="images/hilton.jpeg" alt="Hilton Head Island" />
@@ -250,6 +297,7 @@
               <p class="location">South Carolina, USA</p>
               <p class="price">$240</p>
               <p class="note">per night</p>
+              <p class="listing-meta">Sleeps up to 6 • Available 2026-06-01 to 2026-11-10</p>
             </div>
           </article>
         </a>

@@ -24,7 +24,8 @@ A responsive multi-page travel website built using HTML, CSS, and JavaScript.
   - Filters
   - FAQ expand/collapse
   - Trips modal and carousel
-  - Checkout validation and success modal
+  - Real-time checkout validation with inline guidance and success states
+  - Real-time sign-up validation with inline guidance and success states
   - Shared currency toggle with demo price conversion
   - Prototype notice for "List your property"
 

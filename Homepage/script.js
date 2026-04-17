@@ -144,6 +144,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // The Homepage search uses the first destination input inside the shared search form.
   const homepageSearchForm = document.querySelector('.search-form');
   const homepageDestinationInput = document.querySelector('.search-form input[aria-label="Destination"]');
+  const homepageDatesInput = document.querySelector('.search-form input[aria-label="Dates"]');
+  const homepageTravelersInput = document.querySelector('.search-form input[aria-label="Travelers"]');
   const homepageTripLinks = Array.from(document.querySelectorAll('.trip-grid .trip-link'));
 
   if (window.TravelWebsiteUtils && homepageSearchForm && homepageDestinationInput && homepageTripLinks.length) {
@@ -193,13 +195,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Submitting the Homepage search still routes the user to the Search Results page.
       onSubmit: function (state) {
-        const searchResultsUrl = '../SearchResults/index.html';
+        const searchResultsUrl = new URL('../SearchResults/index.html', window.location.href);
+        const datesValue = homepageDatesInput ? homepageDatesInput.value.trim() : '';
+        const travelersValue = homepageTravelersInput ? homepageTravelersInput.value.trim() : '';
 
         if (state.query) {
-          window.location.href = searchResultsUrl + '?destination=' + encodeURIComponent(state.query);
-        } else {
-          window.location.href = searchResultsUrl;
+          searchResultsUrl.searchParams.set('destination', state.query);
         }
+
+        if (datesValue) {
+          searchResultsUrl.searchParams.set('dates', datesValue);
+        }
+
+        if (travelersValue) {
+          searchResultsUrl.searchParams.set('travelers', travelersValue);
+        }
+
+        window.location.href = searchResultsUrl.toString();
       }
     });
   }

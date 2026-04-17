@@ -174,10 +174,22 @@ document.addEventListener('DOMContentLoaded', function () {
       if (cardDetailsForm) {
         if (selectedMethod === 'card') {
           cardDetailsForm.style.display = 'block';
+          cardFieldIds.forEach(function (fieldId) {
+            const field = document.getElementById(fieldId);
+
+            if (field && field.value.trim()) {
+              validateField(fieldId);
+            }
+          });
         } else {
           cardDetailsForm.style.display = 'none';
+          cardFieldIds.forEach(function (fieldId) {
+            clearFieldState(fieldId);
+          });
         }
       }
+
+      syncErrorBanner();
     });
   });
 
@@ -241,222 +253,389 @@ document.addEventListener('DOMContentLoaded', function () {
      VALIDATION HELPERS
      ========================================================= */
 
-  // Email validation pattern
-  function validateEmail(email) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
+  const liveValidationFields = [
+    'firstName',
+    'lastName',
+    'email',
+    'phoneNumber',
+    'cardNumber',
+    'expirationDate',
+    'securityCode',
+    'billingZip'
+  ];
+
+  const cardFieldIds = ['cardNumber', 'expirationDate', 'securityCode', 'billingZip'];
+
+  function getFeedbackElement(fieldId) {
+    return document.getElementById(fieldId + 'Error');
   }
 
-  // Simple card number validation by length
-  function validateCardNumber(cardNumber) {
-    const cleanNumber = cardNumber.replace(/\s/g, '');
-    return cleanNumber.length >= 13 && cleanNumber.length <= 16;
-  }
+  function setFieldState(fieldId, state, message) {
+    const input = document.getElementById(fieldId);
+    const feedback = getFeedbackElement(fieldId);
 
-  // Validates expiration date and makes sure the date is not expired
-  function validateExpirationDate(expirationDate) {
-    const parts = expirationDate.split('/');
-
-    if (parts.length !== 2) {
-      return false;
+    if (!input) {
+      return;
     }
 
-    const month = parseInt(parts[0], 10);
-    const year = parseInt(parts[1], 10);
+    input.classList.remove('error', 'success');
 
-    if (Number.isNaN(month) || Number.isNaN(year)) {
-      return false;
+    if (feedback) {
+      feedback.classList.remove('is-visible', 'success');
+      feedback.textContent = '';
     }
 
-    if (month < 1 || month > 12) {
-      return false;
+    if (!state || !message) {
+      input.removeAttribute('aria-invalid');
+      return;
     }
 
-    const fullYear = 2000 + year;
+    input.classList.add(state);
+    input.setAttribute('aria-invalid', String(state === 'error'));
 
-    // Set expiry to the first day of the next month
-    // so the card remains valid through the printed month
-    const expiryDate = new Date(fullYear, month, 1);
-    const currentDate = new Date();
+    if (feedback) {
+      feedback.textContent = message;
+      feedback.classList.add('is-visible');
 
-    return expiryDate > currentDate;
-  }
-
-  // Security code must be 3 or 4 digits
-  function validateSecurityCode(code) {
-    return /^\d{3,4}$/.test(code);
-  }
-
-  // ZIP code must be at least 5 digits
-  function validateZipCode(zip) {
-    return /^\d{5,}$/.test(zip);
-  }
-
-  // Shows error styling and message for a field
-  function showError(inputId, errorId) {
-    const input = document.getElementById(inputId);
-    const error = document.getElementById(errorId);
-
-    if (input) {
-      input.classList.add('error');
-    }
-
-    if (error) {
-      error.style.display = 'block';
+      if (state === 'success') {
+        feedback.classList.add('success');
+      }
     }
   }
 
-  // Clears all error messages and red borders
+  function showError(fieldId, message) {
+    setFieldState(fieldId, 'error', message);
+  }
+
+  function showSuccess(fieldId, message) {
+    setFieldState(fieldId, 'success', message);
+  }
+
+  function clearFieldState(fieldId) {
+    setFieldState(fieldId, '', '');
+  }
+
   function clearAllErrors() {
     if (errorBanner) {
       errorBanner.classList.add('hidden');
     }
 
-    document.querySelectorAll('.error-message').forEach(function (message) {
-      message.style.display = 'none';
-    });
-
-    document.querySelectorAll('.form-input, .form-select').forEach(function (field) {
-      field.classList.remove('error');
+    liveValidationFields.forEach(function (fieldId) {
+      clearFieldState(fieldId);
     });
   }
 
-  // Before - When the user edits a field, remove that field's error state
-  // After - When the user edits a field, validate it in real-time and show/hide errors as they type 
-  const liveValidationFields = [
-  'firstName',
-  'lastName',
-  'email',
-  'phoneNumber',
-  'cardNumber',
-  'expirationDate',
-  'securityCode',
-  'billingZip'
-];
+  function syncErrorBanner() {
+    if (!errorBanner) {
+      return;
+    }
 
-liveValidationFields.forEach(function (fieldId) {
-  const field = document.getElementById(fieldId);
-
-  if (!field) {
-    return;
+    const hasVisibleErrors = Boolean(document.querySelector('.form-input.error, .form-select.error'));
+    errorBanner.classList.toggle('hidden', !hasVisibleErrors);
   }
 
-  field.addEventListener('input', function () {
-    // only live-validate card fields if card is selected
+  function validateEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  }
+
+  function passesLuhnCheck(cardNumber) {
+    const cleanNumber = cardNumber.replace(/\D/g, '');
+    let sum = 0;
+    let shouldDouble = false;
+
+    for (let index = cleanNumber.length - 1; index >= 0; index -= 1) {
+      let digit = parseInt(cleanNumber.charAt(index), 10);
+
+      if (shouldDouble) {
+        digit *= 2;
+
+        if (digit > 9) {
+          digit -= 9;
+        }
+      }
+
+      sum += digit;
+      shouldDouble = !shouldDouble;
+    }
+
+    return cleanNumber.length >= 13 && cleanNumber.length <= 16 && sum % 10 === 0;
+  }
+
+  function validateCardNumber(cardNumber) {
+    const cleanNumber = cardNumber.replace(/\D/g, '');
+
+    if (cleanNumber.length < 13 || cleanNumber.length > 16) {
+      return {
+        isValid: false,
+        message: 'Card number must be 13 to 16 digits.'
+      };
+    }
+
+    if (!passesLuhnCheck(cleanNumber)) {
+      return {
+        isValid: false,
+        message: 'Enter a valid card number.'
+      };
+    }
+
+    return {
+      isValid: true,
+      message: 'Card number looks valid.'
+    };
+  }
+
+  function validateExpirationDate(expirationDate) {
+    if (!/^\d{2}\/\d{2}$/.test(expirationDate)) {
+      return {
+        isValid: false,
+        message: 'Use MM/YY, such as 03/28.'
+      };
+    }
+
+    const parts = expirationDate.split('/');
+    const month = parseInt(parts[0], 10);
+    const year = parseInt(parts[1], 10);
+
+    if (Number.isNaN(month) || Number.isNaN(year) || month < 1 || month > 12) {
+      return {
+        isValid: false,
+        message: 'Month must be between 01 and 12.'
+      };
+    }
+
+    const fullYear = 2000 + year;
+    const expiryDate = new Date(fullYear, month, 1);
+    const currentDate = new Date();
+
+    if (expiryDate <= currentDate) {
+      return {
+        isValid: false,
+        message: 'Card is expired. Use a future date.'
+      };
+    }
+
+    return {
+      isValid: true,
+      message: 'Expiration date looks good.'
+    };
+  }
+
+  function validateSecurityCode(code) {
+    if (!/^\d{3,4}$/.test(code)) {
+      return {
+        isValid: false,
+        message: 'Security code must be 3 or 4 digits.'
+      };
+    }
+
+    return {
+      isValid: true,
+      message: 'Security code looks good.'
+    };
+  }
+
+  function validateZipCode(zip) {
+    if (!/^\d{5,10}$/.test(zip)) {
+      return {
+        isValid: false,
+        message: 'Billing ZIP code must be 5 to 10 digits.'
+      };
+    }
+
+    return {
+      isValid: true,
+      message: 'Billing ZIP code looks good.'
+    };
+  }
+
+  function isCardPaymentSelected() {
     const selectedPaymentMethodButton = document.querySelector('.payment-method.selected');
     const selectedPaymentMethod = selectedPaymentMethodButton
       ? selectedPaymentMethodButton.getAttribute('data-method')
       : 'card';
 
-    const cardFields = ['cardNumber', 'expirationDate', 'securityCode', 'billingZip'];
+    return selectedPaymentMethod === 'card';
+  }
 
-    if (cardFields.includes(fieldId) && selectedPaymentMethod !== 'card') {
-      hideError(fieldId, fieldId + 'Error');
+  function validateField(fieldId) {
+    const field = document.getElementById(fieldId);
+
+    if (!field) {
+      return true;
+    }
+
+    const value = field.value.trim();
+
+    switch (fieldId) {
+      case 'firstName':
+        if (!value) {
+          showError(fieldId, 'Enter your first name.');
+          return false;
+        }
+
+        if (value.length < 2) {
+          showError(fieldId, 'First name must be at least 2 characters.');
+          return false;
+        }
+
+        showSuccess(fieldId, 'First name looks good.');
+        return true;
+
+      case 'lastName':
+        if (!value) {
+          showError(fieldId, 'Enter your last name.');
+          return false;
+        }
+
+        if (value.length < 2) {
+          showError(fieldId, 'Last name must be at least 2 characters.');
+          return false;
+        }
+
+        showSuccess(fieldId, 'Last name looks good.');
+        return true;
+
+      case 'email':
+        if (!value) {
+          showError(fieldId, 'Enter an email address.');
+          return false;
+        }
+
+        if (!validateEmail(value)) {
+          showError(fieldId, 'Use a format like name@example.com.');
+          return false;
+        }
+
+        showSuccess(fieldId, 'Email format looks good.');
+        return true;
+
+      case 'phoneNumber':
+        if (!value) {
+          showError(fieldId, 'Enter a phone number.');
+          return false;
+        }
+
+        if (value.length < 7) {
+          showError(fieldId, 'Phone number must have at least 7 digits.');
+          return false;
+        }
+
+        showSuccess(fieldId, 'Phone number looks good.');
+        return true;
+
+      case 'cardNumber': {
+        if (!isCardPaymentSelected()) {
+          clearFieldState(fieldId);
+          return true;
+        }
+
+        if (!value) {
+          showError(fieldId, 'Enter your card number.');
+          return false;
+        }
+
+        const validationResult = validateCardNumber(value);
+
+        if (!validationResult.isValid) {
+          showError(fieldId, validationResult.message);
+          return false;
+        }
+
+        showSuccess(fieldId, validationResult.message);
+        return true;
+      }
+
+      case 'expirationDate': {
+        if (!isCardPaymentSelected()) {
+          clearFieldState(fieldId);
+          return true;
+        }
+
+        if (!value) {
+          showError(fieldId, 'Enter the expiration date.');
+          return false;
+        }
+
+        const validationResult = validateExpirationDate(value);
+
+        if (!validationResult.isValid) {
+          showError(fieldId, validationResult.message);
+          return false;
+        }
+
+        showSuccess(fieldId, validationResult.message);
+        return true;
+      }
+
+      case 'securityCode': {
+        if (!isCardPaymentSelected()) {
+          clearFieldState(fieldId);
+          return true;
+        }
+
+        if (!value) {
+          showError(fieldId, 'Enter the security code.');
+          return false;
+        }
+
+        const validationResult = validateSecurityCode(value);
+
+        if (!validationResult.isValid) {
+          showError(fieldId, validationResult.message);
+          return false;
+        }
+
+        showSuccess(fieldId, validationResult.message);
+        return true;
+      }
+
+      case 'billingZip': {
+        if (!isCardPaymentSelected()) {
+          clearFieldState(fieldId);
+          return true;
+        }
+
+        if (!value) {
+          showError(fieldId, 'Enter the billing ZIP code.');
+          return false;
+        }
+
+        const validationResult = validateZipCode(value);
+
+        if (!validationResult.isValid) {
+          showError(fieldId, validationResult.message);
+          return false;
+        }
+
+        showSuccess(fieldId, validationResult.message);
+        return true;
+      }
+
+      default:
+        return true;
+    }
+  }
+
+  liveValidationFields.forEach(function (fieldId) {
+    const field = document.getElementById(fieldId);
+
+    if (!field) {
       return;
     }
 
-    validateField(fieldId);
+    field.setAttribute('aria-describedby', fieldId + 'Error');
+
+    field.addEventListener('input', function () {
+      validateField(fieldId);
+      syncErrorBanner();
+    });
+
+    field.addEventListener('blur', function () {
+      validateField(fieldId);
+      syncErrorBanner();
+    });
   });
-
-  field.addEventListener('blur', function () {
-    validateField(fieldId);
-  });
-});
-
- /* =========================================================
-     INSTANT VALIDATION
-     ========================================================= */
-function hideError(inputId, errorId) {
-  const input = document.getElementById(inputId);
-  const error = document.getElementById(errorId);
-
-  if (input) {
-    input.classList.remove('error');
-  }
-
-  if (error) {
-    error.style.display = 'none';
-  }
-}
-
-function validateField(fieldId) {
-  const field = document.getElementById(fieldId);
-
-  if (!field) {
-    return true;
-  }
-
-  const value = field.value.trim();
-
-  switch (fieldId) {
-    case 'firstName':
-      if (!value) {
-        showError('firstName', 'firstNameError');
-        return false;
-      }
-      hideError('firstName', 'firstNameError');
-      return true;
-
-    case 'lastName':
-      if (!value) {
-        showError('lastName', 'lastNameError');
-        return false;
-      }
-      hideError('lastName', 'lastNameError');
-      return true;
-
-    case 'email':
-      if (!value || !validateEmail(value)) {
-        showError('email', 'emailError');
-        return false;
-      }
-      hideError('email', 'emailError');
-      return true;
-
-    case 'phoneNumber':
-      if (!value) {
-        showError('phoneNumber', 'phoneNumberError');
-        return false;
-      }
-      hideError('phoneNumber', 'phoneNumberError');
-      return true;
-
-    case 'cardNumber':
-      if (!value || !validateCardNumber(value)) {
-        showError('cardNumber', 'cardNumberError');
-        return false;
-      }
-      hideError('cardNumber', 'cardNumberError');
-      return true;
-
-    case 'expirationDate':
-      if (!value || !validateExpirationDate(value)) {
-        showError('expirationDate', 'expirationDateError');
-        return false;
-      }
-      hideError('expirationDate', 'expirationDateError');
-      return true;
-
-    case 'securityCode':
-      if (!value || !validateSecurityCode(value)) {
-        showError('securityCode', 'securityCodeError');
-        return false;
-      }
-      hideError('securityCode', 'securityCodeError');
-      return true;
-
-    case 'billingZip':
-      if (!value || !validateZipCode(value)) {
-        showError('billingZip', 'billingZipError');
-        return false;
-      }
-      hideError('billingZip', 'billingZipError');
-      return true;
-
-    default:
-      return true;
-  }
-}
 
   /* =========================================================
      SUCCESS MODAL
@@ -501,12 +680,6 @@ function validateField(fieldId) {
 
     clearAllErrors();
 
-    // Gather trimmed field values
-    const firstName = document.getElementById('firstName').value.trim();
-    const lastName = document.getElementById('lastName').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const phoneNumber = document.getElementById('phoneNumber').value.trim();
-
     // Basic required field checks (simplified for assignment 12)
     if (!validateField('firstName')) hasErrors = true;
     if (!validateField('lastName')) hasErrors = true;
@@ -521,17 +694,10 @@ function validateField(fieldId) {
 
     // Only validate card details when card is selected
     if (selectedPaymentMethod === 'card') {
-      const cardNumber = document.getElementById('cardNumber').value.trim();
-      const expirationDate = document.getElementById('expirationDate').value.trim();
-      const securityCode = document.getElementById('securityCode').value.trim();
-      const billingZip = document.getElementById('billingZip').value.trim();
-
-      if (selectedPaymentMethod === 'card') {
-        if (!validateField('cardNumber')) hasErrors = true;
-        if (!validateField('expirationDate')) hasErrors = true;
-        if (!validateField('securityCode')) hasErrors = true;
-        if (!validateField('billingZip')) hasErrors = true;
-      } 
+      if (!validateField('cardNumber')) hasErrors = true;
+      if (!validateField('expirationDate')) hasErrors = true;
+      if (!validateField('securityCode')) hasErrors = true;
+      if (!validateField('billingZip')) hasErrors = true;
     }
 
     // Show error banner or success modal

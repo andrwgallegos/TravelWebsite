@@ -256,27 +256,68 @@
           Create your free account to start planning trips!
         </h2>
 
-        <form id="signUpForm" class="sign-up-form">
+        <form id="signUpForm" class="sign-up-form" novalidate>
           <div class="field">
-            <input type="text" id="firstName" placeholder="First Name..." required />
+            <label class="field-label" for="signUpFirstName">First name</label>
+            <input
+              type="text"
+              id="signUpFirstName"
+              placeholder="First Name..."
+              aria-describedby="signUpFirstNameFeedback"
+              required
+            />
+            <span class="field-feedback" id="signUpFirstNameFeedback" aria-live="polite"></span>
           </div>
 
           <div class="field">
-            <input type="text" id="lastName" placeholder="Last Name..." required />
+            <label class="field-label" for="signUpLastName">Last name</label>
+            <input
+              type="text"
+              id="signUpLastName"
+              placeholder="Last Name..."
+              aria-describedby="signUpLastNameFeedback"
+              required
+            />
+            <span class="field-feedback" id="signUpLastNameFeedback" aria-live="polite"></span>
           </div>
 
           <div class="field">
-            <input type="email" id="email" placeholder="Email..." required />
+            <label class="field-label" for="signUpEmail">Email</label>
+            <input
+              type="email"
+              id="signUpEmail"
+              placeholder="Email..."
+              aria-describedby="signUpEmailFeedback"
+              required
+            />
+            <span class="field-feedback" id="signUpEmailFeedback" aria-live="polite"></span>
           </div>
 
           <div class="field">
-            <input type="password" id="password" placeholder="Password..." required />
+            <label class="field-label" for="signUpPassword">Password</label>
+            <input
+              type="password"
+              id="signUpPassword"
+              placeholder="Password..."
+              aria-describedby="signUpPasswordFeedback"
+              required
+            />
+            <span class="field-feedback" id="signUpPasswordFeedback" aria-live="polite"></span>
           </div>
 
           <div class="field">
-            <input type="password" id="confirmPassword" placeholder="Confirm Password..." required />
+            <label class="field-label" for="signUpConfirmPassword">Confirm password</label>
+            <input
+              type="password"
+              id="signUpConfirmPassword"
+              placeholder="Confirm Password..."
+              aria-describedby="signUpConfirmPasswordFeedback"
+              required
+            />
+            <span class="field-feedback" id="signUpConfirmPasswordFeedback" aria-live="polite"></span>
           </div>
 
+          <p class="form-status" id="signUpFormStatus" aria-live="polite"></p>
           <button type="submit" class="sign-up-button">Sign Up!</button>
         </form>
 

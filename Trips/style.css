@@ -672,3 +672,54 @@ body {
     transform: translateY(0);
   }
 }
+
+.field-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #191e3b;
+}
+
+.sign-up-form input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.sign-up-form input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.sign-up-form input.error {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.sign-up-form input.success {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+}
+
+.field-feedback,
+.form-status {
+  display: none;
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.field-feedback.show,
+.form-status.show {
+  display: block;
+}
+
+.field-feedback.error,
+.form-status.error {
+  color: #b91c1c;
+}
+
+.field-feedback.success,
+.form-status.success {
+  color: #0f766e;
+}

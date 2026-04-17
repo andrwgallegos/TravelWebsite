@@ -140,25 +140,208 @@ document.addEventListener('DOMContentLoaded', function () {
      ========================================================= */
 
   const signUpForm = document.getElementById('signUpForm');
-  const firstName = document.getElementById('firstName');
-  const password = document.getElementById('password');
-  const confirmPassword = document.getElementById('confirmPassword');
+  const signUpFirstName = document.getElementById('signUpFirstName');
+  const signUpLastName = document.getElementById('signUpLastName');
+  const signUpEmail = document.getElementById('signUpEmail');
+  const signUpPassword = document.getElementById('signUpPassword');
+  const signUpConfirmPassword = document.getElementById('signUpConfirmPassword');
+  const signUpFormStatus = document.getElementById('signUpFormStatus');
 
-  if (signUpForm && firstName && password && confirmPassword) {
+  function setSignUpFieldState(fieldElement, feedbackElement, state, message) {
+    if (!fieldElement || !feedbackElement) {
+      return;
+    }
+
+    fieldElement.classList.remove('error', 'success');
+    feedbackElement.classList.remove('show', 'error', 'success');
+    feedbackElement.textContent = '';
+
+    if (!state || !message) {
+      fieldElement.removeAttribute('aria-invalid');
+      return;
+    }
+
+    fieldElement.classList.add(state);
+    fieldElement.setAttribute('aria-invalid', String(state === 'error'));
+    feedbackElement.textContent = message;
+    feedbackElement.classList.add('show', state);
+  }
+
+  function setSignUpFormStatus(state, message) {
+    if (!signUpFormStatus) {
+      return;
+    }
+
+    signUpFormStatus.classList.remove('show', 'error', 'success');
+    signUpFormStatus.textContent = '';
+
+    if (state && message) {
+      signUpFormStatus.textContent = message;
+      signUpFormStatus.classList.add('show', state);
+    }
+  }
+
+  function isValidEmailAddress(emailValue) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue);
+  }
+
+  function isStrongPassword(passwordValue) {
+    return /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(passwordValue);
+  }
+
+  function validateSignUpField(fieldName) {
+    const fieldMap = {
+      signUpFirstName: {
+        element: signUpFirstName,
+        feedback: document.getElementById('signUpFirstNameFeedback')
+      },
+      signUpLastName: {
+        element: signUpLastName,
+        feedback: document.getElementById('signUpLastNameFeedback')
+      },
+      signUpEmail: {
+        element: signUpEmail,
+        feedback: document.getElementById('signUpEmailFeedback')
+      },
+      signUpPassword: {
+        element: signUpPassword,
+        feedback: document.getElementById('signUpPasswordFeedback')
+      },
+      signUpConfirmPassword: {
+        element: signUpConfirmPassword,
+        feedback: document.getElementById('signUpConfirmPasswordFeedback')
+      }
+    };
+
+    const fieldRecord = fieldMap[fieldName];
+
+    if (!fieldRecord || !fieldRecord.element) {
+      return true;
+    }
+
+    const fieldValue = fieldRecord.element.value.trim();
+
+    switch (fieldName) {
+      case 'signUpFirstName':
+        if (!fieldValue) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'Enter your first name.');
+          return false;
+        }
+
+        if (fieldValue.length < 2) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'First name must be at least 2 characters.');
+          return false;
+        }
+
+        setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'success', 'First name looks good.');
+        return true;
+
+      case 'signUpLastName':
+        if (!fieldValue) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'Enter your last name.');
+          return false;
+        }
+
+        if (fieldValue.length < 2) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'Last name must be at least 2 characters.');
+          return false;
+        }
+
+        setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'success', 'Last name looks good.');
+        return true;
+
+      case 'signUpEmail':
+        if (!fieldValue) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'Enter an email address.');
+          return false;
+        }
+
+        if (!isValidEmailAddress(fieldValue)) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'Use a format like name@example.com.');
+          return false;
+        }
+
+        setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'success', 'Email format looks good.');
+        return true;
+
+      case 'signUpPassword':
+        if (!fieldValue) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'Create a password.');
+          return false;
+        }
+
+        if (!isStrongPassword(fieldValue)) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'Password must be at least 8 characters and include a letter and a number.');
+          return false;
+        }
+
+        setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'success', 'Password meets the requirements.');
+        return true;
+
+      case 'signUpConfirmPassword':
+        if (!fieldValue) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'Re-enter your password to confirm it.');
+          return false;
+        }
+
+        if (fieldValue !== signUpPassword.value) {
+          setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'error', 'Passwords do not match yet.');
+          return false;
+        }
+
+        setSignUpFieldState(fieldRecord.element, fieldRecord.feedback, 'success', 'Passwords match.');
+        return true;
+
+      default:
+        return true;
+    }
+  }
+
+  if (signUpForm && signUpFirstName && signUpPassword && signUpConfirmPassword) {
+    [signUpFirstName, signUpLastName, signUpEmail, signUpPassword, signUpConfirmPassword].forEach(function (fieldElement) {
+      fieldElement.addEventListener('input', function () {
+        validateSignUpField(fieldElement.id);
+        setSignUpFormStatus('', '');
+
+        if (fieldElement.id === 'signUpPassword' && signUpConfirmPassword.value.trim()) {
+          validateSignUpField('signUpConfirmPassword');
+        }
+      });
+
+      fieldElement.addEventListener('blur', function () {
+        validateSignUpField(fieldElement.id);
+      });
+    });
+
     signUpForm.addEventListener('submit', function (event) {
       event.preventDefault();
 
-      if (password.value !== confirmPassword.value) {
-        alert('Passwords do not match.');
+      const isFirstNameValid = validateSignUpField('signUpFirstName');
+      const isLastNameValid = validateSignUpField('signUpLastName');
+      const isEmailValid = validateSignUpField('signUpEmail');
+      const isPasswordValid = validateSignUpField('signUpPassword');
+      const isConfirmPasswordValid = validateSignUpField('signUpConfirmPassword');
+      const formIsValid = isFirstNameValid && isLastNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid;
+
+      if (!formIsValid) {
+        setSignUpFormStatus('error', 'Please fix the highlighted fields before creating your account.');
+
+        const firstInvalidField = signUpForm.querySelector('input.error');
+
+        if (firstInvalidField) {
+          firstInvalidField.focus();
+        }
+
         return;
       }
 
-      if (password.value.length < 6) {
-        alert('Password must be at least 6 characters long.');
-        return;
-      }
-
-      alert('Account created successfully! Welcome, ' + firstName.value + '!');
+      setSignUpFormStatus('success', 'Account created successfully. Redirecting to your trips...');
+      window.TravelWebsiteUtils.showToast('Account created successfully! Welcome, ' + signUpFirstName.value.trim() + '!');
+      signUpForm.reset();
+      [signUpFirstName, signUpLastName, signUpEmail, signUpPassword, signUpConfirmPassword].forEach(function (fieldElement) {
+        const feedbackElement = document.getElementById(fieldElement.id + 'Feedback');
+        setSignUpFieldState(fieldElement, feedbackElement, '', '');
+      });
       closeModal();
     });
   }
@@ -365,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       getStatusText: function (state) {
         if (!state.query) {
-          return 'Showing all ' + state.totalCount + ' booked trips.';
+          return '';
         }
 
         return (
@@ -403,7 +586,19 @@ document.addEventListener('DOMContentLoaded', function () {
       },
 
       // Submit stays client-side because the list is already filtering live.
-      onSubmit: function () {}
+      onSubmit: function (state) {
+        if (!window.TravelWebsiteUtils) {
+          return;
+        }
+
+        if (!state.query) {
+          window.TravelWebsiteUtils.showToast('Type an itinerary, destination, hotel, or airline to search your booked trips.');
+          state.inputElement.focus();
+          return;
+        }
+
+        window.TravelWebsiteUtils.showToast('Booked trips updated for “' + state.query + '”.');
+      }
     });
   }
 
