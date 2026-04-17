@@ -117,13 +117,17 @@
         <!-- Prototype search form -->
         <form class="search-form" action="index.html">
           <input type="text" name="destination" placeholder="Where to?" aria-label="Destination" />
-          <input
-            type="text"
-            name="dates"
-            placeholder="YYYY-MM-DD to YYYY-MM-DD"
-            aria-label="Dates"
-            title="Enter dates as YYYY-MM-DD to YYYY-MM-DD"
-          />
+
+          <div class="search-field-group">
+            <label class="field-label search-field-label" for="results-check-in">Check-in</label>
+            <input type="date" id="results-check-in" name="checkIn" aria-label="Check-in" />
+          </div>
+
+          <div class="search-field-group">
+            <label class="field-label search-field-label" for="results-check-out">Check-out</label>
+            <input type="date" id="results-check-out" name="checkOut" aria-label="Check-out" />
+          </div>
+
           <input type="number" name="travelers" min="1" placeholder="Travelers" aria-label="Travelers" />
           <button type="submit" class="search-button">Search</button>
         </form>

@@ -174,7 +174,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const searchForm = document.querySelector('.search-form');
   const destinationInput = document.querySelector('.search-form input[aria-label="Destination"]');
-  const datesInput = document.querySelector('.search-form input[aria-label="Dates"]');
+  const checkInInput = document.querySelector('.search-form input[aria-label="Check-in"]');
+  const checkOutInput = document.querySelector('.search-form input[aria-label="Check-out"]');
   const travelersInput = document.querySelector('.search-form input[aria-label="Travelers"]');
   const listingsPanel = document.querySelector('.listings-panel');
   const listingLinks = Array.from(document.querySelectorAll('.listings-panel .listing-link'));
@@ -182,9 +183,36 @@ document.addEventListener('DOMContentLoaded', function () {
   const initialDestinationQuery = window.TravelWebsiteUtils
     ? window.TravelWebsiteUtils.getPageQueryValue('destination')
     : '';
-  const initialDatesQuery = window.TravelWebsiteUtils
+  const legacyDatesQuery = window.TravelWebsiteUtils
     ? window.TravelWebsiteUtils.getPageQueryValue('dates')
     : '';
+
+  function getLegacyDateRange(queryValue) {
+    const rawValue = String(queryValue || '').trim();
+
+    if (!rawValue) {
+      return { checkIn: '', checkOut: '' };
+    }
+
+    const rangeMatch = rawValue.match(/^(\d{4}-\d{2}-\d{2})\s*(?:to|-|–|—)\s*(\d{4}-\d{2}-\d{2})$/i);
+
+    if (!rangeMatch) {
+      return { checkIn: '', checkOut: '' };
+    }
+
+    return {
+      checkIn: rangeMatch[1],
+      checkOut: rangeMatch[2]
+    };
+  }
+
+  const legacyDateRange = getLegacyDateRange(legacyDatesQuery);
+  const initialCheckInQuery = window.TravelWebsiteUtils
+    ? window.TravelWebsiteUtils.getPageQueryValue('checkIn') || legacyDateRange.checkIn
+    : legacyDateRange.checkIn;
+  const initialCheckOutQuery = window.TravelWebsiteUtils
+    ? window.TravelWebsiteUtils.getPageQueryValue('checkOut') || legacyDateRange.checkOut
+    : legacyDateRange.checkOut;
   const initialTravelersQuery = window.TravelWebsiteUtils
     ? window.TravelWebsiteUtils.getPageQueryValue('travelers')
     : '';
@@ -193,8 +221,12 @@ document.addEventListener('DOMContentLoaded', function () {
     destinationInput.value = initialDestinationQuery;
   }
 
-  if (datesInput && initialDatesQuery) {
-    datesInput.value = initialDatesQuery;
+  if (checkInInput && initialCheckInQuery) {
+    checkInInput.value = initialCheckInQuery;
+  }
+
+  if (checkOutInput && initialCheckOutQuery) {
+    checkOutInput.value = initialCheckOutQuery;
   }
 
   if (travelersInput && initialTravelersQuery) {
@@ -228,44 +260,46 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function getDatesFilterState() {
-    const rawValue = datesInput ? datesInput.value.trim() : '';
+    const checkInValue = checkInInput ? checkInInput.value.trim() : '';
+    const checkOutValue = checkOutInput ? checkOutInput.value.trim() : '';
+    const hasAnyDate = Boolean(checkInValue || checkOutValue);
 
-    if (!rawValue) {
+    if (!hasAnyDate) {
       return {
-        rawValue: '',
         isActive: false,
         isValid: true,
         startDate: null,
-        endDate: null
+        endDate: null,
+        checkInValue: '',
+        checkOutValue: '',
+        validationMessage: ''
       };
     }
 
-    const normalizedValue = rawValue
-      .replace(/[–—]/g, '-')
-      .replace(/\s+to\s+/i, ' - ')
-      .trim();
-    const rangeMatch = normalizedValue.match(/^(\d{4}-\d{2}-\d{2})\s*-\s*(\d{4}-\d{2}-\d{2})$/);
-
-    if (!rangeMatch) {
+    if (!checkInValue || !checkOutValue) {
       return {
-        rawValue: rawValue,
         isActive: true,
         isValid: false,
         startDate: null,
-        endDate: null
+        endDate: null,
+        checkInValue: checkInValue,
+        checkOutValue: checkOutValue,
+        validationMessage: 'Choose both check-in and check-out dates.'
       };
     }
 
-    const startDate = parseIsoDate(rangeMatch[1]);
-    const endDate = parseIsoDate(rangeMatch[2]);
+    const startDate = parseIsoDate(checkInValue);
+    const endDate = parseIsoDate(checkOutValue);
     const isValidRange = Boolean(startDate && endDate && startDate < endDate);
 
     return {
-      rawValue: rawValue,
       isActive: true,
       isValid: isValidRange,
       startDate: isValidRange ? startDate : null,
-      endDate: isValidRange ? endDate : null
+      endDate: isValidRange ? endDate : null,
+      checkInValue: checkInValue,
+      checkOutValue: checkOutValue,
+      validationMessage: isValidRange ? '' : 'Check-out must be after check-in.'
     };
   }
 
@@ -335,7 +369,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentSearchState = getCurrentSearchState();
 
     window.TravelWebsiteUtils.updatePageQueryValue('destination', currentSearchState.destinationQuery);
-    window.TravelWebsiteUtils.updatePageQueryValue('dates', currentSearchState.dates.rawValue);
+    window.TravelWebsiteUtils.updatePageQueryValue('checkIn', currentSearchState.dates.checkInValue);
+    window.TravelWebsiteUtils.updatePageQueryValue('checkOut', currentSearchState.dates.checkOutValue);
+    window.TravelWebsiteUtils.updatePageQueryValue('dates', '');
     window.TravelWebsiteUtils.updatePageQueryValue('travelers', currentSearchState.travelers.rawValue);
   }
 
@@ -367,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formatShortDate(currentSearchState.dates.endDate)
         );
       } else {
-        guidanceMessages.push('Enter dates as YYYY-MM-DD to YYYY-MM-DD.');
+        guidanceMessages.push(currentSearchState.dates.validationMessage);
       }
     }
 
@@ -437,7 +473,8 @@ document.addEventListener('DOMContentLoaded', function () {
     window.TravelWebsiteUtils &&
     searchForm &&
     destinationInput &&
-    datesInput &&
+    checkInInput &&
+    checkOutInput &&
     travelersInput &&
     listingsPanel &&
     listingLinks.length
@@ -494,11 +531,17 @@ document.addEventListener('DOMContentLoaded', function () {
       onSubmit: function () {
         syncSearchQueryParams();
         updateCombinedSearchFeedback();
-      }
+      },
+
+      enableInputLoading: false,
+      submitLoadingDelay: 950,
+      submitLoadingText: 'Searching stays…'
     });
 
-    datesInput.addEventListener('input', applyAllSearchFilters);
-    datesInput.addEventListener('change', applyAllSearchFilters);
+    checkInInput.addEventListener('input', applyAllSearchFilters);
+    checkInInput.addEventListener('change', applyAllSearchFilters);
+    checkOutInput.addEventListener('input', applyAllSearchFilters);
+    checkOutInput.addEventListener('change', applyAllSearchFilters);
     travelersInput.addEventListener('input', applyAllSearchFilters);
     travelersInput.addEventListener('change', applyAllSearchFilters);
   }

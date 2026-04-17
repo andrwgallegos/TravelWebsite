@@ -144,7 +144,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // The Homepage search uses the first destination input inside the shared search form.
   const homepageSearchForm = document.querySelector('.search-form');
   const homepageDestinationInput = document.querySelector('.search-form input[aria-label="Destination"]');
-  const homepageDatesInput = document.querySelector('.search-form input[aria-label="Dates"]');
+  const homepageCheckInInput = document.querySelector('.search-form input[aria-label="Check-in"]');
+  const homepageCheckOutInput = document.querySelector('.search-form input[aria-label="Check-out"]');
   const homepageTravelersInput = document.querySelector('.search-form input[aria-label="Travelers"]');
   const homepageTripLinks = Array.from(document.querySelectorAll('.trip-grid .trip-link'));
 
@@ -196,15 +197,20 @@ document.addEventListener('DOMContentLoaded', function () {
       // Submitting the Homepage search still routes the user to the Search Results page.
       onSubmit: function (state) {
         const searchResultsUrl = new URL('../SearchResults/index.html', window.location.href);
-        const datesValue = homepageDatesInput ? homepageDatesInput.value.trim() : '';
+        const checkInValue = homepageCheckInInput ? homepageCheckInInput.value.trim() : '';
+        const checkOutValue = homepageCheckOutInput ? homepageCheckOutInput.value.trim() : '';
         const travelersValue = homepageTravelersInput ? homepageTravelersInput.value.trim() : '';
 
         if (state.query) {
           searchResultsUrl.searchParams.set('destination', state.query);
         }
 
-        if (datesValue) {
-          searchResultsUrl.searchParams.set('dates', datesValue);
+        if (checkInValue) {
+          searchResultsUrl.searchParams.set('checkIn', checkInValue);
+        }
+
+        if (checkOutValue) {
+          searchResultsUrl.searchParams.set('checkOut', checkOutValue);
         }
 
         if (travelersValue) {
@@ -212,7 +218,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         window.location.href = searchResultsUrl.toString();
-      }
+      },
+
+      enableInputLoading: false,
+      submitLoadingDelay: 900,
+      submitLoadingText: 'Searching destinations…'
     });
   }
 

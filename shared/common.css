@@ -116,10 +116,16 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  width: 100%;
+  margin-top: 0.75rem;
   padding: 0.95rem 1rem;
   color: #334155;
   font-size: 0.95rem;
   font-weight: 600;
+  background: #ffffff;
+  border: 1px solid #d7deeb;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
 }
 
 .search-loading-spinner {
@@ -161,9 +167,25 @@
 }
 
 .theme-toggle {
-  font-size: 18px;
-  line-height: 1;
+  padding: 0;
 }
+
+.theme-toggle-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.search-button:disabled {
+  opacity: 0.72;
+  cursor: wait;
+}
+
 
 body.theme-dark {
   background: #0f172a;
@@ -304,6 +326,10 @@ body.theme-dark .sign-up-form input::placeholder,
 body.theme-dark .help-search-form input::placeholder,
 body.theme-dark .search-form input::placeholder {
   color: #94a3b8 !important;
+}
+
+body.theme-dark .search-form input[type='date'] {
+  color-scheme: dark;
 }
 
 body.theme-dark .search-button,

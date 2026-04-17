@@ -150,13 +150,38 @@ window.TravelWebsiteUtils = (function () {
     return currentPath.includes('/Homepage/') ? 'index.html' : '../Homepage/index.html';
   }
 
+  // Returns the correct inline SVG icon for the shared theme toggle.
+  function getThemeToggleIconMarkup(themeName) {
+    if (themeName === 'dark') {
+      return (
+        '<svg class="theme-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+          '<circle cx="12" cy="12" r="4"></circle>' +
+          '<path d="M12 2.5v2.25"></path>' +
+          '<path d="M12 19.25v2.25"></path>' +
+          '<path d="M4.5 12H2.25"></path>' +
+          '<path d="M21.75 12H19.5"></path>' +
+          '<path d="M5.64 5.64l-1.59-1.59"></path>' +
+          '<path d="M19.95 19.95l-1.59-1.59"></path>' +
+          '<path d="M18.36 5.64l1.59-1.59"></path>' +
+          '<path d="M4.05 19.95l1.59-1.59"></path>' +
+        '</svg>'
+      );
+    }
+
+    return (
+      '<svg class="theme-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M21 13.05A8.5 8.5 0 1 1 10.95 3 6.8 6.8 0 0 0 21 13.05z"></path>' +
+      '</svg>'
+    );
+  }
+
   // Updates the visible theme-toggle button labels to reflect the active theme.
   function updateThemeToggleLabels(themeName) {
     const themeToggleButtons = document.querySelectorAll('.theme-toggle');
     const nextThemeName = themeName === 'dark' ? 'light' : 'dark';
 
     themeToggleButtons.forEach(function (button) {
-      button.textContent = themeName === 'dark' ? '☀️' : '🌙';
+      button.innerHTML = getThemeToggleIconMarkup(themeName);
       button.setAttribute('aria-label', 'Switch to ' + nextThemeName + ' mode.');
       button.setAttribute('title', 'Switch to ' + nextThemeName + ' mode.');
     });
@@ -359,6 +384,11 @@ window.TravelWebsiteUtils = (function () {
       return null;
     }
 
+    const submitButton = formElement.querySelector('[type="submit"]');
+    const enableInputLoading = Boolean(config && config.enableInputLoading);
+    const inputLoadingDelay = Math.max(0, Number((config && config.loadingDelay) || 180));
+    const submitLoadingDelay = Math.max(0, Number((config && config.submitLoadingDelay) || 0));
+
     // Native browser autocomplete would compete with the custom suggestion list.
     inputElement.setAttribute('autocomplete', 'off');
 
@@ -382,15 +412,7 @@ window.TravelWebsiteUtils = (function () {
       };
     });
 
-    // Creates the shared suggestion container just below the form.
-    const suggestionsElement = document.createElement('section');
-    suggestionsElement.className = 'search-suggestions search-ui-hidden';
-    suggestionsElement.setAttribute('aria-label', 'Search suggestions');
-
-    const suggestionsHeading = document.createElement('h3');
-    suggestionsHeading.className = 'visually-hidden';
-    suggestionsHeading.textContent = 'Search suggestions';
-
+    // Creates a shared loading row directly under the form, separate from the suggestion list.
     const loadingElement = document.createElement('div');
     loadingElement.className = 'search-loading search-ui-hidden';
     loadingElement.setAttribute('role', 'status');
@@ -402,18 +424,27 @@ window.TravelWebsiteUtils = (function () {
 
     const loadingText = document.createElement('span');
     loadingText.className = 'search-loading-text';
-    loadingText.textContent = config.loadingText || 'Loading suggestions…';
+    loadingText.textContent = config.submitLoadingText || config.loadingText || 'Searching…';
 
     loadingElement.appendChild(loadingSpinner);
     loadingElement.appendChild(loadingText);
+    formElement.insertAdjacentElement('afterend', loadingElement);
+
+    // Creates the shared suggestion container just below the loading row.
+    const suggestionsElement = document.createElement('section');
+    suggestionsElement.className = 'search-suggestions search-ui-hidden';
+    suggestionsElement.setAttribute('aria-label', 'Search suggestions');
+
+    const suggestionsHeading = document.createElement('h3');
+    suggestionsHeading.className = 'visually-hidden';
+    suggestionsHeading.textContent = 'Search suggestions';
 
     const suggestionsList = document.createElement('div');
     suggestionsList.className = 'search-suggestion-list';
 
     suggestionsElement.appendChild(suggestionsHeading);
-    suggestionsElement.appendChild(loadingElement);
     suggestionsElement.appendChild(suggestionsList);
-    formElement.insertAdjacentElement('afterend', suggestionsElement);
+    loadingElement.insertAdjacentElement('afterend', suggestionsElement);
 
     // Adds a small live status line so users know how many matches they are seeing.
     const statusElement = document.createElement('p');
@@ -471,25 +502,53 @@ window.TravelWebsiteUtils = (function () {
     }
 
     let filterDelayTimeoutId = null;
+    let submitDelayTimeoutId = null;
     let latestFilterRequestId = 0;
+    let currentLoadingMode = '';
 
-    // Shows or hides the loading indicator inside the suggestion dropdown.
-    function setLoadingState(shouldShow, query) {
-      const hasQuery = Boolean(String(query || '').trim());
-      const isVisible = shouldShow && hasQuery;
+    function setFormBusyState(isBusy) {
+      formElement.setAttribute('aria-busy', isBusy ? 'true' : 'false');
 
-      loadingElement.classList.toggle('search-ui-hidden', !isVisible);
-
-      if (isVisible) {
-        suggestionsList.innerHTML = '';
-        suggestionsElement.classList.remove('search-ui-hidden');
+      if (submitButton) {
+        submitButton.disabled = isBusy;
       }
+    }
+
+    function showLoading(mode, query) {
+      const trimmedQuery = String(query || '').trim();
+
+      if (mode === 'input') {
+        if (!enableInputLoading || !trimmedQuery) {
+          hideLoading();
+          return;
+        }
+
+        loadingText.textContent = config.loadingText || 'Loading suggestions…';
+      } else {
+        loadingText.textContent = config.submitLoadingText || 'Searching…';
+      }
+
+      currentLoadingMode = mode;
+      loadingElement.classList.remove('search-ui-hidden');
+      suggestionsElement.classList.add('search-ui-hidden');
+      suggestionsList.innerHTML = '';
+      setFormBusyState(mode === 'submit');
+    }
+
+    function hideLoading() {
+      currentLoadingMode = '';
+      loadingElement.classList.add('search-ui-hidden');
+      setFormBusyState(false);
     }
 
     // Hides the suggestion dropdown completely.
     function hideSuggestions() {
       window.clearTimeout(filterDelayTimeoutId);
-      setLoadingState(false, '');
+
+      if (currentLoadingMode === 'input') {
+        hideLoading();
+      }
+
       suggestionsElement.classList.add('search-ui-hidden');
       suggestionsList.innerHTML = '';
     }
@@ -533,10 +592,9 @@ window.TravelWebsiteUtils = (function () {
       return suggestionButton;
     }
 
-    // Schedules a short loading state before updating the suggestion list.
+    // Schedules a short debounce before updating the suggestion list.
     function scheduleFilter(query) {
       const trimmedQuery = String(query || '').trim();
-      const loadingDelay = Number(config.loadingDelay || 180);
 
       window.clearTimeout(filterDelayTimeoutId);
       latestFilterRequestId += 1;
@@ -548,16 +606,22 @@ window.TravelWebsiteUtils = (function () {
       }
 
       const currentRequestId = latestFilterRequestId;
-      setLoadingState(true, trimmedQuery);
+
+      if (enableInputLoading) {
+        showLoading('input', trimmedQuery);
+      }
 
       filterDelayTimeoutId = window.setTimeout(function () {
         if (currentRequestId !== latestFilterRequestId) {
           return;
         }
 
-        setLoadingState(false, trimmedQuery);
+        if (currentLoadingMode === 'input') {
+          hideLoading();
+        }
+
         applyFilter(trimmedQuery);
-      }, loadingDelay);
+      }, inputLoadingDelay);
     }
 
     // Rebuilds the visible suggestion list from the best current matches.
@@ -671,20 +735,33 @@ window.TravelWebsiteUtils = (function () {
     formElement.addEventListener('submit', function (event) {
       const currentQuery = inputElement.value.trim();
 
-      window.clearTimeout(filterDelayTimeoutId);
-      setLoadingState(false, currentQuery);
-
-      const matches = applyFilter(currentQuery);
-
       event.preventDefault();
 
-      if (typeof config.onSubmit === 'function') {
-        config.onSubmit({
-          query: currentQuery,
-          matches: matches,
-          inputElement: inputElement
-        });
+      window.clearTimeout(filterDelayTimeoutId);
+      window.clearTimeout(submitDelayTimeoutId);
+      latestFilterRequestId += 1;
+      hideSuggestions();
+
+      function finishSubmittedSearch() {
+        const matches = applyFilter(currentQuery);
+        hideLoading();
+
+        if (typeof config.onSubmit === 'function') {
+          config.onSubmit({
+            query: currentQuery,
+            matches: matches,
+            inputElement: inputElement
+          });
+        }
       }
+
+      if (submitLoadingDelay > 0) {
+        showLoading('submit', currentQuery);
+        submitDelayTimeoutId = window.setTimeout(finishSubmittedSearch, submitLoadingDelay);
+        return;
+      }
+
+      finishSubmittedSearch();
     });
 
     // Clicking anywhere outside the search UI closes the open suggestion list.
