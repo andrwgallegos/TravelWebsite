@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let statusMessage = '';
 
     if (!activeFilters.length) {
-      statusMessage = 'Showing all ' + listingLinks.length + ' available stays.';
+      statusMessage = '';
     } else {
       statusMessage =
         'Showing ' +

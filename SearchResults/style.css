@@ -729,3 +729,244 @@ body {
     transform: translateY(0);
   }
 }
+
+/* =========================================================
+   SEARCH RESULTS POLISH OVERRIDES
+   ========================================================= */
+.search-hero {
+  background: linear-gradient(180deg, #182046 0%, #1c2a57 100%);
+  padding: 28px 16px 40px;
+}
+
+.search-card {
+  max-width: 1320px;
+  padding: clamp(22px, 4vw, 38px);
+  gap: 22px;
+  border: 1px solid #d7deeb;
+}
+
+.category-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.category-item {
+  width: 100%;
+  min-height: 118px;
+  padding: 16px 12px;
+  border-radius: 22px;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef3f9 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.category-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+  font-size: 30px;
+  margin-bottom: 0;
+}
+
+.category-item p {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #191e3b;
+}
+
+.search-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: end;
+}
+
+.search-form > input,
+.search-field-group,
+.search-button {
+  width: 100% !important;
+  min-width: 0;
+}
+
+.search-form input {
+  width: 100% !important;
+  height: 58px;
+  border: 1.5px solid #c7d0e0;
+  border-radius: 20px;
+  padding: 0 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.search-form input::placeholder {
+  font-size: 0.98rem;
+  color: #94a3b8;
+}
+
+.search-form input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.search-form input[type='date'] {
+  padding-right: 18px;
+}
+
+.search-field-group {
+  gap: 8px;
+}
+
+.search-field-label {
+  padding-left: 2px;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.search-button {
+  min-height: 58px;
+  border-radius: 20px;
+  justify-self: stretch;
+  box-shadow: 0 14px 24px rgba(251, 191, 35, 0.28);
+}
+
+.active-filters {
+  gap: 10px;
+}
+
+.filter-pill {
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+}
+
+.results-layout {
+  gap: 20px;
+  padding: 24px 16px 40px;
+}
+
+.filters-panel,
+.listings-panel,
+.ads-panel {
+  border: 1px solid #dbe4f0;
+}
+
+.filters-panel {
+  gap: 18px;
+}
+
+.filter-group {
+  padding-bottom: 2px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.filter-group:last-of-type {
+  border-bottom: 0;
+}
+
+.listings-panel {
+  padding: 20px 18px;
+}
+
+.listing-card {
+  width: 100%;
+  max-width: none;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.06);
+}
+
+.listing-image {
+  border-radius: 0;
+}
+
+.listing-info {
+  padding: 16px;
+}
+
+.listing-info h3 {
+  font-size: 1.05rem;
+}
+
+.location,
+.note,
+.listing-meta {
+  color: #475569;
+}
+
+.ads-panel {
+  padding: 20px 18px;
+}
+
+@media (min-width: 700px) {
+  .category-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .search-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .search-form > input[aria-label='Destination'] {
+    grid-column: 1 / -1;
+  }
+
+  .search-form > input[aria-label='Travelers'] {
+    grid-column: 1 / 2;
+  }
+
+  .search-button {
+    grid-column: 2 / 3;
+  }
+
+  .listings-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .search-hero {
+    padding: 36px 32px 48px;
+  }
+
+  .category-row {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .search-form {
+    grid-template-columns: minmax(240px, 2.2fr) minmax(190px, 1.2fr) minmax(190px, 1.2fr) minmax(170px, 1fr) auto;
+    gap: 18px;
+  }
+
+  .search-form > input[aria-label='Destination'],
+  .search-form > input[aria-label='Travelers'],
+  .search-button,
+  .search-field-group {
+    grid-column: auto;
+  }
+
+  .search-button {
+    min-width: 164px;
+    justify-self: end;
+  }
+
+  .results-layout {
+    grid-template-columns: minmax(260px, 300px) minmax(0, 1fr) minmax(220px, 240px);
+    gap: 20px;
+    padding-inline: 20px;
+  }
+
+  .listings-panel {
+    padding: 24px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+}

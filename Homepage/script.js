@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // This line keeps the search feedback specific to the Homepage section.
       getStatusText: function (state) {
         if (!state.query) {
-          return 'Showing all ' + state.totalCount + ' featured destinations.';
+          return '';
         }
 
         return (

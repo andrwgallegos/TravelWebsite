@@ -723,3 +723,143 @@ body {
 .form-status.success {
   color: #0f766e;
 }
+
+/* =========================================================
+   TRIPS RESPONSIVE POLISH OVERRIDES
+   ========================================================= */
+.hero {
+  background: linear-gradient(180deg, #182046 0%, #1c2a57 100%);
+  padding: 28px 16px 40px;
+}
+
+.search-card {
+  border: 1px solid #d7deeb;
+  border-radius: 28px;
+  padding: 20px;
+}
+
+.search-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.search-form input,
+.search-button {
+  width: 100%;
+}
+
+.search-form input {
+  height: 56px;
+  border: 1.5px solid #c7d0e0;
+  border-radius: 20px;
+  padding: 0 18px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.search-form input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.search-button {
+  min-height: 56px;
+  box-shadow: 0 14px 24px rgba(251, 191, 35, 0.28);
+}
+
+.trip-tabs {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.trip-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.trip-tab {
+  white-space: nowrap;
+  flex: 0 0 auto;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  font-size: 1rem;
+}
+
+.trip-grid {
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.trip-card {
+  width: 100%;
+  max-width: none;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.06);
+}
+
+.trip-card img {
+  border-radius: 0;
+}
+
+.trip-info {
+  padding: 16px;
+}
+
+.ads-section {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.ads-window {
+  min-width: max-content;
+}
+
+.ads-container {
+  gap: 14px;
+}
+
+.modal-content {
+  padding: 28px 18px;
+}
+
+.modal-title {
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+}
+
+.sign-up-form input {
+  font-size: 1rem;
+  height: 56px;
+}
+
+.sign-up-button {
+  font-size: 1.4rem;
+  min-height: 56px;
+}
+
+@media (min-width: 700px) {
+  .search-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .search-button {
+    min-width: 160px;
+  }
+
+  .trip-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .trip-tabs {
+    overflow: visible;
+  }
+
+  .trip-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}

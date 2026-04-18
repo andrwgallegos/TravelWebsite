@@ -511,3 +511,81 @@ body {
 }
 
 
+
+
+/* =========================================================
+   HELP CENTER RESPONSIVE POLISH OVERRIDES
+   ========================================================= */
+.help-hero {
+  background: linear-gradient(180deg, #30506d 0%, #3d6788 100%);
+  padding: 28px 16px 40px;
+}
+
+.help-title {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.help-search-form {
+  border: 1px solid #d7deeb;
+  padding: 20px;
+  gap: 14px;
+}
+
+.help-search-form input {
+  height: 56px;
+  border: 1.5px solid #c7d0e0;
+  border-radius: 20px;
+  padding: 0 18px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.help-search-form input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.search-button {
+  min-height: 56px;
+  box-shadow: 0 14px 24px rgba(251, 191, 35, 0.28);
+}
+
+.faq-section {
+  padding: 32px 16px 48px;
+}
+
+.faq-category {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.06);
+}
+
+.faq-category:hover {
+  transform: translateY(-4px);
+}
+
+.faq-question {
+  font-size: 1rem;
+}
+
+.faq-answer {
+  font-size: 0.92rem;
+}
+
+@media (min-width: 700px) {
+  .help-search-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .search-button {
+    min-width: 160px;
+  }
+}
+
+

@@ -368,3 +368,144 @@ body.theme-dark .search-loading-spinner {
   border-color: rgba(226, 232, 240, 0.2);
   border-top-color: #e2e8f0;
 }
+
+/* =========================================================
+   GLOBAL RESPONSIVE POLISH OVERRIDES
+   ========================================================= */
+:root {
+  --app-bg: #e9f0f5;
+  --card-bg: #ffffff;
+  --card-border: #d7deeb;
+  --card-shadow: 0 22px 48px rgba(15, 23, 42, 0.08);
+  --soft-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  --surface-muted: #f8fafc;
+  --brand-navy: #191e3b;
+  --brand-yellow: #fbbf23;
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.search-results-status {
+  margin: 0.9rem 0 0;
+  color: #334155;
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.search-results-status:empty {
+  display: none;
+}
+
+.mobile-menu-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+}
+
+.mobile-nav {
+  position: fixed !important;
+  top: 76px !important;
+  right: 16px !important;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.navbar {
+  gap: 12px;
+}
+
+.navbar-left,
+.navbar-right {
+  min-width: 0;
+}
+
+.logo-link {
+  min-width: 0;
+}
+
+.logo-text {
+  white-space: nowrap;
+}
+
+.filters-panel,
+.listings-panel,
+.ads-panel,
+.left-panel,
+.right-panel,
+.help-search-form,
+.search-card,
+.search-no-results,
+.empty-state {
+  box-shadow: var(--card-shadow);
+}
+
+.search-card,
+.filters-panel,
+.listings-panel,
+.ads-panel,
+.help-search-form,
+.left-panel,
+.right-panel,
+.empty-state,
+.search-no-results {
+  border-radius: var(--radius-xl);
+}
+
+.trip-card,
+.listing-card,
+.ad-card,
+.faq-category,
+.booking-summary,
+.form-container {
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 699px) {
+  .navbar {
+    padding: 14px 16px;
+  }
+
+  .logo-box {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+  }
+
+  .logo-text {
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
+  }
+
+  .mobile-nav {
+    width: min(300px, calc(100vw - 32px)) !important;
+    top: 72px !important;
+  }
+
+  .nav-link,
+  .sign-in-button {
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-loading-spinner,
+  .spinner {
+    animation-duration: 1.4s !important;
+  }
+
+  .navbar *,
+  .trip-card,
+  .listing-card,
+  .faq-category,
+  .search-button,
+  .sign-in-button,
+  .modal-button {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
