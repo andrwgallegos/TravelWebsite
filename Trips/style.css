@@ -725,141 +725,138 @@ body {
 }
 
 /* =========================================================
-   TRIPS RESPONSIVE POLISH OVERRIDES
+   TRIPS MODAL RESPONSIVE POLISH OVERRIDES
    ========================================================= */
-.hero {
-  background: linear-gradient(180deg, #182046 0%, #1c2a57 100%);
-  padding: 28px 16px 40px;
+body.modal-open {
+  overflow: hidden;
 }
 
-.search-card {
-  border: 1px solid #d7deeb;
-  border-radius: 28px;
-  padding: 20px;
+.modal-overlay {
+  z-index: 1400;
 }
 
-.search-form {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
-
-.search-form input,
-.search-button {
-  width: 100%;
-}
-
-.search-form input {
-  height: 56px;
-  border: 1.5px solid #c7d0e0;
-  border-radius: 20px;
-  padding: 0 18px;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.search-form input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
-}
-
-.search-button {
-  min-height: 56px;
-  box-shadow: 0 14px 24px rgba(251, 191, 35, 0.28);
-}
-
-.trip-tabs {
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.trip-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.trip-tab {
-  white-space: nowrap;
-  flex: 0 0 auto;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  font-size: 1rem;
-}
-
-.trip-grid {
-  grid-template-columns: 1fr;
-  gap: 20px;
-}
-
-.trip-card {
-  width: 100%;
-  max-width: none;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.06);
-}
-
-.trip-card img {
-  border-radius: 0;
-}
-
-.trip-info {
-  padding: 16px;
-}
-
-.ads-section {
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-
-.ads-window {
-  min-width: max-content;
-}
-
-.ads-container {
-  gap: 14px;
+.sign-in-modal {
+  align-items: flex-start;
+  padding: max(18px, env(safe-area-inset-top)) clamp(12px, 4vw, 32px) max(18px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  z-index: 1410;
 }
 
 .modal-content {
-  padding: 28px 18px;
+  width: min(720px, calc(100vw - 24px));
+  max-height: min(860px, calc(100dvh - 36px));
+  margin: auto;
+  padding: clamp(22px, 4vw, 34px);
+  border-radius: clamp(18px, 3vw, 30px);
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.24);
+  overflow-y: auto;
+}
+
+.modal-close-button {
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+}
+
+.modal-close-button:hover,
+.modal-close-button:focus-visible {
+  background: rgba(25, 30, 59, 0.08);
+  outline: none;
 }
 
 .modal-title {
-  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  font-size: clamp(1.6rem, 5vw, 2.35rem);
+  line-height: 1.15;
+  margin-bottom: 24px;
+  padding-right: 32px;
+}
+
+.sign-up-form .field {
+  margin-bottom: 16px;
+}
+
+.field-label {
+  font-size: 0.95rem;
 }
 
 .sign-up-form input {
+  min-height: 56px;
+  height: auto;
+  padding: 0 16px;
+  border-radius: 18px;
   font-size: 1rem;
-  height: 56px;
 }
 
 .sign-up-button {
-  font-size: 1.4rem;
   min-height: 56px;
+  border-radius: 18px;
+  font-size: 1.1rem;
+}
+
+.sign-in-link-text {
+  font-size: 0.98rem;
 }
 
 @media (min-width: 700px) {
-  .search-form {
-    grid-template-columns: minmax(0, 1fr) auto;
+  .sign-in-modal {
+    align-items: center;
+    padding: 32px;
   }
 
-  .search-button {
-    min-width: 160px;
+  .modal-content {
+    width: min(740px, calc(100vw - 80px));
+    max-height: min(880px, calc(100dvh - 64px));
   }
 
-  .trip-grid {
+  .sign-up-form {
+    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 18px;
+  }
+
+  .sign-up-form .field {
+    margin-bottom: 0;
+  }
+
+  .sign-up-form .field:nth-child(3),
+  .sign-up-form .field:nth-child(4),
+  .sign-up-form .field:nth-child(5),
+  .sign-up-form .form-status,
+  .sign-up-form .sign-up-button {
+    grid-column: 1 / -1;
+  }
+
+  .sign-up-button {
+    font-size: 1.24rem;
   }
 }
 
 @media (min-width: 1100px) {
-  .trip-tabs {
-    overflow: visible;
+  .modal-content {
+    width: min(780px, calc(100vw - 120px));
+    padding: 36px 36px 34px;
   }
 
-  .trip-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+  .modal-title {
+    margin-bottom: 30px;
+  }
+
+  .sign-up-form {
+    gap: 18px 22px;
+  }
+
+  .sign-up-form input {
+    min-height: 60px;
+    font-size: 1.08rem;
+  }
+
+  .sign-up-button {
+    min-height: 60px;
+    font-size: 1.3rem;
   }
 }

@@ -77,9 +77,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const modalOverlay = document.getElementById('modalOverlay');
   const closeModalLink = document.getElementById('closeModalLink');
   const closeModalButton = document.getElementById('closeModalButton');
+  const signUpFirstNameField = document.getElementById('signUpFirstName');
+  let lastModalTrigger = null;
 
   // Opens the modal and overlay together
-  function openModal() {
+  function openModal(event) {
+    lastModalTrigger = event && event.currentTarget ? event.currentTarget : null;
+
     if (signInModal) {
       signInModal.classList.add('show');
       signInModal.setAttribute('aria-hidden', 'false');
@@ -89,8 +93,16 @@ document.addEventListener('DOMContentLoaded', function () {
       modalOverlay.classList.add('show');
     }
 
+    document.body.classList.add('modal-open');
+
     // If opened from mobile, clean up the mobile nav first
     closeMobileMenu();
+
+    window.setTimeout(function () {
+      if (signUpFirstNameField) {
+        signUpFirstNameField.focus();
+      }
+    }, 40);
   }
 
   // Closes the modal and overlay together
@@ -102,6 +114,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (modalOverlay) {
       modalOverlay.classList.remove('show');
+    }
+
+    document.body.classList.remove('modal-open');
+
+    if (lastModalTrigger && typeof lastModalTrigger.focus === 'function') {
+      lastModalTrigger.focus();
     }
   }
 

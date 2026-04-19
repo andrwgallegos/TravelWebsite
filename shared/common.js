@@ -514,7 +514,7 @@ window.TravelWebsiteUtils = (function () {
       }
     }
 
-    function showLoading(mode, query) {
+    function showLoading(mode, query, overrideText) {
       const trimmedQuery = String(query || '').trim();
 
       if (mode === 'input') {
@@ -523,9 +523,11 @@ window.TravelWebsiteUtils = (function () {
           return;
         }
 
-        loadingText.textContent = config.loadingText || 'Loading suggestions…';
+        loadingText.textContent = overrideText || config.loadingText || 'Loading suggestions…';
+      } else if (mode === 'filter') {
+        loadingText.textContent = overrideText || config.filterLoadingText || 'Updating results…';
       } else {
-        loadingText.textContent = config.submitLoadingText || 'Searching…';
+        loadingText.textContent = overrideText || config.submitLoadingText || 'Searching…';
       }
 
       currentLoadingMode = mode;
@@ -539,6 +541,13 @@ window.TravelWebsiteUtils = (function () {
       currentLoadingMode = '';
       loadingElement.classList.add('search-ui-hidden');
       setFormBusyState(false);
+    }
+
+    // Cancels any queued search work so a newer interaction can replace it cleanly.
+    function cancelPendingSearchWork() {
+      window.clearTimeout(filterDelayTimeoutId);
+      window.clearTimeout(submitDelayTimeoutId);
+      latestFilterRequestId += 1;
     }
 
     // Hides the suggestion dropdown completely.
@@ -737,9 +746,7 @@ window.TravelWebsiteUtils = (function () {
 
       event.preventDefault();
 
-      window.clearTimeout(filterDelayTimeoutId);
-      window.clearTimeout(submitDelayTimeoutId);
-      latestFilterRequestId += 1;
+      cancelPendingSearchWork();
       hideSuggestions();
 
       function finishSubmittedSearch() {
@@ -764,6 +771,32 @@ window.TravelWebsiteUtils = (function () {
       finishSubmittedSearch();
     });
 
+    // Runs page-specific filter work while reusing the shared loading row.
+    function runLoadingTask(options) {
+      const taskOptions = options || {};
+      const taskMode = taskOptions.mode || 'filter';
+      const taskDelay = Math.max(0, Number(taskOptions.delay) || 0);
+
+      cancelPendingSearchWork();
+      hideSuggestions();
+      showLoading(taskMode, taskOptions.query || inputElement.value || '', taskOptions.text);
+
+      function finishTask() {
+        if (typeof taskOptions.onComplete === 'function') {
+          taskOptions.onComplete();
+        }
+
+        hideLoading();
+      }
+
+      if (taskDelay > 0) {
+        submitDelayTimeoutId = window.setTimeout(finishTask, taskDelay);
+        return;
+      }
+
+      finishTask();
+    }
+
     // Clicking anywhere outside the search UI closes the open suggestion list.
     document.addEventListener('click', function (event) {
       const clickedInsideForm = formElement.contains(event.target);
@@ -786,7 +819,8 @@ window.TravelWebsiteUtils = (function () {
 
     return {
       applyFilter: applyFilter,
-      hideSuggestions: hideSuggestions
+      hideSuggestions: hideSuggestions,
+      runLoadingTask: runLoadingTask
     };
   }
 

@@ -612,6 +612,28 @@ body {
   align-items: center;
   justify-content: center;
   gap: 12px;
+  cursor: pointer;
+  appearance: none;
+  font: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.category-feature-button:hover,
+.category-feature-button:focus-visible {
+  border-color: #bfdbfe;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.category-feature-button.is-active {
+  border-color: #fbbf23;
+  background: linear-gradient(180deg, #fff8dc 0%, #fff1be 100%);
+  box-shadow: 0 16px 30px rgba(251, 191, 35, 0.2);
+}
+
+.category-feature-button.is-active .category-icon {
+  box-shadow: 0 12px 24px rgba(251, 191, 35, 0.22);
 }
 
 .category-icon {

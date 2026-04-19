@@ -460,6 +460,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   let listingsSearch = null;
+  let resultsSecondaryFilterTimeoutId = null;
 
   function applyAllSearchFilters() {
     if (!listingsSearch) {
@@ -467,6 +468,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     listingsSearch.applyFilter(destinationInput ? destinationInput.value.trim() : '');
+    listingsSearch.hideSuggestions();
+  }
+
+  function scheduleSecondaryFiltersUpdate() {
+    if (!listingsSearch) {
+      return;
+    }
+
+    window.clearTimeout(resultsSecondaryFilterTimeoutId);
+
+    resultsSecondaryFilterTimeoutId = window.setTimeout(function () {
+      listingsSearch.runLoadingTask({
+        mode: 'filter',
+        query: 'stays',
+        text: 'Updating stays…',
+        delay: 420,
+        onComplete: applyAllSearchFilters
+      });
+    }, 120);
   }
 
   if (
@@ -533,17 +553,20 @@ document.addEventListener('DOMContentLoaded', function () {
         updateCombinedSearchFeedback();
       },
 
-      enableInputLoading: false,
+      enableInputLoading: true,
+      loadingDelay: 260,
+      loadingText: 'Loading matching stays…',
+      filterLoadingText: 'Updating stays…',
       submitLoadingDelay: 950,
       submitLoadingText: 'Searching stays…'
     });
 
-    checkInInput.addEventListener('input', applyAllSearchFilters);
-    checkInInput.addEventListener('change', applyAllSearchFilters);
-    checkOutInput.addEventListener('input', applyAllSearchFilters);
-    checkOutInput.addEventListener('change', applyAllSearchFilters);
-    travelersInput.addEventListener('input', applyAllSearchFilters);
-    travelersInput.addEventListener('change', applyAllSearchFilters);
+    checkInInput.addEventListener('input', scheduleSecondaryFiltersUpdate);
+    checkInInput.addEventListener('change', scheduleSecondaryFiltersUpdate);
+    checkOutInput.addEventListener('input', scheduleSecondaryFiltersUpdate);
+    checkOutInput.addEventListener('change', scheduleSecondaryFiltersUpdate);
+    travelersInput.addEventListener('input', scheduleSecondaryFiltersUpdate);
+    travelersInput.addEventListener('change', scheduleSecondaryFiltersUpdate);
   }
 
   /* =========================================================
