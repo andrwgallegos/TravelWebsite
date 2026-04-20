@@ -4,13 +4,10 @@ window.TravelWebsiteUtils = (function () {
      These values are reused across every page.
      ========================================================= */
 
-  // Stores the user's selected currency so the choice persists between pages.
   const CURRENCY_STORAGE_KEY = 'travelWebsitePreferredCurrency';
-
-  // Stores the preferred color theme so it stays consistent across pages.
   const THEME_STORAGE_KEY = 'travelWebsiteTheme';
+  const ACCESSIBILITY_STORAGE_KEY = 'travelWebsiteAccessibilitySettings';
 
-  // Defines the supported demo currencies and the rate used to convert from USD.
   const CURRENCY_MAP = {
     USD: { code: 'USD', locale: 'en-US', rate: 1 },
     EUR: { code: 'EUR', locale: 'de-DE', rate: 0.92 },
@@ -19,20 +16,15 @@ window.TravelWebsiteUtils = (function () {
     CAD: { code: 'CAD', locale: 'en-CA', rate: 1.36 }
   };
 
-  // Controls the order the navigation button cycles through.
   const CURRENCY_SEQUENCE = ['USD', 'EUR', 'GBP', 'JPY', 'CAD'];
-
-  // Matches USD price fragments such as "$248" or "$0" inside text content.
   const USD_PRICE_PATTERN = /\$(\d+(?:,\d+)?(?:\.\d+)?)/g;
 
-  // Keeps track of the active toast timeout so a newer message can replace an older one.
   let toastTimeoutId = null;
 
   /* =========================================================
      SMALL SHARED HELPERS
      ========================================================= */
 
-  // Normalizes user-entered text so searches are case-insensitive and punctuation-tolerant.
   function normalizeText(value) {
     return String(value || '')
       .toLowerCase()
@@ -42,7 +34,6 @@ window.TravelWebsiteUtils = (function () {
       .trim();
   }
 
-  // Safely reads the stored theme without breaking if localStorage is unavailable.
   function getStoredTheme() {
     try {
       const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
@@ -51,22 +42,65 @@ window.TravelWebsiteUtils = (function () {
         return storedTheme;
       }
     } catch (error) {
-      // File-based demos can block storage in some environments, so failure is ignored.
+      // Ignore storage issues in preview/file environments.
     }
 
     return 'light';
   }
 
-  // Saves the selected theme for the next page load.
   function setStoredTheme(themeName) {
     try {
       window.localStorage.setItem(THEME_STORAGE_KEY, themeName);
     } catch (error) {
-      // Storage failure should not stop the current page from updating.
+      // Ignore storage failure without breaking the page.
     }
   }
 
-  // Safely reads the stored currency without breaking if localStorage is unavailable.
+  function getDefaultAccessibilitySettings() {
+    return {
+      fontScale: 100,
+      readableSpacing: false,
+      reduceMotion: false
+    };
+  }
+
+  function sanitizeAccessibilitySettings(settings) {
+    const allowedFontScales = [100, 112.5, 125];
+    const rawSettings = settings || {};
+    const parsedFontScale = Number(rawSettings.fontScale);
+
+    return {
+      fontScale: allowedFontScales.includes(parsedFontScale) ? parsedFontScale : 100,
+      readableSpacing: Boolean(rawSettings.readableSpacing),
+      reduceMotion: Boolean(rawSettings.reduceMotion)
+    };
+  }
+
+  function getStoredAccessibilitySettings() {
+    try {
+      const storedSettings = window.localStorage.getItem(ACCESSIBILITY_STORAGE_KEY);
+
+      if (storedSettings) {
+        return sanitizeAccessibilitySettings(JSON.parse(storedSettings));
+      }
+    } catch (error) {
+      // Ignore storage issues in preview/file environments.
+    }
+
+    return getDefaultAccessibilitySettings();
+  }
+
+  function setStoredAccessibilitySettings(settings) {
+    try {
+      window.localStorage.setItem(
+        ACCESSIBILITY_STORAGE_KEY,
+        JSON.stringify(sanitizeAccessibilitySettings(settings))
+      );
+    } catch (error) {
+      // Ignore storage failure without breaking the page.
+    }
+  }
+
   function getStoredCurrency() {
     try {
       const storedCurrency = window.localStorage.getItem(CURRENCY_STORAGE_KEY);
@@ -75,22 +109,20 @@ window.TravelWebsiteUtils = (function () {
         return storedCurrency;
       }
     } catch (error) {
-      // File-based demos can block storage in some environments, so failure is ignored.
+      // Ignore storage issues in preview/file environments.
     }
 
     return 'USD';
   }
 
-  // Saves the newly selected currency for the next page load.
   function setStoredCurrency(currencyCode) {
     try {
       window.localStorage.setItem(CURRENCY_STORAGE_KEY, currencyCode);
     } catch (error) {
-      // Storage failure should not stop the interface from updating on the current page.
+      // Ignore storage failure without breaking the page.
     }
   }
 
-  // Formats one USD amount into the currently selected currency.
   function formatMoneyFromUsd(usdAmount, currencyCode) {
     const selectedCurrency = CURRENCY_MAP[currencyCode] || CURRENCY_MAP.USD;
     const convertedAmount = Number(usdAmount) * selectedCurrency.rate;
@@ -103,7 +135,6 @@ window.TravelWebsiteUtils = (function () {
     }).format(convertedAmount);
   }
 
-  // Returns the next currency in the sequence so the nav button can cycle predictably.
   function getNextCurrency(currentCurrency) {
     const currentIndex = CURRENCY_SEQUENCE.indexOf(currentCurrency);
 
@@ -114,7 +145,6 @@ window.TravelWebsiteUtils = (function () {
     return CURRENCY_SEQUENCE[(currentIndex + 1) % CURRENCY_SEQUENCE.length];
   }
 
-  // Creates the shared toast node once and reuses it for lightweight status messages.
   function getToastElement() {
     let toastElement = document.querySelector('.app-toast');
 
@@ -129,7 +159,6 @@ window.TravelWebsiteUtils = (function () {
     return toastElement;
   }
 
-  // Displays a short on-screen message without interrupting the user with an alert dialog.
   function showToast(message) {
     const toastElement = getToastElement();
 
@@ -143,18 +172,20 @@ window.TravelWebsiteUtils = (function () {
     }, 2600);
   }
 
-
-  // Returns the correct homepage path for the current page depth.
   function getHomepageHref() {
     const currentPath = String(window.location.pathname || '');
     return currentPath.includes('/Homepage/') ? 'index.html' : '../Homepage/index.html';
   }
 
-  // Returns the correct inline SVG icon for the shared theme toggle.
+  /* =========================================================
+     ICON MARKUP
+     Added pointer-events="none" so the button always receives clicks.
+     ========================================================= */
+
   function getThemeToggleIconMarkup(themeName) {
     if (themeName === 'dark') {
       return (
-        '<svg class="theme-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<svg class="theme-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" pointer-events="none">' +
           '<circle cx="12" cy="12" r="4"></circle>' +
           '<path d="M12 2.5v2.25"></path>' +
           '<path d="M12 19.25v2.25"></path>' +
@@ -169,32 +200,319 @@ window.TravelWebsiteUtils = (function () {
     }
 
     return (
-      '<svg class="theme-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+      '<svg class="theme-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" pointer-events="none">' +
         '<path d="M21 13.05A8.5 8.5 0 1 1 10.95 3 6.8 6.8 0 0 0 21 13.05z"></path>' +
       '</svg>'
     );
   }
 
-  // Updates the visible theme-toggle button labels to reflect the active theme.
+  function getAccessibilityToggleIconMarkup() {
+    return (
+      '<svg class="accessibility-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" pointer-events="none">' +
+        '<circle cx="12" cy="12" r="9"></circle>' +
+        '<circle cx="12" cy="8.15" r="2.15"></circle>' +
+        '<path d="M7.6 16.8c1.15-2.15 2.85-3.3 4.4-3.3s3.25 1.15 4.4 3.3"></path>' +
+      '</svg>'
+    );
+  }
+
   function updateThemeToggleLabels(themeName) {
     const themeToggleButtons = document.querySelectorAll('.theme-toggle');
     const nextThemeName = themeName === 'dark' ? 'light' : 'dark';
+    const isDarkActive = themeName === 'dark';
 
     themeToggleButtons.forEach(function (button) {
       button.innerHTML = getThemeToggleIconMarkup(themeName);
-      button.setAttribute('aria-label', 'Switch to ' + nextThemeName + ' mode.');
-      button.setAttribute('title', 'Switch to ' + nextThemeName + ' mode.');
+      button.setAttribute(
+        'aria-label',
+        (isDarkActive ? 'Dark mode is active. ' : 'Light mode is active. ') +
+          'Switch to ' + nextThemeName + ' mode.'
+      );
+      button.setAttribute(
+        'title',
+        (isDarkActive ? 'Dark mode is active. ' : 'Light mode is active. ') +
+          'Switch to ' + nextThemeName + ' mode.'
+      );
+      button.setAttribute('aria-pressed', isDarkActive ? 'true' : 'false');
     });
   }
 
-  // Applies the currently selected theme to the page.
+  function updateAccessibilityToggleLabels() {
+    document.querySelectorAll('.accessibility-toggle').forEach(function (button) {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+      button.innerHTML = getAccessibilityToggleIconMarkup();
+      button.setAttribute(
+        'aria-label',
+        isExpanded ? 'Hide accessibility settings.' : 'Show accessibility settings.'
+      );
+      button.setAttribute(
+        'title',
+        isExpanded ? 'Hide accessibility settings.' : 'Show accessibility settings.'
+      );
+    });
+  }
+
+  function updateAccessibilityControlStates(settings) {
+    const resolvedSettings = sanitizeAccessibilitySettings(settings);
+
+    document.querySelectorAll('.font-scale-option').forEach(function (button) {
+      const buttonScale = Number(button.getAttribute('data-font-scale'));
+      const isActive = buttonScale === resolvedSettings.fontScale;
+
+      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    document.querySelectorAll('.accessibility-setting-toggle').forEach(function (button) {
+      const settingName = button.getAttribute('data-setting');
+      const isActive = Boolean(resolvedSettings[settingName]);
+
+      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    document.querySelectorAll('.accessibility-text-size-value').forEach(function (element) {
+      if (resolvedSettings.fontScale === 125) {
+        element.textContent = 'Largest';
+        return;
+      }
+
+      if (resolvedSettings.fontScale === 112.5) {
+        element.textContent = 'Larger';
+        return;
+      }
+
+      element.textContent = 'Standard';
+    });
+  }
+
+  function applyAccessibilitySettings(settings) {
+    if (!document.body) {
+      return;
+    }
+
+    const resolvedSettings = sanitizeAccessibilitySettings(settings);
+
+    document.documentElement.style.fontSize = resolvedSettings.fontScale + '%';
+    document.body.classList.toggle('accessibility-readable-spacing', resolvedSettings.readableSpacing);
+    document.body.classList.toggle('accessibility-reduce-motion', resolvedSettings.reduceMotion);
+
+    updateAccessibilityControlStates(resolvedSettings);
+  }
+
+  function commitAccessibilitySettings(partialSettings) {
+    const nextSettings = sanitizeAccessibilitySettings(
+      Object.assign({}, getStoredAccessibilitySettings(), partialSettings || {})
+    );
+
+    setStoredAccessibilitySettings(nextSettings);
+    applyAccessibilitySettings(nextSettings);
+  }
+
+  function closeAccessibilityPanels() {
+    document.querySelectorAll('.accessibility-panel').forEach(function (panel) {
+      panel.hidden = true;
+    });
+
+    document.querySelectorAll('.accessibility-toggle').forEach(function (button) {
+      button.setAttribute('aria-expanded', 'false');
+    });
+
+    updateAccessibilityToggleLabels();
+  }
+
+  function setAccessibilityPanelState(accessibilityMenu, shouldOpen) {
+    const panel = accessibilityMenu && accessibilityMenu.querySelector('.accessibility-panel');
+    const button = accessibilityMenu && accessibilityMenu.querySelector('.accessibility-toggle');
+
+    if (!panel || !button) {
+      return;
+    }
+
+    panel.hidden = !shouldOpen;
+    button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    updateAccessibilityToggleLabels();
+
+    if (shouldOpen) {
+      updateAccessibilityControlStates(getStoredAccessibilitySettings());
+    }
+  }
+
+  function bindAccessibilityPanelDismissal() {
+    if (document.body.dataset.accessibilityDismissBound === 'true') {
+      return;
+    }
+
+    document.addEventListener('click', function (event) {
+      if (!event.target.closest('.accessibility-menu')) {
+        closeAccessibilityPanels();
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeAccessibilityPanels();
+      }
+    });
+
+    document.body.dataset.accessibilityDismissBound = 'true';
+  }
+
+  function createThemeToggleButton() {
+    const themeToggleButton = document.createElement('button');
+    themeToggleButton.type = 'button';
+    themeToggleButton.className = 'nav-link nav-utility-link theme-toggle';
+
+    themeToggleButton.addEventListener('click', function () {
+      closeAccessibilityPanels();
+
+      const nextTheme = getStoredTheme() === 'dark' ? 'light' : 'dark';
+      setStoredTheme(nextTheme);
+      applyTheme(nextTheme);
+    });
+
+    return themeToggleButton;
+  }
+
+  function createFontScaleOptionButton(label, value) {
+    const button = document.createElement('button');
+    const sizeLabel =
+      value === 125 ? 'Largest text size' :
+      value === 112.5 ? 'Larger text size' :
+      'Standard text size';
+
+    button.type = 'button';
+    button.className = 'accessibility-option font-scale-option';
+    button.setAttribute('data-font-scale', String(value));
+    button.setAttribute('aria-label', sizeLabel);
+    button.setAttribute('title', sizeLabel);
+    button.textContent = label;
+
+    button.addEventListener('click', function () {
+      commitAccessibilitySettings({ fontScale: value });
+    });
+
+    return button;
+  }
+
+  function createAccessibilitySettingToggle(label, settingName) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'accessibility-option accessibility-setting-toggle';
+    button.setAttribute('data-setting', settingName);
+    button.textContent = label;
+
+    button.addEventListener('click', function () {
+      const currentSettings = getStoredAccessibilitySettings();
+
+      commitAccessibilitySettings({
+        [settingName]: !currentSettings[settingName]
+      });
+    });
+
+    return button;
+  }
+
+  function createAccessibilityMenu() {
+    const accessibilityMenu = document.createElement('div');
+    const accessibilityToggleButton = document.createElement('button');
+    const accessibilityPanel = document.createElement('section');
+    const panelId = 'accessibilityPanel' + document.querySelectorAll('.accessibility-panel').length;
+
+    accessibilityMenu.className = 'accessibility-menu';
+
+    accessibilityToggleButton.type = 'button';
+    accessibilityToggleButton.className = 'nav-link nav-utility-link accessibility-toggle';
+    accessibilityToggleButton.setAttribute('aria-controls', panelId);
+    accessibilityToggleButton.setAttribute('aria-expanded', 'false');
+
+    accessibilityToggleButton.addEventListener('click', function () {
+      const isCurrentlyOpen = accessibilityToggleButton.getAttribute('aria-expanded') === 'true';
+
+      closeAccessibilityPanels();
+      setAccessibilityPanelState(accessibilityMenu, !isCurrentlyOpen);
+    });
+
+    accessibilityPanel.id = panelId;
+    accessibilityPanel.className = 'accessibility-panel';
+    accessibilityPanel.setAttribute('role', 'region');
+    accessibilityPanel.setAttribute('aria-label', 'Accessibility settings');
+    accessibilityPanel.hidden = true;
+
+    const panelTitle = document.createElement('p');
+    panelTitle.className = 'accessibility-panel-title';
+    panelTitle.textContent = 'Accessibility';
+
+    const panelDescription = document.createElement('p');
+    panelDescription.className = 'accessibility-panel-text';
+    panelDescription.textContent = 'Saved across pages. Adjust text size and reading comfort.';
+
+    const textSizeGroup = document.createElement('div');
+    textSizeGroup.className = 'accessibility-group';
+
+    const textSizeHeader = document.createElement('div');
+    textSizeHeader.className = 'accessibility-group-header';
+
+    const textSizeLabel = document.createElement('span');
+    textSizeLabel.className = 'accessibility-group-label';
+    textSizeLabel.textContent = 'Text size';
+
+    const textSizeValue = document.createElement('span');
+    textSizeValue.className = 'accessibility-text-size-value';
+    textSizeValue.textContent = 'Standard';
+
+    textSizeHeader.appendChild(textSizeLabel);
+    textSizeHeader.appendChild(textSizeValue);
+
+    const textSizeOptions = document.createElement('div');
+    textSizeOptions.className = 'accessibility-segmented';
+    textSizeOptions.appendChild(createFontScaleOptionButton('A', 100));
+    textSizeOptions.appendChild(createFontScaleOptionButton('A+', 112.5));
+    textSizeOptions.appendChild(createFontScaleOptionButton('A++', 125));
+
+    textSizeGroup.appendChild(textSizeHeader);
+    textSizeGroup.appendChild(textSizeOptions);
+
+    const preferenceGroup = document.createElement('div');
+    preferenceGroup.className = 'accessibility-group';
+
+    const preferenceLabel = document.createElement('span');
+    preferenceLabel.className = 'accessibility-group-label';
+    preferenceLabel.textContent = 'Reading options';
+
+    preferenceGroup.appendChild(preferenceLabel);
+    preferenceGroup.appendChild(createAccessibilitySettingToggle('Readable spacing', 'readableSpacing'));
+    preferenceGroup.appendChild(createAccessibilitySettingToggle('Reduce motion', 'reduceMotion'));
+
+    const resetButton = document.createElement('button');
+    resetButton.type = 'button';
+    resetButton.className = 'accessibility-reset';
+    resetButton.textContent = 'Reset accessibility settings';
+
+    resetButton.addEventListener('click', function () {
+      const defaultSettings = getDefaultAccessibilitySettings();
+      setStoredAccessibilitySettings(defaultSettings);
+      applyAccessibilitySettings(defaultSettings);
+    });
+
+    accessibilityPanel.appendChild(panelTitle);
+    accessibilityPanel.appendChild(panelDescription);
+    accessibilityPanel.appendChild(textSizeGroup);
+    accessibilityPanel.appendChild(preferenceGroup);
+    accessibilityPanel.appendChild(resetButton);
+
+    accessibilityMenu.appendChild(accessibilityToggleButton);
+    accessibilityMenu.appendChild(accessibilityPanel);
+
+    return accessibilityMenu;
+  }
+
   function applyTheme(themeName) {
     const resolvedTheme = themeName === 'dark' ? 'dark' : 'light';
     document.body.classList.toggle('theme-dark', resolvedTheme === 'dark');
+    document.body.setAttribute('data-theme', resolvedTheme);
     updateThemeToggleLabels(resolvedTheme);
   }
 
-  // Adds the shared home shortcut and dark-mode toggle to each page navigation.
   function ensureSharedNavigationFeatures() {
     const navbarLeft = document.querySelector('.navbar-left');
 
@@ -217,63 +535,56 @@ window.TravelWebsiteUtils = (function () {
     ['.desktop-nav', '.mobile-nav'].forEach(function (selector) {
       const navElement = document.querySelector(selector);
 
-      if (!navElement || navElement.querySelector('.theme-toggle')) {
+      if (!navElement || navElement.querySelector('.nav-accessibility-group')) {
         return;
       }
 
-      const themeToggleButton = document.createElement('button');
-      themeToggleButton.type = 'button';
-      themeToggleButton.className = 'nav-link nav-utility-link theme-toggle';
-      themeToggleButton.addEventListener('click', function () {
-        const nextTheme = getStoredTheme() === 'dark' ? 'light' : 'dark';
-        setStoredTheme(nextTheme);
-        applyTheme(nextTheme);
-      });
+      const utilityGroup = document.createElement('div');
+      utilityGroup.className = 'nav-accessibility-group';
+      utilityGroup.appendChild(createAccessibilityMenu());
+      utilityGroup.appendChild(createThemeToggleButton());
 
       const signInButton = navElement.querySelector('.sign-in-button');
 
       if (signInButton) {
-        navElement.insertBefore(themeToggleButton, signInButton);
+        navElement.insertBefore(utilityGroup, signInButton);
       } else {
-        navElement.appendChild(themeToggleButton);
+        navElement.appendChild(utilityGroup);
       }
     });
 
+    bindAccessibilityPanelDismissal();
     updateThemeToggleLabels(getStoredTheme());
+    updateAccessibilityToggleLabels();
+    updateAccessibilityControlStates(getStoredAccessibilitySettings());
   }
 
   /* =========================================================
      CURRENCY TOGGLE + PRICE CONVERSION
      ========================================================= */
 
-  // Finds the navigation links that start as "USD" before any cycling happens.
   function getCurrencyToggleElements() {
     return Array.from(document.querySelectorAll('.nav-link')).filter(function (link) {
       return link.textContent.trim() === 'USD' || link.classList.contains('currency-toggle');
     });
   }
 
-  // Finds the "List your property" links so they can show a prototype notice.
   function getPropertyTriggerElements() {
     return Array.from(document.querySelectorAll('.nav-link')).filter(function (link) {
       return link.textContent.trim() === 'List your property' || link.classList.contains('property-trigger');
     });
   }
 
-  // Stores the original USD text so future currency switches always convert from the same base values.
   function rememberOriginalCurrencyText(element) {
-    // Reset the regular expression state before testing because the global flag remembers prior matches.
     USD_PRICE_PATTERN.lastIndex = 0;
 
     if (!element.dataset.usdTextTemplate && USD_PRICE_PATTERN.test(element.textContent)) {
       element.dataset.usdTextTemplate = element.textContent.trim();
     }
 
-    // Reset the regular expression state again for the next caller.
     USD_PRICE_PATTERN.lastIndex = 0;
   }
 
-  // Replaces every USD amount inside the element's original text with the converted amount.
   function updateCurrencyTextElement(element, currencyCode) {
     rememberOriginalCurrencyText(element);
 
@@ -288,11 +599,9 @@ window.TravelWebsiteUtils = (function () {
       return formatMoneyFromUsd(usdAmount, currencyCode);
     });
 
-    // Reset the regular expression state after replacement for future calls.
     USD_PRICE_PATTERN.lastIndex = 0;
   }
 
-  // Updates every visible currency button label to show the active currency code.
   function updateCurrencyToggleLabels(currencyCode) {
     getCurrencyToggleElements().forEach(function (link) {
       link.classList.add('currency-toggle');
@@ -302,7 +611,6 @@ window.TravelWebsiteUtils = (function () {
     });
   }
 
-  // Converts all visible prices and price-filter labels on the current page.
   function applyCurrencyToPage(currencyCode) {
     const priceLikeElements = document.querySelectorAll('.price, .filter-pill, .filter-option');
 
@@ -313,7 +621,6 @@ window.TravelWebsiteUtils = (function () {
     updateCurrencyToggleLabels(currencyCode);
   }
 
-  // Wires up the currency links so each click cycles to the next currency and refreshes all prices.
   function bindCurrencyToggles() {
     getCurrencyToggleElements().forEach(function (link) {
       link.classList.add('currency-toggle');
@@ -330,7 +637,6 @@ window.TravelWebsiteUtils = (function () {
     });
   }
 
-  // Replaces the placeholder property flow with a clear prototype notice.
   function bindPropertyTriggers() {
     getPropertyTriggerElements().forEach(function (link) {
       link.classList.add('property-trigger');
@@ -346,13 +652,11 @@ window.TravelWebsiteUtils = (function () {
      URL HELPERS
      ========================================================= */
 
-  // Reads a query-string value from the current page URL.
   function getPageQueryValue(parameterName) {
     const currentUrl = new URL(window.location.href);
     return currentUrl.searchParams.get(parameterName) || '';
   }
 
-  // Updates a query-string value without causing a full page refresh.
   function updatePageQueryValue(parameterName, parameterValue) {
     try {
       const currentUrl = new URL(window.location.href);
@@ -365,7 +669,7 @@ window.TravelWebsiteUtils = (function () {
 
       window.history.replaceState({}, '', currentUrl.toString());
     } catch (error) {
-      // Some file-based preview environments may not support URL rewriting cleanly.
+      // Ignore URL rewrite issues in preview/file environments.
     }
   }
 
@@ -373,13 +677,11 @@ window.TravelWebsiteUtils = (function () {
      GENERIC LIVE SEARCH HELPER
      ========================================================= */
 
-  // Builds a reusable live-search experience for any page that has a search input and filterable items.
   function initLiveSearch(config) {
     const inputElement = config && config.inputElement;
     const formElement = config && config.formElement;
     const itemElements = Array.from((config && config.itemElements) || []);
 
-    // Stop early if the page did not pass the minimum required pieces.
     if (!inputElement || !formElement || !itemElements.length) {
       return null;
     }
@@ -389,10 +691,8 @@ window.TravelWebsiteUtils = (function () {
     const inputLoadingDelay = Math.max(0, Number((config && config.loadingDelay) || 180));
     const submitLoadingDelay = Math.max(0, Number((config && config.submitLoadingDelay) || 0));
 
-    // Native browser autocomplete would compete with the custom suggestion list.
     inputElement.setAttribute('autocomplete', 'off');
 
-    // Turns the raw DOM elements into searchable records with normalized text.
     const indexedItems = itemElements.map(function (element, index) {
       const itemData = typeof config.getItemData === 'function' ? config.getItemData(element, index) : {};
       const keywords = Array.isArray(itemData.keywords) ? itemData.keywords : [];
@@ -412,7 +712,6 @@ window.TravelWebsiteUtils = (function () {
       };
     });
 
-    // Creates a shared loading row directly under the form, separate from the suggestion list.
     const loadingElement = document.createElement('div');
     loadingElement.className = 'search-loading search-ui-hidden';
     loadingElement.setAttribute('role', 'status');
@@ -430,7 +729,6 @@ window.TravelWebsiteUtils = (function () {
     loadingElement.appendChild(loadingText);
     formElement.insertAdjacentElement('afterend', loadingElement);
 
-    // Creates the shared suggestion container just below the loading row.
     const suggestionsElement = document.createElement('section');
     suggestionsElement.className = 'search-suggestions search-ui-hidden';
     suggestionsElement.setAttribute('aria-label', 'Search suggestions');
@@ -446,13 +744,11 @@ window.TravelWebsiteUtils = (function () {
     suggestionsElement.appendChild(suggestionsList);
     loadingElement.insertAdjacentElement('afterend', suggestionsElement);
 
-    // Adds a small live status line so users know how many matches they are seeing.
     const statusElement = document.createElement('p');
     statusElement.className = 'search-results-status';
     statusElement.setAttribute('aria-live', 'polite');
     suggestionsElement.insertAdjacentElement('afterend', statusElement);
 
-    // Builds the reusable no-results block once and toggles it as needed.
     const noResultsElement = document.createElement('div');
     noResultsElement.className = 'search-no-results search-ui-hidden';
 
@@ -469,7 +765,6 @@ window.TravelWebsiteUtils = (function () {
     const noResultsMount = config.noResultsMount || formElement.parentElement;
     noResultsMount.appendChild(noResultsElement);
 
-    // Uses the page-provided visibility rule when present, otherwise falls back to display toggling.
     function setItemVisibility(indexedItem, shouldShow) {
       if (typeof config.setItemVisibility === 'function') {
         config.setItemVisibility(indexedItem.element, shouldShow, indexedItem.data);
@@ -479,14 +774,12 @@ window.TravelWebsiteUtils = (function () {
       indexedItem.element.style.display = shouldShow ? '' : 'none';
     }
 
-    // Breaks the user query into tokens so multi-word searches remain flexible.
     function getQueryTokens(query) {
       return normalizeText(query)
         .split(' ')
         .filter(Boolean);
     }
 
-    // Returns every item that contains all query tokens in its searchable text.
     function getMatches(query) {
       const tokens = getQueryTokens(query);
 
@@ -543,14 +836,12 @@ window.TravelWebsiteUtils = (function () {
       setFormBusyState(false);
     }
 
-    // Cancels any queued search work so a newer interaction can replace it cleanly.
     function cancelPendingSearchWork() {
       window.clearTimeout(filterDelayTimeoutId);
       window.clearTimeout(submitDelayTimeoutId);
       latestFilterRequestId += 1;
     }
 
-    // Hides the suggestion dropdown completely.
     function hideSuggestions() {
       window.clearTimeout(filterDelayTimeoutId);
 
@@ -562,7 +853,6 @@ window.TravelWebsiteUtils = (function () {
       suggestionsList.innerHTML = '';
     }
 
-    // Uses a unique key so duplicate cards do not produce duplicate suggestions.
     function getSuggestionKey(indexedItem) {
       return normalizeText(
         indexedItem.data.suggestionKey ||
@@ -572,7 +862,6 @@ window.TravelWebsiteUtils = (function () {
       );
     }
 
-    // Creates a clickable suggestion button for one result.
     function createSuggestionButton(indexedItem) {
       const suggestionButton = document.createElement('button');
       suggestionButton.type = 'button';
@@ -592,7 +881,6 @@ window.TravelWebsiteUtils = (function () {
       }
 
       suggestionButton.addEventListener('click', function () {
-        // Selecting a suggestion fills the search box and re-runs the live filter immediately.
         inputElement.value = indexedItem.data.searchValue || indexedItem.data.title || '';
         applyFilter(inputElement.value);
         inputElement.focus();
@@ -601,7 +889,6 @@ window.TravelWebsiteUtils = (function () {
       return suggestionButton;
     }
 
-    // Schedules a short debounce before updating the suggestion list.
     function scheduleFilter(query) {
       const trimmedQuery = String(query || '').trim();
 
@@ -633,7 +920,6 @@ window.TravelWebsiteUtils = (function () {
       }, inputLoadingDelay);
     }
 
-    // Rebuilds the visible suggestion list from the best current matches.
     function renderSuggestions(query, matches) {
       if (!query) {
         hideSuggestions();
@@ -668,7 +954,6 @@ window.TravelWebsiteUtils = (function () {
       suggestionsElement.classList.remove('search-ui-hidden');
     }
 
-    // Updates the small line of text below the form with a page-specific count summary.
     function updateStatus(query, matchCount) {
       if (typeof config.getStatusText === 'function') {
         statusElement.textContent = config.getStatusText({
@@ -688,13 +973,11 @@ window.TravelWebsiteUtils = (function () {
         matchCount + ' ' + (matchCount === 1 ? 'match' : 'matches') + ' for “' + query + '”.';
     }
 
-    // Shows the no-results block only when the user has typed a query with zero matches.
     function updateNoResultsState(query, matchCount) {
       const shouldShowNoResults = Boolean(query) && matchCount === 0;
       noResultsElement.classList.toggle('search-ui-hidden', !shouldShowNoResults);
     }
 
-    // Filters the page content, refreshes suggestions, and updates all UI states together.
     function applyFilter(query) {
       const trimmedQuery = String(query || '').trim();
       const matches = getMatches(trimmedQuery);
@@ -723,24 +1006,20 @@ window.TravelWebsiteUtils = (function () {
       return matches;
     }
 
-    // Re-runs the filter whenever the user types or clears the field.
     inputElement.addEventListener('input', function () {
       scheduleFilter(inputElement.value);
     });
 
-    // Some browsers fire a dedicated event when the built-in search clear button is used.
     inputElement.addEventListener('search', function () {
       scheduleFilter(inputElement.value);
     });
 
-    // Refocus should reveal the latest suggestions again when a query is still present.
     inputElement.addEventListener('focus', function () {
       if (inputElement.value.trim()) {
         renderSuggestions(inputElement.value.trim(), getMatches(inputElement.value.trim()));
       }
     });
 
-    // Prevents the form from refreshing the page unless a page-specific submit handler takes over.
     formElement.addEventListener('submit', function (event) {
       const currentQuery = inputElement.value.trim();
 
@@ -771,7 +1050,6 @@ window.TravelWebsiteUtils = (function () {
       finishSubmittedSearch();
     });
 
-    // Runs page-specific filter work while reusing the shared loading row.
     function runLoadingTask(options) {
       const taskOptions = options || {};
       const taskMode = taskOptions.mode || 'filter';
@@ -797,7 +1075,6 @@ window.TravelWebsiteUtils = (function () {
       finishTask();
     }
 
-    // Clicking anywhere outside the search UI closes the open suggestion list.
     document.addEventListener('click', function (event) {
       const clickedInsideForm = formElement.contains(event.target);
       const clickedInsideSuggestions = suggestionsElement.contains(event.target);
@@ -807,14 +1084,12 @@ window.TravelWebsiteUtils = (function () {
       }
     });
 
-    // Escape hides the suggestion list without clearing the current filter.
     inputElement.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') {
         hideSuggestions();
       }
     });
 
-    // Applies the initial state once so the page starts in sync with any existing query.
     applyFilter(config.initialQuery || inputElement.value || '');
 
     return {
@@ -828,13 +1103,13 @@ window.TravelWebsiteUtils = (function () {
      SHARED PAGE INITIALIZATION
      ========================================================= */
 
-  // Applies the shared currency/property behavior once the DOM is ready.
   document.addEventListener('DOMContentLoaded', function () {
     ensureSharedNavigationFeatures();
     bindCurrencyToggles();
     bindPropertyTriggers();
     applyCurrencyToPage(getStoredCurrency());
     applyTheme(getStoredTheme());
+    applyAccessibilitySettings(getStoredAccessibilitySettings());
   });
 
   return {

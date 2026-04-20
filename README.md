@@ -18,6 +18,8 @@ A responsive multi-page travel website built using HTML, CSS, and JavaScript.
 - Desktop navigation bar
 - Mobile hamburger menu (open/close functionality)
 - Working links between all pages
+- Shared dark mode toggle with persistent theme preference
+- Shared accessibility menu with text-size controls, readable spacing, and reduced-motion support
 - Interactive UI elements:
   - Live client-side search with real-time suggestions
   - Search empty states and no-results handling
