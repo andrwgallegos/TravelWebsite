@@ -873,3 +873,25 @@ body.theme-dark .price {
 body.theme-dark .note {
   color: #cbd5e1 !important;
 }
+
+body.theme-dark .site-footer {
+  background: #10253f !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+body.theme-dark .footer-column h4 {
+  color: #e2e8f0 !important;
+}
+
+body.theme-dark .footer-column a {
+  color: #cbd5e1 !important;
+}
+
+body.theme-dark .footer-column a:hover {
+  color: #fbbf23 !important;
+}
+
+body.theme-dark .footer-bottom p {
+  color: #94a3b8 !important;
+}
