@@ -341,6 +341,54 @@ body {
 }
 
 /* =========================================================
+   FOOTER
+   ========================================================= */
+.site-footer {
+  background: #f7f7f7;
+  padding: 36px 16px 48px;
+  border-top: 10px solid #d9e2ea;
+  font-family: 'Inter', sans-serif;
+  color: #191e3b;
+}
+
+.footer-content {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  justify-items: center;
+  text-align: center;
+}
+
+.footer-column h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #191e3b;
+}
+
+.footer-column a {
+  display: block;
+  text-decoration: none;
+  color: #475569;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  transition: color 0.2s ease;
+}
+
+.footer-column a:hover {
+  color: #191e3b;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+/* =========================================================
    SIGN IN MODAL
    ========================================================= */
 .modal {
@@ -420,6 +468,11 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 32px 28px;
   }
+
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
 }
 
 /* =========================================================
@@ -470,6 +523,24 @@ body {
   .faq-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 40px 32px;
+  }
+
+  .site-footer {
+    padding: 48px 32px 64px;
+    border-top: 14px solid #d9e2ea;
+  }
+
+  .footer-content {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 48px;
+  }
+
+  .footer-column h4 {
+    font-size: 1.05rem;
+  }
+
+  .footer-column a {
+    font-size: 0.95rem;
   }
 }
 
