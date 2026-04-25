@@ -1070,3 +1070,235 @@ body.theme-dark .dropdown-button.active-link {
 body.theme-dark .logo-link.active-home::after {
   background: currentColor;
 }
+/* =========================================================
+   ASSIGNMENT 13 FINAL ACCESSIBILITY PATCH
+   Keeps navigation/tab text vertically centered, reinforces
+   relative type sizing, WCAG-friendly contrast, and 200% zoom.
+   ========================================================= */
+:root {
+  --focus-ring: #2563eb;
+  --dark-focus-ring: #fbbf23;
+  --text-strong: #0f172a;
+  --text-muted: #475569;
+  --dark-text-strong: #e2e8f0;
+  --dark-text-muted: #cbd5e1;
+}
+
+body {
+  min-width: 0;
+}
+
+.navbar,
+.navbar-left,
+.navbar-right,
+.desktop-nav,
+.mobile-nav .nav-link,
+.nav-accessibility-group,
+.logo-link,
+.dropdown-button,
+.nav-link,
+.sign-in-button,
+.theme-toggle,
+.accessibility-toggle {
+  align-items: center;
+}
+
+.nav-link,
+.dropdown-button,
+.sign-in-button,
+.trip-tab,
+.category-feature-button {
+  display: inline-flex;
+  justify-content: center;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.nav-link,
+.dropdown-button {
+  min-height: 2.75rem;
+  padding-block: 0.55rem;
+}
+
+.dropdown-button::after {
+  line-height: 1;
+  margin-top: 0.04rem;
+}
+
+.logo-text {
+  line-height: 1.05;
+}
+
+.trip-tabs {
+  align-items: stretch;
+  gap: 0;
+}
+
+.trip-tab {
+  align-items: center;
+  min-height: 3.25rem;
+  padding: 0.75rem 1.15rem;
+  font-size: clamp(1rem, 1.2vw, 1.15rem) !important;
+  line-height: 1.2;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.category-feature-button {
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  line-height: 1.2;
+}
+
+.category-feature-button p {
+  margin: 0;
+  line-height: 1.25;
+  transform: translateY(0.05rem);
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  min-height: 2.75rem;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1;
+}
+
+body.theme-dark input::placeholder,
+body.theme-dark textarea::placeholder {
+  color: #cbd5e1 !important;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 0.2rem solid var(--focus-ring) !important;
+  outline-offset: 0.2rem !important;
+  box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.14);
+}
+
+body.theme-dark :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline-color: var(--dark-focus-ring) !important;
+  box-shadow: 0 0 0 0.25rem rgba(251, 191, 35, 0.16);
+}
+
+.search-card,
+.trip-card,
+.listing-card,
+.ad-card,
+.faq-item,
+.faq-category,
+.resource-card,
+.booking-summary,
+.form-container,
+.modal-content,
+.success-modal-content,
+.help-search-form,
+.search-suggestions,
+.search-loading,
+.search-no-results,
+.empty-state {
+  max-width: 100%;
+}
+
+.hero-title,
+.section-title,
+.help-title,
+.search-title,
+.form-title,
+.modal-title,
+.trip-info h3,
+.listing-info h3,
+.resource-card h3,
+.faq-question {
+  line-height: 1.2;
+}
+
+p,
+li,
+label,
+input,
+select,
+textarea,
+.search-suggestion-meta,
+.section-subtitle,
+.faq-answer,
+.resource-card p {
+  line-height: 1.55;
+}
+
+body.theme-dark .resources-title,
+body.theme-dark .section-title,
+body.theme-dark .resource-card h3,
+body.theme-dark .resource-card p,
+body.theme-dark .resource-link-label,
+body.theme-dark .resources-shell,
+body.theme-dark .section-subtitle {
+  color: var(--dark-text-strong) !important;
+}
+
+body.theme-dark .resource-card p,
+body.theme-dark .section-subtitle {
+  color: var(--dark-text-muted) !important;
+}
+
+body.theme-dark .modal-button.secondary,
+body.theme-dark .search-button {
+  background: #fbbf23 !important;
+  color: #111827 !important;
+}
+
+body.theme-dark .modal-button.secondary:hover,
+body.theme-dark .search-button:hover {
+  background: #f59e0b !important;
+  color: #111827 !important;
+}
+
+@media (max-width: 699px) {
+  .navbar {
+    align-items: center;
+  }
+
+  .mobile-nav .nav-link,
+  .mobile-nav .sign-in-button {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .trip-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .trip-tab {
+    width: 100%;
+    padding-inline: 0.6rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .navbar-right {
+    align-items: center !important;
+  }
+
+  .desktop-nav .nav-link,
+  .desktop-nav .sign-in-button,
+  .desktop-nav .nav-accessibility-group {
+    align-self: center;
+  }
+}
+
+@media (min-resolution: 2dppx) {
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline-width: 0.16rem !important;
+  }
+}
