@@ -45,6 +45,12 @@ window.TravelWebsiteUtils = (function () {
       // Ignore storage issues in preview/file environments.
     }
 
+    // Accessibility improvement:
+    // if the visitor has not chosen a theme yet, respect the operating system preference.
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+
     return 'light';
   }
 
@@ -172,9 +178,59 @@ window.TravelWebsiteUtils = (function () {
     }, 2600);
   }
 
-  function getHomepageHref() {
+  const PAGE_DEFINITIONS = {
+    home: { folder: 'Homepage', label: 'Homepage' },
+    search: { folder: 'SearchResults', label: 'Search Results' },
+    help: { folder: 'HelpCenter', label: 'Help Center' },
+    trips: { folder: 'Trips', label: 'Trips' },
+    checkout: { folder: 'CheckoutPage', label: 'Checkout' }
+  };
+
+  function getCurrentPageKey() {
     const currentPath = String(window.location.pathname || '');
-    return currentPath.includes('/Homepage/') ? 'index.html' : '../Homepage/index.html';
+
+    if (currentPath.includes('/Homepage/')) {
+      return 'home';
+    }
+
+    if (currentPath.includes('/SearchResults/')) {
+      return 'search';
+    }
+
+    if (currentPath.includes('/HelpCenter/')) {
+      return 'help';
+    }
+
+    if (currentPath.includes('/Trips/')) {
+      return 'trips';
+    }
+
+    if (currentPath.includes('/CheckoutPage/')) {
+      return 'checkout';
+    }
+
+    return '';
+  }
+
+  function getRelativePageHref(pageKey) {
+    const pageDefinition = PAGE_DEFINITIONS[pageKey];
+
+    if (!pageDefinition) {
+      return '#';
+    }
+
+    const currentPath = String(window.location.pathname || '');
+    return currentPath.includes('/' + pageDefinition.folder + '/')
+      ? 'index.html'
+      : '../' + pageDefinition.folder + '/index.html';
+  }
+
+  function getHomepageHref() {
+    return getRelativePageHref('home');
+  }
+
+  function getSearchResultsHref() {
+    return getRelativePageHref('search');
   }
 
   /* =========================================================
@@ -209,9 +265,11 @@ window.TravelWebsiteUtils = (function () {
   function getAccessibilityToggleIconMarkup() {
     return (
       '<svg class="accessibility-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" pointer-events="none">' +
-        '<circle cx="12" cy="12" r="9"></circle>' +
-        '<circle cx="12" cy="8.15" r="2.15"></circle>' +
-        '<path d="M7.6 16.8c1.15-2.15 2.85-3.3 4.4-3.3s3.25 1.15 4.4 3.3"></path>' +
+        '<circle cx="12" cy="4.75" r="1.75"></circle>' +
+        '<path d="M4.5 8.75h15"></path>' +
+        '<path d="M12 6.5v11"></path>' +
+        '<path d="M7.2 9.4 12 12l4.8-2.6"></path>' +
+        '<path d="M8.2 19.5 12 13.5l3.8 6"></path>' +
       '</svg>'
     );
   }
@@ -513,24 +571,148 @@ window.TravelWebsiteUtils = (function () {
     updateThemeToggleLabels(resolvedTheme);
   }
 
-  function ensureSharedNavigationFeatures() {
-    const navbarLeft = document.querySelector('.navbar-left');
+  function createPrimaryNavLink(pageKey) {
+    const pageDefinition = PAGE_DEFINITIONS[pageKey];
 
-    if (navbarLeft && !navbarLeft.querySelector('.home-icon-link')) {
-      const homeLink = document.createElement('a');
-      const logoLink = navbarLeft.querySelector('.logo-link');
-      homeLink.href = getHomepageHref();
-      homeLink.className = 'nav-link nav-utility-link home-icon-link';
-      homeLink.setAttribute('aria-label', 'Go to homepage');
-      homeLink.setAttribute('title', 'Go to homepage');
-      homeLink.textContent = '⌂';
-
-      if (logoLink && logoLink.nextSibling) {
-        navbarLeft.insertBefore(homeLink, logoLink.nextSibling);
-      } else {
-        navbarLeft.appendChild(homeLink);
-      }
+    if (!pageDefinition) {
+      return null;
     }
+
+    const link = document.createElement('a');
+    link.href = getRelativePageHref(pageKey);
+    link.className = 'nav-link';
+    link.setAttribute('data-page-key', pageKey);
+    link.textContent = pageDefinition.label;
+
+    return link;
+  }
+
+  function inferNavigationPageKey(linkElement) {
+    if (!linkElement) {
+      return '';
+    }
+
+    const explicitPageKey = linkElement.getAttribute('data-page-key');
+
+    if (explicitPageKey) {
+      return explicitPageKey;
+    }
+
+    const linkText = String(linkElement.textContent || '').trim().toLowerCase();
+    const linkHref = String(linkElement.getAttribute('href') || '');
+
+    if (linkText === 'home' || linkText === 'homepage' || linkElement.classList.contains('home-icon-link')) {
+      return 'home';
+    }
+
+    if (
+      linkText === 'search' ||
+      linkText === 'search results' ||
+      linkText === 'shop travel' ||
+      linkElement.classList.contains('dropdown-button') ||
+      linkHref.includes('SearchResults')
+    ) {
+      return 'search';
+    }
+
+    if (linkText === 'help center' || linkHref.includes('HelpCenter')) {
+      return 'help';
+    }
+
+    if (linkText === 'trips' || linkHref.includes('Trips')) {
+      return 'trips';
+    }
+
+    if (linkText === 'checkout' || linkHref.includes('CheckoutPage')) {
+      return 'checkout';
+    }
+
+    return '';
+  }
+
+  function markActiveNavigationLinks() {
+    const currentPageKey = getCurrentPageKey();
+
+    document.querySelectorAll('.nav-link, .logo-link, .dropdown-button').forEach(function (linkElement) {
+      const linkPageKey = inferNavigationPageKey(linkElement);
+      const isShopTravelButton = linkElement.classList.contains('dropdown-button');
+      const isLogoLink = linkElement.classList.contains('logo-link');
+      const shouldTreatCheckoutAsSearch = currentPageKey === 'checkout' && linkPageKey === 'search';
+
+      // UX note:
+      // on desktop, "Shop travel" represents the browse/search flow, so it stays active
+      // for search results and checkout instead of adding extra Home/Search tabs.
+      const shouldHighlightShopTravel =
+        isShopTravelButton && ['search', 'checkout'].includes(currentPageKey);
+
+      const shouldHighlightHomeLogo = isLogoLink && currentPageKey === 'home';
+      const isActive =
+        shouldHighlightHomeLogo ||
+        shouldHighlightShopTravel ||
+        (Boolean(linkPageKey) && (linkPageKey === currentPageKey || shouldTreatCheckoutAsSearch));
+
+      linkElement.classList.toggle('active-link', isActive && !isLogoLink);
+      linkElement.classList.toggle('active-home', isActive && isLogoLink);
+
+      if (isActive) {
+        linkElement.setAttribute('aria-current', 'page');
+      } else {
+        linkElement.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function ensureDesktopPrimaryLinks() {
+    const desktopNav = document.querySelector('.desktop-nav');
+
+    if (!desktopNav) {
+      return;
+    }
+
+    // Keep the desktop header focused on the project's main utility links.
+    // If older merged builds injected Home/Search desktop links, remove them here.
+    desktopNav.querySelectorAll('[data-page-key="home"], [data-page-key="search"]').forEach(function (link) {
+      link.remove();
+    });
+  }
+
+  function ensureSkipLink() {
+    if (!document.body || document.querySelector('.skip-link')) {
+      return;
+    }
+
+    const skipTarget =
+      document.querySelector('main') ||
+      document.querySelector('[data-main-target]') ||
+      document.querySelector('.hero, .search-hero, .help-hero');
+
+    if (!skipTarget) {
+      return;
+    }
+
+    if (!skipTarget.id) {
+      skipTarget.id = 'mainContent';
+    }
+
+    skipTarget.setAttribute('tabindex', '-1');
+
+    // Accessibility improvement:
+    // inject one shared skip link so keyboard users can bypass the repeated header.
+    const skipLink = document.createElement('a');
+    skipLink.href = '#' + skipTarget.id;
+    skipLink.className = 'skip-link';
+    skipLink.textContent = 'Skip to main content';
+
+    document.body.insertBefore(skipLink, document.body.firstChild);
+  }
+
+  function ensureSharedNavigationFeatures() {
+    // Remove any legacy desktop home shortcut so the header matches the latest review direction.
+    document.querySelectorAll('.home-icon-link').forEach(function (legacyHomeLink) {
+      legacyHomeLink.remove();
+    });
+
+    ensureDesktopPrimaryLinks();
 
     ['.desktop-nav', '.mobile-nav'].forEach(function (selector) {
       const navElement = document.querySelector(selector);
@@ -557,6 +739,7 @@ window.TravelWebsiteUtils = (function () {
     updateThemeToggleLabels(getStoredTheme());
     updateAccessibilityToggleLabels();
     updateAccessibilityControlStates(getStoredAccessibilitySettings());
+    markActiveNavigationLinks();
   }
 
   /* =========================================================
@@ -645,6 +828,23 @@ window.TravelWebsiteUtils = (function () {
         event.preventDefault();
         showToast('List your property has not been integrated yet.');
       });
+    });
+  }
+
+  function bindShopTravelTriggers() {
+    document.querySelectorAll('.dropdown-button').forEach(function (button) {
+      if (button.dataset.shopTravelBound === 'true') {
+        return;
+      }
+
+      button.setAttribute('title', 'Open travel search results');
+      button.setAttribute('aria-label', 'Open travel search results');
+
+      button.addEventListener('click', function () {
+        window.location.href = getSearchResultsHref();
+      });
+
+      button.dataset.shopTravelBound = 'true';
     });
   }
 
@@ -1104,7 +1304,9 @@ window.TravelWebsiteUtils = (function () {
      ========================================================= */
 
   document.addEventListener('DOMContentLoaded', function () {
+    ensureSkipLink();
     ensureSharedNavigationFeatures();
+    bindShopTravelTriggers();
     bindCurrencyToggles();
     bindPropertyTriggers();
     applyCurrencyToPage(getStoredCurrency());

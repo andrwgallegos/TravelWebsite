@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const mobileNav = document.getElementById('mobileNav');
   const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
 
+  // Keeps the menu button understandable in both visual and screen-reader states.
+  function updateHamburgerButtonState(isMenuOpen) {
+    if (!hamburgerButton) {
+      return;
+    }
+
+    hamburgerButton.setAttribute('aria-expanded', isMenuOpen ? 'true' : 'false');
+    hamburgerButton.setAttribute('aria-label', isMenuOpen ? 'Close navigation menu' : 'Open navigation menu');
+    hamburgerButton.textContent = isMenuOpen ? '✕' : '☰';
+  }
+
   // Opens the mobile menu
   function openMobileMenu() {
     if (mobileNav) {
@@ -18,9 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       mobileMenuOverlay.classList.add('show');
     }
 
-    if (hamburgerButton) {
-      hamburgerButton.setAttribute('aria-expanded', 'true');
-    }
+    updateHamburgerButtonState(true);
   }
 
   // Closes the mobile menu
@@ -33,9 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
       mobileMenuOverlay.classList.remove('show');
     }
 
-    if (hamburgerButton) {
-      hamburgerButton.setAttribute('aria-expanded', 'false');
-    }
+    updateHamburgerButtonState(false);
   }
 
   // Toggles the mobile menu open/closed
@@ -52,6 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Attach mobile menu events
+  updateHamburgerButtonState(false);
+
   if (hamburgerButton) {
     hamburgerButton.addEventListener('click', toggleMobileMenu);
   }
@@ -79,7 +88,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const mobileSignInButton = document.getElementById('mobileSignInButton');
 
   // Opens the sign in modal
-  function openSignInModal() {
+  function openSignInModal(event) {
+    lastModalTrigger = event && event.currentTarget ? event.currentTarget : document.activeElement;
+
     if (signInModal) {
       signInModal.classList.remove('hidden');
       signInModal.setAttribute('aria-hidden', 'false');
@@ -87,6 +98,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Close the mobile menu if sign in was opened from mobile navigation
     closeMobileMenu();
+
+    if (closeSignInModal) {
+      window.setTimeout(function () {
+        closeSignInModal.focus();
+      }, 0);
+    }
   }
 
   // Closes the sign in modal
@@ -94,6 +111,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (signInModal) {
       signInModal.classList.add('hidden');
       signInModal.setAttribute('aria-hidden', 'true');
+    }
+
+    if (lastModalTrigger && typeof lastModalTrigger.focus === 'function') {
+      lastModalTrigger.focus();
     }
   }
 
@@ -149,6 +170,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeSuccessModal = document.getElementById('closeSuccessModal');
   const paymentMethods = document.querySelectorAll('.payment-method');
   const cardDetailsForm = document.getElementById('cardDetailsForm');
+  let lastModalTrigger = null;
+
+  if (errorBanner) {
+    errorBanner.setAttribute('tabindex', '-1');
+  }
 
   // If the form is missing, stop here
   if (!form) {
@@ -164,16 +190,19 @@ document.addEventListener('DOMContentLoaded', function () {
   paymentMethods.forEach(function (method) {
     method.addEventListener('click', function () {
       paymentMethods.forEach(function (button) {
-        button.classList.remove('selected');
-      });
-
-      this.classList.add('selected');
+        const isSelected = button === this;
+        button.classList.toggle('selected', isSelected);
+        button.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+      }, this);
 
       const selectedMethod = this.getAttribute('data-method');
 
       if (cardDetailsForm) {
         if (selectedMethod === 'card') {
+          cardDetailsForm.hidden = false;
           cardDetailsForm.style.display = 'block';
+          cardDetailsForm.setAttribute('aria-hidden', 'false');
+
           cardFieldIds.forEach(function (fieldId) {
             const field = document.getElementById(fieldId);
 
@@ -182,7 +211,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
           });
         } else {
+          cardDetailsForm.hidden = true;
           cardDetailsForm.style.display = 'none';
+          cardDetailsForm.setAttribute('aria-hidden', 'true');
+
           cardFieldIds.forEach(function (fieldId) {
             clearFieldState(fieldId);
           });
@@ -332,6 +364,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const hasVisibleErrors = Boolean(document.querySelector('.form-input.error, .form-select.error'));
     errorBanner.classList.toggle('hidden', !hasVisibleErrors);
+  }
+
+  function focusFirstInvalidField() {
+    const firstInvalidField = form.querySelector('.form-input.error, .form-select.error');
+
+    if (firstInvalidField) {
+      firstInvalidField.focus();
+      return;
+    }
+
+    if (errorBanner) {
+      errorBanner.focus();
+    }
   }
 
   function validateEmail(email) {
@@ -647,6 +692,12 @@ document.addEventListener('DOMContentLoaded', function () {
       successModal.classList.remove('hidden');
       successModal.setAttribute('aria-hidden', 'false');
     }
+
+    if (closeSuccessModal) {
+      window.setTimeout(function () {
+        closeSuccessModal.focus();
+      }, 0);
+    }
   }
 
   // Closes the booking success modal
@@ -654,6 +705,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (successModal) {
       successModal.classList.add('hidden');
       successModal.setAttribute('aria-hidden', 'true');
+    }
+
+    if (checkoutSubmitButton) {
+      checkoutSubmitButton.focus();
     }
   }
 
@@ -710,6 +765,8 @@ document.addEventListener('DOMContentLoaded', function () {
         top: 0,
         behavior: 'smooth'
       });
+
+      focusFirstInvalidField();
     } else {
       // SHOW LOADING STATE
       if (checkoutSpinner) {
@@ -722,6 +779,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (checkoutSubmitButton) {
         checkoutSubmitButton.disabled = true;
+        checkoutSubmitButton.setAttribute('aria-busy', 'true');
       }
 
       // SIMULATE PROCESSING DELAY
@@ -737,6 +795,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (checkoutSubmitButton) {
           checkoutSubmitButton.disabled = false;
+          checkoutSubmitButton.removeAttribute('aria-busy');
         }
 
         // THEN show success modal
@@ -771,7 +830,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (specialRequests) {
     specialRequests.addEventListener('click', function () {
-      alert('Special requests feature would open here.');
+      // Keep feedback inline and non-blocking for a smoother prototype experience.
+      if (window.TravelWebsiteUtils) {
+        window.TravelWebsiteUtils.showToast(
+          'Special requests would be collected in a later checkout step.'
+        );
+        return;
+      }
+
+      specialRequests.setAttribute('title', 'Special requests would be collected in a later checkout step.');
     });
   }
 

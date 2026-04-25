@@ -68,7 +68,7 @@ body {
 
 .logo-text {
   font-family: 'Source Serif 4', serif;
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 900;
   color: #191e3b;
 }
@@ -78,14 +78,14 @@ body {
   border: none;
   text-decoration: none;
   color: #191e3b;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
 }
 
 .dropdown-button::after {
   content: " ▼";
-  font-size: 11px;
+  font-size: 0.75rem;
 }
 
 .sign-in-button {
@@ -94,7 +94,7 @@ body {
   border: none;
   border-radius: 8px;
   padding: 12px 18px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -116,7 +116,7 @@ body {
   background: none;
   border: none;
   color: #191e3b;
-  font-size: 28px;
+  font-size: 1.75rem;
   cursor: pointer;
 }
 
@@ -180,11 +180,13 @@ body {
    ERROR BANNER
    Top sticky warning shown when validation fails
    ========================================================= */
+/* Added for accessibility review:
+   the banner now uses higher-contrast error colors and remains keyboard focusable. */
 .error-banner {
   background-color: #dc2626;
   color: white;
   padding: 16px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   position: sticky;
   top: 0;
@@ -221,14 +223,14 @@ body {
   right: 14px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
   color: #191e3b;
 }
 
 .success-modal-content h2 {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 700;
   margin-bottom: 32px;
 }
@@ -272,20 +274,20 @@ body {
 }
 
 .form-title {
-  font-size: 34px;
+  font-size: 2.125rem;
   font-weight: 600;
   color: #000;
   margin-bottom: 8px;
 }
 
 .required-text {
-  font-size: 20px;
+  font-size: 1.25rem;
   color: #000;
   margin-bottom: 28px;
 }
 
 .required-star {
-  color: #ff0a0a;
+  color: #dc2626;
 }
 
 .payment-section {
@@ -293,14 +295,14 @@ body {
 }
 
 .section-title {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 600;
   color: #000;
   margin-bottom: 8px;
 }
 
 .section-subtitle {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #000;
   margin-bottom: 24px;
@@ -317,7 +319,7 @@ body {
 
 .form-group label {
   display: block;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.9);
   margin-bottom: 8px;
@@ -327,7 +329,7 @@ body {
 .form-select {
   width: 100%;
   padding: 14px 15px;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: 'Inter', sans-serif;
   border: 1.2px solid #000;
   border-radius: 18px;
@@ -343,12 +345,12 @@ body {
 }
 
 .form-input::placeholder {
-  color: #a7a7a7;
+  color: #64748b;
 }
 
 .form-input.error,
 .form-select.error {
-  border-color: #ff0a0a;
+  border-color: #dc2626;
   border-width: 2px;
 }
 
@@ -384,8 +386,8 @@ body {
 
 .error-message {
   display: none;
-  color: #ff0a0a;
-  font-size: 14px;
+  color: #dc2626;
+  font-size: 0.875rem;
   margin-top: 6px;
   font-weight: 400;
 }
@@ -438,7 +440,7 @@ body {
 }
 
 .payment-method-label {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   text-align: center;
 }
@@ -458,7 +460,7 @@ body {
 .btn-book-now {
   background-color: #fbbf23;
   color: #191e3b;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   padding: 16px 40px;
   border: none;
@@ -502,8 +504,8 @@ body {
 }
 
 .placeholder-text {
-  color: #5b6470;
-  font-size: 16px;
+  color: #475569;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -512,14 +514,14 @@ body {
 }
 
 .hotel-name {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #000;
   margin-bottom: 10px;
 }
 
 .hotel-address {
-  font-size: 16px;
+  font-size: 1rem;
   color: #000;
 }
 
@@ -533,19 +535,19 @@ body {
 .rating-badge {
   background-color: #10b981;
   color: white;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   padding: 8px 14px;
   border-radius: 8px;
 }
 
 .rating-text {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
 }
 
 .review-count {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 300;
   color: #000;
   margin-bottom: 18px;
@@ -554,7 +556,7 @@ body {
 .btn-edit {
   background-color: #fbbf23;
   color: #191e3b;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   padding: 12px 32px;
   border: none;
@@ -579,24 +581,24 @@ body {
 }
 
 .check-label {
-  font-size: 14px;
-  color: #666;
+  font-size: 0.875rem;
+  color: #475569;
   font-weight: 500;
 }
 
 .check-date {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   color: #000;
 }
 
 .check-time {
-  font-size: 14px;
-  color: #666;
+  font-size: 0.875rem;
+  color: #475569;
 }
 
 .nights-count {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #000;
 }
@@ -606,7 +608,7 @@ body {
 }
 
 .property-highlights h3 {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 400;
   color: #000;
   margin-bottom: 18px;
@@ -619,7 +621,7 @@ body {
 }
 
 .highlight-item {
-  font-size: 16px;
+  font-size: 1rem;
   color: #000;
   padding-left: 16px;
   position: relative;
@@ -634,7 +636,7 @@ body {
 
 .divider {
   height: 2px;
-  background-color: #a7a7a7;
+  background-color: #64748b;
   margin: 24px 0;
 }
 
@@ -646,16 +648,69 @@ body {
   align-items: center;
   justify-content: space-between;
   text-align: left;
-  font-size: 16px;
+  font-size: 1rem;
   color: #000;
   cursor: pointer;
   padding: 12px 0;
 }
 
 .arrow-icon {
-  font-size: 28px;
+  font-size: 1.75rem;
   line-height: 1;
 }
+
+
+
+/* =========================================================
+   FOOTER
+   Matches the footer pattern already used on the other pages so
+   checkout stays consistent with your teammate's implementation.
+   ========================================================= */
+.site-footer {
+  background: #f7f7f7;
+  padding: 36px 16px 48px;
+  border-top: 10px solid #d9e2ea;
+  font-family: 'Inter', sans-serif;
+  color: #191e3b;
+}
+
+.footer-content {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  justify-items: center;
+  text-align: center;
+}
+
+.footer-column h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #191e3b;
+}
+
+.footer-column a {
+  display: block;
+  text-decoration: none;
+  color: #475569;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  transition: color 0.2s ease;
+}
+
+.footer-column a:hover {
+  color: #191e3b;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
 
 /* =========================================================
    SIGN IN MODAL
@@ -682,7 +737,7 @@ body {
 }
 
 .modal-content h2 {
-  font-size: 24px;
+  font-size: 1.5rem;
   margin-bottom: 10px;
 }
 
@@ -715,7 +770,7 @@ body {
   position: absolute;
   top: 10px;
   right: 14px;
-  font-size: 20px;
+  font-size: 1.25rem;
   border: none;
   background: none;
   cursor: pointer;
@@ -726,6 +781,11 @@ body {
    Small layout improvements for medium screens
    ========================================================= */
 @media (min-width: 700px) {
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
   .form-row {
     grid-template-columns: 1fr 1fr;
   }
@@ -744,6 +804,24 @@ body {
    Desktop navigation and two-column layout
    ========================================================= */
 @media (min-width: 1100px) {
+  .site-footer {
+    padding: 48px 32px 64px;
+    border-top: 14px solid #d9e2ea;
+  }
+
+  .footer-content {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 48px;
+  }
+
+  .footer-column h4 {
+    font-size: 1.05rem;
+  }
+
+  .footer-column a {
+    font-size: 0.95rem;
+  }
+
   .mobile-only,
   .mobile-nav,
   .mobile-menu-overlay {
@@ -777,11 +855,11 @@ body {
   }
 
   .form-title {
-    font-size: 32px;
+    font-size: 2rem;
   }
 
   .required-text {
-    font-size: 18px;
+    font-size: 1.125rem;
     margin-bottom: 28px;
   }
 
@@ -790,11 +868,11 @@ body {
   }
 
   .section-title {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
 
   .section-subtitle {
-    font-size: 15px;
+    font-size: 0.9375rem;
     margin-bottom: 22px;
   }
 

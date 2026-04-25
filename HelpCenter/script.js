@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const mobileNav = document.getElementById('mobileNav');
   const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
 
+  // Keeps the menu button understandable in both visual and screen-reader states.
+  function updateHamburgerButtonState(isMenuOpen) {
+    if (!hamburgerButton) {
+      return;
+    }
+
+    hamburgerButton.setAttribute('aria-expanded', isMenuOpen ? 'true' : 'false');
+    hamburgerButton.setAttribute('aria-label', isMenuOpen ? 'Close navigation menu' : 'Open navigation menu');
+    hamburgerButton.textContent = isMenuOpen ? '✕' : '☰';
+  }
+
   function openMobileMenu() {
     if (mobileNav) {
       mobileNav.classList.add('show');
@@ -18,9 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       mobileMenuOverlay.classList.add('show');
     }
 
-    if (hamburgerButton) {
-      hamburgerButton.setAttribute('aria-expanded', 'true');
-    }
+    updateHamburgerButtonState(true);
   }
 
   function closeMobileMenu() {
@@ -32,9 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
       mobileMenuOverlay.classList.remove('show');
     }
 
-    if (hamburgerButton) {
-      hamburgerButton.setAttribute('aria-expanded', 'false');
-    }
+    updateHamburgerButtonState(false);
   }
 
   function toggleMobileMenu() {
@@ -46,6 +53,8 @@ document.addEventListener('DOMContentLoaded', function () {
       openMobileMenu();
     }
   }
+
+  updateHamburgerButtonState(false);
 
   if (hamburgerButton) {
     hamburgerButton.addEventListener('click', toggleMobileMenu);
@@ -210,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       getStatusText: function (state) {
         if (!state.query) {
-          return 'Showing all ' + state.totalCount + ' help topics.';
+          return '';
         }
 
         return (
@@ -230,6 +239,15 @@ document.addEventListener('DOMContentLoaded', function () {
       setItemVisibility: function (faqItem, shouldShow) {
         faqItem.style.display = shouldShow ? '' : 'none';
       },
+
+      // Show the same loading feedback pattern used on the search-heavy pages
+      // so help search feels consistent and responsive during demos.
+      enableInputLoading: true,
+      loadingDelay: 220,
+      loadingText: 'Loading help suggestions…',
+      filterLoadingText: 'Updating help topics…',
+      submitLoadingDelay: 700,
+      submitLoadingText: 'Searching help topics…',
 
       afterFilter: function (state) {
         const searchIsActive = Boolean(state.query);

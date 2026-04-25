@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const mobileNav = document.getElementById('mobileNav');
   const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
 
+  // Keeps the menu button understandable in both visual and screen-reader states.
+  function updateHamburgerButtonState(isMenuOpen) {
+    if (!hamburgerButton) {
+      return;
+    }
+
+    hamburgerButton.setAttribute('aria-expanded', isMenuOpen ? 'true' : 'false');
+    hamburgerButton.setAttribute('aria-label', isMenuOpen ? 'Close navigation menu' : 'Open navigation menu');
+    hamburgerButton.textContent = isMenuOpen ? '✕' : '☰';
+  }
+
   // Opens the mobile menu
   function openMobileMenu() {
     if (mobileNav) {
@@ -18,9 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       mobileMenuOverlay.classList.add('show');
     }
 
-    if (hamburgerButton) {
-      hamburgerButton.setAttribute('aria-expanded', 'true');
-    }
+    updateHamburgerButtonState(true);
   }
 
   // Closes the mobile menu
@@ -33,9 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
       mobileMenuOverlay.classList.remove('show');
     }
 
-    if (hamburgerButton) {
-      hamburgerButton.setAttribute('aria-expanded', 'false');
-    }
+    updateHamburgerButtonState(false);
   }
 
   // Opens or closes the mobile menu
@@ -52,6 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Guard clauses prevent errors if a shared nav element is missing
+  updateHamburgerButtonState(false);
+
   if (hamburgerButton) {
     hamburgerButton.addEventListener('click', toggleMobileMenu);
   }

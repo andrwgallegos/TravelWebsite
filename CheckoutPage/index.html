@@ -29,7 +29,7 @@
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
     <!-- Error banner shown when form validation fails -->
-    <div id="errorBanner" class="error-banner hidden" aria-live="polite">
+    <div id="errorBanner" class="error-banner hidden" role="alert" aria-live="assertive">
       To continue, please correct the errors below.
     </div>
 
@@ -116,7 +116,7 @@
     </header>
 
     <!-- Main checkout layout -->
-    <main class="checkout-layout">
+    <main class="checkout-layout" id="mainContent">
       <!-- Left side: form -->
       <section class="left-panel">
         <div class="form-container">
@@ -134,6 +134,8 @@
                 name="firstName"
                 placeholder="(e.g. John)"
                 class="form-input"
+                autocomplete="given-name"
+                required
               />
               <span class="error-message" id="firstNameError">Please enter a first name.</span>
             </div>
@@ -147,6 +149,8 @@
                 name="lastName"
                 placeholder="(e.g. Smith)"
                 class="form-input"
+                autocomplete="family-name"
+                required
               />
               <span class="error-message" id="lastNameError">Please enter a last name.</span>
             </div>
@@ -160,6 +164,10 @@
                 name="email"
                 placeholder="johnsmith@gmail.com"
                 class="form-input"
+                autocomplete="email"
+                inputmode="email"
+                spellcheck="false"
+                required
               />
               <span class="error-message" id="emailError">
                 Please enter a valid email address.
@@ -185,6 +193,9 @@
                   name="phoneNumber"
                   placeholder="Phone number"
                   class="form-input"
+                  autocomplete="tel-national"
+                  inputmode="tel"
+                  required
                 />
                 <span class="error-message" id="phoneNumberError">
                   Please enter a phone number.
@@ -200,26 +211,26 @@
               </p>
 
               <!-- Payment method options -->
-              <div class="payment-methods">
-                <button type="button" class="payment-method selected" data-method="card">
+              <div class="payment-methods" role="group" aria-label="Choose a payment method">
+                <button type="button" class="payment-method selected" data-method="card" aria-pressed="true" aria-controls="cardDetailsForm">
                   <span class="payment-method-label">Card</span>
                 </button>
 
-                <button type="button" class="payment-method" data-method="affirm">
+                <button type="button" class="payment-method" data-method="affirm" aria-pressed="false">
                   <span class="payment-method-label">Affirm</span>
                 </button>
 
-                <button type="button" class="payment-method" data-method="paypal">
+                <button type="button" class="payment-method" data-method="paypal" aria-pressed="false">
                   <span class="payment-method-label">PayPal</span>
                 </button>
 
-                <button type="button" class="payment-method" data-method="applepay">
+                <button type="button" class="payment-method" data-method="applepay" aria-pressed="false">
                   <span class="payment-method-label">Apple Pay</span>
                 </button>
               </div>
 
               <!-- Card-only fields -->
-              <div id="cardDetailsForm" class="card-details-form">
+              <div id="cardDetailsForm" class="card-details-form" aria-hidden="false">
                 <div class="form-group">
                   <label for="cardNumber">Card number <span class="required-star">*</span></label>
                   <input
@@ -229,6 +240,8 @@
                     placeholder="1234 5678 9012 3456"
                     maxlength="19"
                     class="form-input"
+                    autocomplete="cc-number"
+                    inputmode="numeric"
                   />
                   <span class="error-message" id="cardNumberError">
                     Please enter a valid card number.
@@ -245,6 +258,8 @@
                       placeholder="03/26"
                       maxlength="5"
                       class="form-input"
+                      autocomplete="cc-exp"
+                      inputmode="numeric"
                     />
                     <span class="error-message" id="expirationDateError">
                       Please enter a valid expiration date.
@@ -260,6 +275,8 @@
                       placeholder="123"
                       maxlength="4"
                       class="form-input"
+                      autocomplete="cc-csc"
+                      inputmode="numeric"
                     />
                     <span class="error-message" id="securityCodeError">
                       Please enter a valid security code.
@@ -275,6 +292,8 @@
                     name="billingZip"
                     placeholder="12345"
                     class="form-input form-input-small"
+                    autocomplete="postal-code"
+                    inputmode="numeric"
                   />
                   <span class="error-message" id="billingZipError">
                     Please enter a valid billing ZIP code.
@@ -351,6 +370,49 @@
         </div>
       </aside>
     </main>
+
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Careers</a>
+          <a href="#">Press</a>
+          <a href="#">Investor Relations</a>
+        </div>
+
+        <div class="footer-column">
+          <h4>Explore</h4>
+          <a href="#">Travel Blog</a>
+          <a href="#">Deals</a>
+          <a href="#">Gift Cards</a>
+          <a href="#">Nexpedia Rewards</a>
+        </div>
+
+        <div class="footer-column">
+          <h4>Support</h4>
+          <a href="../HelpCenter/index.html">Help Center</a>
+          <a href="#">Cancel a booking</a>
+          <a href="#">Safety information</a>
+          <a href="#">Accessibility</a>
+        </div>
+
+        <div class="footer-column">
+          <h4>Partner With Us</h4>
+          <a href="#">List your property</a>
+          <a href="#">Affiliate program</a>
+          <a href="#">Travel agents</a>
+          <a href="#">Advertise</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Nexpedia. All rights reserved.</p>
+      </div>
+    </footer>
+
   </div>
 
   <!-- SIGN IN MODAL -->
