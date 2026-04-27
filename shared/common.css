@@ -2286,3 +2286,225 @@ body.theme-dark .map-chip-dot {
 body.theme-dark .map-point-link:focus-visible {
   outline-color: #93c5fd;
 }
+
+/* =========================================================
+   FINAL RESPONSIVE POLISH
+   These rules keep mobile date controls, compact header utilities,
+   and the homepage trip preview stable without changing the site flow.
+   ========================================================= */
+
+.search-form,
+.search-field-group,
+.shared-field,
+.shared-field-row,
+.shared-field-row > div {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.search-form input[type='date'],
+.shared-field input[type='date'],
+.shared-field-row input[type='date'] {
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 1rem;
+  line-height: 1.2;
+  padding-inline: 0.9rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-form input[type='date']::-webkit-date-and-time-value,
+.shared-field input[type='date']::-webkit-date-and-time-value,
+.shared-field-row input[type='date']::-webkit-date-and-time-value {
+  min-height: 1.2em;
+  text-align: left;
+}
+
+.search-form input[type='date']::-webkit-calendar-picker-indicator,
+.shared-field input[type='date']::-webkit-calendar-picker-indicator,
+.shared-field-row input[type='date']::-webkit-calendar-picker-indicator {
+  flex: 0 0 auto;
+  margin-left: 0.35rem;
+  padding: 0;
+}
+
+.nav-accessibility-group {
+  gap: 0.45rem;
+}
+
+.nav-utility-link,
+.accessibility-toggle,
+.theme-toggle {
+  flex: 0 0 auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 !important;
+  border-radius: 999px;
+}
+
+.theme-toggle-icon,
+.accessibility-toggle-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.accessibility-panel {
+  max-width: calc(100vw - 2rem);
+}
+
+.accessibility-segmented {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.accessibility-option,
+.accessibility-reset {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.accessibility-option {
+  padding-inline: 0.45rem;
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+}
+
+.trip-reveal-actions {
+  max-width: 1440px;
+  margin: 1.35rem auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+.trip-show-more-button {
+  min-height: 3rem;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1d4ed8;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0.75rem 1.4rem rgba(15, 23, 42, 0.08);
+  transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.trip-show-more-button:hover,
+.trip-show-more-button:focus-visible {
+  transform: translateY(-0.08rem);
+  background: #eff6ff;
+  border-color: #2563eb;
+  box-shadow: 0 1rem 1.8rem rgba(37, 99, 235, 0.16);
+}
+
+.home-trip-hidden {
+  display: none !important;
+}
+
+body.theme-dark .trip-show-more-button {
+  background: #0f172a;
+  color: #bfdbfe;
+  border-color: #475569;
+  box-shadow: none;
+}
+
+body.theme-dark .trip-show-more-button:hover,
+body.theme-dark .trip-show-more-button:focus-visible {
+  background: #1e293b;
+  border-color: #93c5fd;
+}
+
+@media (max-width: 699px) {
+  .search-card,
+  .search-form,
+  .search-field-group {
+    overflow: visible;
+  }
+
+  .search-form {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .search-form input[type='date'] {
+    min-height: 3.5rem;
+    padding-inline: 0.85rem;
+  }
+
+  .mobile-nav {
+    max-height: min(82vh, 35rem);
+    overflow-y: auto;
+    overflow-x: visible;
+  }
+
+  .mobile-nav .nav-accessibility-group {
+    display: grid;
+    grid-template-columns: repeat(2, 2.75rem);
+    align-items: center;
+    justify-content: start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .mobile-nav .nav-utility-link,
+  .mobile-nav .accessibility-toggle,
+  .mobile-nav .theme-toggle {
+    justify-content: center !important;
+    width: 2.75rem !important;
+    min-width: 2.75rem !important;
+    max-width: 2.75rem;
+  }
+
+  .mobile-nav .accessibility-menu {
+    position: relative;
+    width: 2.75rem;
+    min-width: 0;
+  }
+
+  .mobile-nav .accessibility-panel {
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    left: 0;
+    right: auto;
+    width: min(260px, calc(100vw - 48px));
+    max-height: min(70vh, 26rem);
+    margin-top: 0;
+    overflow: auto;
+    z-index: 1400;
+  }
+
+  .mobile-nav .accessibility-segmented {
+    gap: 0.35rem;
+  }
+
+  .mobile-nav .accessibility-option {
+    min-height: 2.35rem;
+    padding: 0.55rem 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .mobile-nav .accessibility-reset {
+    min-height: 2.45rem;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .trip-section {
+    padding-bottom: 2.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trip-show-more-button {
+    transition: none !important;
+  }
+}

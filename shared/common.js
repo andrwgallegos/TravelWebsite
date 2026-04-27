@@ -2371,6 +2371,69 @@ window.TravelWebsiteUtils = (function () {
     return listingLink;
   }
 
+  function configureHomeTripReveal(grid) {
+    const maxVisibleTripCards = 5;
+    const allTripLinks = Array.from(grid.querySelectorAll('.trip-link'));
+    let revealActions = document.querySelector('.trip-reveal-actions');
+    let revealButton = document.getElementById('homeTripShowMoreButton');
+
+    if (allTripLinks.length <= maxVisibleTripCards) {
+      allTripLinks.forEach(function (tripLink) {
+        tripLink.classList.remove('home-trip-hidden');
+      });
+
+      if (revealActions) {
+        revealActions.remove();
+      }
+
+      return;
+    }
+
+    if (!revealActions) {
+      revealActions = document.createElement('div');
+      revealActions.className = 'trip-reveal-actions';
+      revealActions.setAttribute('aria-live', 'polite');
+
+      revealButton = document.createElement('button');
+      revealButton.id = 'homeTripShowMoreButton';
+      revealButton.className = 'trip-show-more-button';
+      revealButton.type = 'button';
+
+      revealActions.appendChild(revealButton);
+      grid.insertAdjacentElement('afterend', revealActions);
+    }
+
+    // Keep the homepage short by default on mobile while still letting users
+    // browse the full destination set when they intentionally ask for more.
+    function syncTripVisibility() {
+      const isExpanded = revealButton.getAttribute('aria-expanded') === 'true';
+      const hiddenCount = Math.max(0, allTripLinks.length - maxVisibleTripCards);
+
+      allTripLinks.forEach(function (tripLink, index) {
+        tripLink.classList.toggle('home-trip-hidden', !isExpanded && index >= maxVisibleTripCards);
+      });
+
+      revealButton.textContent = isExpanded
+        ? 'Show fewer trip ideas'
+        : 'Show more trip ideas (' + hiddenCount + ' more)';
+      revealButton.setAttribute('aria-label', isExpanded
+        ? 'Show only the first five trip ideas'
+        : 'Show all ' + allTripLinks.length + ' trip ideas');
+    }
+
+    if (revealButton.dataset.tripRevealBound !== 'true') {
+      revealButton.setAttribute('aria-expanded', 'false');
+      revealButton.addEventListener('click', function () {
+        const isExpanded = revealButton.getAttribute('aria-expanded') === 'true';
+        revealButton.setAttribute('aria-expanded', String(!isExpanded));
+        syncTripVisibility();
+      });
+      revealButton.dataset.tripRevealBound = 'true';
+    }
+
+    syncTripVisibility();
+  }
+
   function enhanceHomeDestinations() {
     if (!isCurrentPage('Homepage')) {
       return;
@@ -2400,6 +2463,8 @@ window.TravelWebsiteUtils = (function () {
         grid.appendChild(createHomeTripLink(destination));
       }
     });
+
+    configureHomeTripReveal(grid);
   }
 
   function enhanceSearchDestinations() {
@@ -2679,7 +2744,7 @@ window.TravelWebsiteUtils = (function () {
         '<button type="button" class="shared-modal-close" data-shared-modal-close aria-label="Close sign in modal">✕</button>' +
         '<p class="shared-modal-eyebrow">Account access</p>' +
         '<h2 id="sharedAuthTitle">Sign in or create an account</h2>' +
-        '<p class="shared-modal-help">This secure-looking sample form validates fields in real time and keeps your account state for this browser session only.</p>' +
+        '<p class="shared-modal-help">Use this account form to access session features. Your signed-in state stays in this browser session only.</p>' +
         '<div class="auth-mode-tabs" role="tablist" aria-label="Choose account form">' +
           '<button type="button" class="auth-mode-tab active" data-auth-mode="signIn" aria-selected="true">Sign in</button>' +
           '<button type="button" class="auth-mode-tab" data-auth-mode="signUp" aria-selected="false">Sign up</button>' +

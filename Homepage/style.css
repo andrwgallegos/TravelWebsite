@@ -894,8 +894,7 @@ body {
 
 /* =========================================================
    HOMEPAGE RESOURCES SECTION
-   Added after feedback so the homepage has another meaningful
-   content block above the existing shared footer.
+   Travel resources section that keeps the homepage useful before the shared footer.
    ========================================================= */
 .resources-section {
   background: linear-gradient(180deg, #ffffff 0%, #eef4f9 100%);
