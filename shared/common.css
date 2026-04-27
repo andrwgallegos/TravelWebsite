@@ -2508,3 +2508,44 @@ body.theme-dark .trip-show-more-button:focus-visible {
     transition: none !important;
   }
 }
+
+/* Keep native mobile date controls visually centered inside the shared search bars.
+   Mobile browsers render date inputs differently from text inputs, so these rules
+   normalize the internal date value and calendar icon without changing layout. */
+@media (max-width: 699px) {
+  .search-field-group input[type='date'] {
+    display: flex;
+    align-items: center;
+    height: 3.625rem !important;
+    min-height: 3.625rem;
+    padding-block: 0 !important;
+    line-height: 3.625rem;
+    vertical-align: middle;
+  }
+
+  .search-field-group input[type='date']::-webkit-date-and-time-value {
+    display: flex;
+    align-items: center;
+    min-height: 3.625rem;
+    height: 3.625rem;
+    line-height: 3.625rem;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+  }
+
+  .search-field-group input[type='date']::-webkit-datetime-edit,
+  .search-field-group input[type='date']::-webkit-datetime-edit-fields-wrapper {
+    display: flex;
+    align-items: center;
+    min-height: 3.625rem;
+    height: 3.625rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .search-field-group input[type='date']::-webkit-calendar-picker-indicator {
+    align-self: center;
+    margin-block: auto;
+  }
+}
