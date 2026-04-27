@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* =========================================================
-     SIGN IN MODAL
+     FALLBACK SIGN IN MODAL
      ========================================================= */
 
   // Sign in modal elements
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Prototype behavior: both actions route to Trips
+  // Fallback behavior for environments where the shared validated modal is unavailable.
   if (signInSubmit) {
     signInSubmit.addEventListener('click', function () {
       window.location.href = '../Trips/index.html';
@@ -145,40 +145,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* =========================================================
-     FILTER INTERACTIONS
-     ========================================================= */
-
-  const filterPills = document.querySelectorAll('.filter-pill');
-  const filterOptions = document.querySelectorAll('.filter-option');
-  const applyButton = document.querySelector('.apply-button');
-
-  // Let users remove active filter pills for prototype interaction
-  filterPills.forEach(function (pill) {
-    pill.addEventListener('click', function () {
-      pill.remove();
-    });
-  });
-
-  // Toggle filter options on and off
-  filterOptions.forEach(function (option) {
-    option.addEventListener('click', function () {
-      option.classList.toggle('selected');
-    });
-  });
-
-  // The apply button simply confirms the current UI state for this front-end prototype.
-  if (applyButton) {
-    applyButton.addEventListener('click', function () {
-      if (window.TravelWebsiteUtils) {
-        window.TravelWebsiteUtils.showToast('Filters applied to the current prototype results.');
-      }
-    });
-  }
-
-  /* =========================================================
-     LIVE SEARCH RESULTS FILTERING
-     Filters listing cards by destination, available dates,
-     and traveler count while keeping the URL in sync.
+     FILTER + SEARCH RESULTS INTERACTIONS
+     ---------------------------------------------------------
+     This section replaces the earlier static filter clicks
+     with real client-side filtering. It combines destination search,
+     date availability, traveler capacity, collapsible pricing controls, and the expanded sidebar
+     filters while keeping URL/session state synced for every card.
      ========================================================= */
 
   const searchForm = document.querySelector('.search-form');
@@ -188,10 +160,24 @@ document.addEventListener('DOMContentLoaded', function () {
   const travelersInput = document.querySelector('.search-form input[aria-label="Travelers"]');
   const listingsPanel = document.querySelector('.listings-panel');
   const listingLinks = Array.from(document.querySelectorAll('.listings-panel .listing-link'));
+  const filterOptions = Array.from(document.querySelectorAll('.filter-option'));
+  const filterGroupHeaders = Array.from(document.querySelectorAll('.filter-group-header'));
+  const priceBoundInputs = Array.from(document.querySelectorAll('[data-price-bound]'));
+  const sortSelect = document.getElementById('resultsSortSelect');
+  const applyButton = document.querySelector('.apply-button');
+  const clearFiltersButton = document.querySelector('.clear-filters-button');
+  const activeFiltersElement = document.querySelector('.active-filters');
 
+  listingLinks.forEach(function (listingLink, index) {
+    listingLink.dataset.originalOrder = String(index);
+  });
+
+  const savedSearchState = window.NexpediaEnhancements && typeof window.NexpediaEnhancements.getSavedSearchState === 'function'
+    ? window.NexpediaEnhancements.getSavedSearchState()
+    : {};
   const initialDestinationQuery = window.TravelWebsiteUtils
-    ? window.TravelWebsiteUtils.getPageQueryValue('destination')
-    : '';
+    ? window.TravelWebsiteUtils.getPageQueryValue('destination') || savedSearchState.destination || ''
+    : savedSearchState.destination || '';
   const legacyDatesQuery = window.TravelWebsiteUtils
     ? window.TravelWebsiteUtils.getPageQueryValue('dates')
     : '';
@@ -217,15 +203,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const legacyDateRange = getLegacyDateRange(legacyDatesQuery);
   const initialCheckInQuery = window.TravelWebsiteUtils
-    ? window.TravelWebsiteUtils.getPageQueryValue('checkIn') || legacyDateRange.checkIn
-    : legacyDateRange.checkIn;
+    ? window.TravelWebsiteUtils.getPageQueryValue('checkIn') || savedSearchState.checkIn || legacyDateRange.checkIn
+    : savedSearchState.checkIn || legacyDateRange.checkIn;
   const initialCheckOutQuery = window.TravelWebsiteUtils
-    ? window.TravelWebsiteUtils.getPageQueryValue('checkOut') || legacyDateRange.checkOut
-    : legacyDateRange.checkOut;
+    ? window.TravelWebsiteUtils.getPageQueryValue('checkOut') || savedSearchState.checkOut || legacyDateRange.checkOut
+    : savedSearchState.checkOut || legacyDateRange.checkOut;
   const initialTravelersQuery = window.TravelWebsiteUtils
-    ? window.TravelWebsiteUtils.getPageQueryValue('travelers')
-    : '';
+    ? window.TravelWebsiteUtils.getPageQueryValue('travelers') || savedSearchState.travelers || ''
+    : savedSearchState.travelers || '';
 
+  // The fields are populated from URL/session values so searches started on Homepage
+  // continue here, and the cards can display the same dates/travelers the user entered.
   if (destinationInput && initialDestinationQuery) {
     destinationInput.value = initialDestinationQuery;
   }
@@ -240,6 +228,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (travelersInput && initialTravelersQuery) {
     travelersInput.value = initialTravelersQuery;
+  }
+
+  function normalizeSearchText(value) {
+    if (window.TravelWebsiteUtils && typeof window.TravelWebsiteUtils.normalizeText === 'function') {
+      return window.TravelWebsiteUtils.normalizeText(value);
+    }
+
+    return String(value || '').toLowerCase().trim();
   }
 
   function parseIsoDate(dateText) {
@@ -336,8 +332,128 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
+  function initializeFilterAccordions() {
+    filterGroupHeaders.forEach(function (headerButton) {
+      const filterGroup = headerButton.closest('.filter-group');
+      const controlledId = headerButton.getAttribute('aria-controls');
+      const optionsElement = controlledId ? document.getElementById(controlledId) : null;
+      const shouldStartOpen = filterGroup && filterGroup.getAttribute('data-default-open') === 'true';
+
+      if (!filterGroup || !optionsElement) {
+        return;
+      }
+
+      headerButton.setAttribute('aria-expanded', shouldStartOpen ? 'true' : 'false');
+      filterGroup.classList.toggle('is-collapsed', !shouldStartOpen);
+      optionsElement.hidden = !shouldStartOpen;
+
+      headerButton.addEventListener('click', function () {
+        const isExpanded = headerButton.getAttribute('aria-expanded') === 'true';
+        const shouldExpand = !isExpanded;
+
+        headerButton.setAttribute('aria-expanded', shouldExpand ? 'true' : 'false');
+        filterGroup.classList.toggle('is-collapsed', !shouldExpand);
+        optionsElement.hidden = !shouldExpand;
+      });
+    });
+  }
+
+  function getPriceInputValue(boundName) {
+    const matchingInput = priceBoundInputs.find(function (input) {
+      return input.dataset.priceBound === boundName;
+    });
+
+    return matchingInput ? matchingInput.value.trim() : '';
+  }
+
+  function getSortLabel(sortValue) {
+    const labels = {
+      recommended: 'recommended order',
+      'price-low': 'price low to high',
+      'price-high': 'price high to low',
+      'rating-high': 'highest guest rating'
+    };
+
+    return labels[sortValue] || labels.recommended;
+  }
+
+  function getSelectedFilterButtons() {
+    return filterOptions.filter(function (button) {
+      return button.classList.contains('selected');
+    });
+  }
+
+  function getSidebarFilterState() {
+    const customMinRaw = getPriceInputValue('min');
+    const customMaxRaw = getPriceInputValue('max');
+    const hasCustomMin = customMinRaw !== '';
+    const hasCustomMax = customMaxRaw !== '';
+    const customMin = hasCustomMin ? Number(customMinRaw) : 0;
+    const customMax = hasCustomMax ? Number(customMaxRaw) : Number.POSITIVE_INFINITY;
+    const hasCustomPrice = Boolean(hasCustomMin || hasCustomMax);
+    const state = {
+      priceRanges: [],
+      propertyTypes: [],
+      ratingMinimum: null,
+      regions: [],
+      amenities: [],
+      selectedButtons: getSelectedFilterButtons(),
+      hasCustomPrice: hasCustomPrice,
+      customPriceRange: null,
+      priceValidationMessage: '',
+      sortValue: sortSelect ? sortSelect.value : 'recommended'
+    };
+
+    state.selectedButtons.forEach(function (button) {
+      const group = button.dataset.filterGroup;
+      const value = button.dataset.filterValue || '';
+
+      if (group === 'price') {
+        const rangeParts = value.split('-').map(Number);
+        state.priceRanges.push({ min: rangeParts[0] || 0, max: rangeParts[1] || Number.POSITIVE_INFINITY });
+      }
+
+      if (group === 'propertyType') {
+        state.propertyTypes.push(normalizeSearchText(value));
+      }
+
+      if (group === 'rating') {
+        const ratingValue = Number(value);
+        state.ratingMinimum = Math.max(state.ratingMinimum || 0, Number.isFinite(ratingValue) ? ratingValue : 0);
+      }
+
+      if (group === 'region') {
+        state.regions.push(normalizeSearchText(value));
+      }
+
+      if (group === 'amenity') {
+        state.amenities.push(normalizeSearchText(value));
+      }
+    });
+
+    if (hasCustomPrice) {
+      const suppliedMinIsValid = !hasCustomMin || Number.isFinite(customMin);
+      const suppliedMaxIsValid = !hasCustomMax || Number.isFinite(customMax);
+      const hasNegativeValue = customMin < 0 || customMax < 0;
+      const rangeIsBackwards = hasCustomMin && hasCustomMax && customMin > customMax;
+
+      if (!suppliedMinIsValid || !suppliedMaxIsValid || hasNegativeValue || rangeIsBackwards) {
+        state.priceValidationMessage = 'Adjust the custom price range so the minimum is not higher than the maximum.';
+      } else {
+        state.customPriceRange = { min: customMin, max: customMax };
+        state.priceRanges.push(state.customPriceRange);
+      }
+    }
+
+    return state;
+  }
+
   function matchesDateFilter(listingLink, datesState) {
     if (!datesState.isActive || !datesState.isValid) {
+      return true;
+    }
+
+    if (listingLink.dataset.yearRound === 'true') {
       return true;
     }
 
@@ -360,12 +476,70 @@ document.addEventListener('DOMContentLoaded', function () {
     return travelersState.count <= maxTravelers;
   }
 
+  function matchesSidebarFilters(listingLink, sidebarState) {
+    const price = Number(listingLink.dataset.priceUsd || '0');
+    const propertyType = normalizeSearchText(listingLink.dataset.propertyType || '');
+    const rating = Number(listingLink.dataset.rating || '0');
+    const region = normalizeSearchText(listingLink.dataset.region || '');
+    const amenities = String(listingLink.dataset.amenities || '')
+      .split('|')
+      .map(normalizeSearchText)
+      .filter(Boolean);
+
+    if (sidebarState.priceRanges.length) {
+      const matchesAnyRange = sidebarState.priceRanges.some(function (range) {
+        return price >= range.min && price <= range.max;
+      });
+
+      if (!matchesAnyRange) {
+        return false;
+      }
+    }
+
+    if (sidebarState.propertyTypes.length && !sidebarState.propertyTypes.includes(propertyType)) {
+      return false;
+    }
+
+    if (sidebarState.ratingMinimum && rating < sidebarState.ratingMinimum) {
+      return false;
+    }
+
+    if (sidebarState.regions.length && !sidebarState.regions.includes(region)) {
+      return false;
+    }
+
+    // Amenity filters are cumulative: selecting Pool + Kitchen means the stay must show both.
+    if (sidebarState.amenities.length) {
+      const hasEveryAmenity = sidebarState.amenities.every(function (amenity) {
+        return amenities.includes(amenity);
+      });
+
+      if (!hasEveryAmenity) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   function getCurrentSearchState() {
     return {
       destinationQuery: destinationInput ? destinationInput.value.trim() : '',
       dates: getDatesFilterState(),
-      travelers: getTravelersFilterState()
+      travelers: getTravelersFilterState(),
+      sidebar: getSidebarFilterState()
     };
+  }
+
+  function hasActiveSearchState(searchState) {
+    return Boolean(
+      searchState.destinationQuery ||
+      searchState.dates.isActive ||
+      searchState.travelers.isActive ||
+      searchState.sidebar.selectedButtons.length ||
+      searchState.sidebar.hasCustomPrice ||
+      searchState.sidebar.sortValue !== 'recommended'
+    );
   }
 
   function getVisibleListingCount() {
@@ -377,12 +551,219 @@ document.addEventListener('DOMContentLoaded', function () {
   function syncSearchQueryParams() {
     const currentSearchState = getCurrentSearchState();
 
-    window.TravelWebsiteUtils.updatePageQueryValue('destination', currentSearchState.destinationQuery);
-    window.TravelWebsiteUtils.updatePageQueryValue('checkIn', currentSearchState.dates.checkInValue);
-    window.TravelWebsiteUtils.updatePageQueryValue('checkOut', currentSearchState.dates.checkOutValue);
-    window.TravelWebsiteUtils.updatePageQueryValue('dates', '');
-    window.TravelWebsiteUtils.updatePageQueryValue('travelers', currentSearchState.travelers.rawValue);
+    if (window.TravelWebsiteUtils) {
+      window.TravelWebsiteUtils.updatePageQueryValue('destination', currentSearchState.destinationQuery);
+      window.TravelWebsiteUtils.updatePageQueryValue('checkIn', currentSearchState.dates.checkInValue);
+      window.TravelWebsiteUtils.updatePageQueryValue('checkOut', currentSearchState.dates.checkOutValue);
+      window.TravelWebsiteUtils.updatePageQueryValue('dates', '');
+      window.TravelWebsiteUtils.updatePageQueryValue('travelers', currentSearchState.travelers.rawValue);
+    }
+
+    if (window.NexpediaEnhancements && typeof window.NexpediaEnhancements.saveSearchState === 'function') {
+      window.NexpediaEnhancements.saveSearchState({
+        destination: currentSearchState.destinationQuery,
+        checkIn: currentSearchState.dates.checkInValue,
+        checkOut: currentSearchState.dates.checkOutValue,
+        travelers: currentSearchState.travelers.rawValue
+      });
+    }
   }
+
+  function getListingTitle(listingLink) {
+    const titleElement = listingLink.querySelector('h3');
+    return titleElement ? titleElement.textContent.trim() : 'Selected stay';
+  }
+
+  function getListingLocation(listingLink) {
+    const locationElement = listingLink.querySelector('.location');
+    return locationElement ? locationElement.textContent.trim() : '';
+  }
+
+  function buildCheckoutHrefForListing(listingLink) {
+    const currentSearchState = getCurrentSearchState();
+    const params = new URLSearchParams();
+
+    params.set('destination', getListingTitle(listingLink));
+
+    if (getListingLocation(listingLink)) {
+      params.set('location', getListingLocation(listingLink));
+    }
+
+    if (listingLink.dataset.priceUsd) {
+      params.set('price', listingLink.dataset.priceUsd);
+    }
+
+    if (currentSearchState.dates.checkInValue) {
+      params.set('checkIn', currentSearchState.dates.checkInValue);
+    }
+
+    if (currentSearchState.dates.checkOutValue) {
+      params.set('checkOut', currentSearchState.dates.checkOutValue);
+    }
+
+    if (currentSearchState.travelers.rawValue) {
+      params.set('travelers', currentSearchState.travelers.rawValue);
+    }
+
+    return '../CheckoutPage/index.html?' + params.toString();
+  }
+
+  function getListingAvailabilityText(listingLink) {
+    if (listingLink.dataset.yearRound === 'true') {
+      return 'Available year-round';
+    }
+
+    const startDate = parseIsoDate(listingLink.dataset.availableStart || '');
+    const endDate = parseIsoDate(listingLink.dataset.availableEnd || '');
+
+    if (!startDate || !endDate) {
+      return '';
+    }
+
+    return 'Available ' + formatShortDate(startDate) + ' to ' + formatShortDate(endDate);
+  }
+
+  function updateListingContextCards() {
+    const currentSearchState = getCurrentSearchState();
+
+    listingLinks.forEach(function (listingLink) {
+      const listingInfo = listingLink.querySelector('.listing-info');
+      let contextElement = listingLink.querySelector('.listing-context');
+      const contextParts = [];
+
+      if (!contextElement && listingInfo) {
+        contextElement = document.createElement('p');
+        contextElement.className = 'listing-context';
+        contextElement.setAttribute('aria-live', 'polite');
+        listingInfo.appendChild(contextElement);
+      }
+
+      if (currentSearchState.dates.isActive && currentSearchState.dates.isValid) {
+        contextParts.push(
+          'Selected dates: ' +
+          formatShortDate(currentSearchState.dates.startDate) +
+          ' → ' +
+          formatShortDate(currentSearchState.dates.endDate)
+        );
+      } else {
+        const availabilityText = getListingAvailabilityText(listingLink);
+        if (availabilityText) {
+          contextParts.push(availabilityText);
+        }
+      }
+
+      if (currentSearchState.travelers.isActive && currentSearchState.travelers.isValid) {
+        contextParts.push(
+          currentSearchState.travelers.count + ' ' +
+          (currentSearchState.travelers.count === 1 ? 'traveler' : 'travelers')
+        );
+      }
+
+      if (contextElement) {
+        contextElement.textContent = contextParts.join(' • ');
+      }
+
+      listingLink.href = buildCheckoutHrefForListing(listingLink);
+    });
+  }
+
+  function createActiveFilterChip(label, onRemove) {
+    const chip = document.createElement('button');
+    chip.className = 'filter-pill active-filter-chip';
+    chip.type = 'button';
+    chip.textContent = label + ' ×';
+    chip.setAttribute('aria-label', 'Remove filter ' + label);
+    chip.addEventListener('click', function () {
+      onRemove();
+    });
+
+    return chip;
+  }
+
+  function setFilterButtonSelected(button, shouldBeSelected) {
+    button.classList.toggle('selected', shouldBeSelected);
+    button.setAttribute('aria-pressed', shouldBeSelected ? 'true' : 'false');
+  }
+
+  function reapplyCurrencyFormatting() {
+    if (window.TravelWebsiteUtils && typeof window.TravelWebsiteUtils.applyCurrencyToPage === 'function') {
+      window.TravelWebsiteUtils.applyCurrencyToPage(
+        typeof window.TravelWebsiteUtils.getStoredCurrency === 'function'
+          ? window.TravelWebsiteUtils.getStoredCurrency()
+          : 'USD'
+      );
+    }
+  }
+
+  function updateActiveFilterChips() {
+    if (!activeFiltersElement) {
+      return;
+    }
+
+    const currentSearchState = getCurrentSearchState();
+    activeFiltersElement.innerHTML = '';
+
+    if (currentSearchState.destinationQuery) {
+      activeFiltersElement.appendChild(createActiveFilterChip('Destination: ' + currentSearchState.destinationQuery, function () {
+        if (destinationInput) {
+          destinationInput.value = '';
+        }
+        applyAllSearchFilters();
+      }));
+    }
+
+    if (currentSearchState.dates.isActive) {
+      const dateLabel = currentSearchState.dates.isValid
+        ? 'Dates: ' + formatShortDate(currentSearchState.dates.startDate) + ' to ' + formatShortDate(currentSearchState.dates.endDate)
+        : 'Dates need attention';
+
+      activeFiltersElement.appendChild(createActiveFilterChip(dateLabel, function () {
+        if (checkInInput) {
+          checkInInput.value = '';
+        }
+
+        if (checkOutInput) {
+          checkOutInput.value = '';
+        }
+
+        scheduleSecondaryFiltersUpdate();
+      }));
+    }
+
+    if (currentSearchState.travelers.isActive) {
+      activeFiltersElement.appendChild(createActiveFilterChip('Travelers: ' + currentSearchState.travelers.rawValue, function () {
+        if (travelersInput) {
+          travelersInput.value = '';
+        }
+        scheduleSecondaryFiltersUpdate();
+      }));
+    }
+
+    if (currentSearchState.sidebar.hasCustomPrice) {
+      const minLabel = getPriceInputValue('min') || '0';
+      const maxLabel = getPriceInputValue('max') || 'any';
+
+      activeFiltersElement.appendChild(createActiveFilterChip('Price: $' + minLabel + '–' + (maxLabel === 'any' ? 'any' : '$' + maxLabel), function () {
+        priceBoundInputs.forEach(function (input) { input.value = ''; });
+        scheduleSecondaryFiltersUpdate();
+      }));
+    }
+    if (currentSearchState.sidebar.sortValue !== 'recommended') {
+      activeFiltersElement.appendChild(createActiveFilterChip('Sort: ' + getSortLabel(currentSearchState.sidebar.sortValue), function () {
+        if (sortSelect) {
+          sortSelect.value = 'recommended';
+        }
+        scheduleSecondaryFiltersUpdate();
+      }));
+    }
+
+    currentSearchState.sidebar.selectedButtons.forEach(function (button) {
+      const readableLabel = button.textContent.trim();
+      activeFiltersElement.appendChild(createActiveFilterChip(readableLabel, function () {
+        setFilterButtonSelected(button, false);
+        scheduleSecondaryFiltersUpdate();
+      }));
+    });  }
 
   function updateCombinedSearchFeedback() {
     const currentSearchState = getCurrentSearchState();
@@ -391,6 +772,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const noResultsElement = document.querySelector('.search-no-results');
     const noResultsTitle = noResultsElement ? noResultsElement.querySelector('h3') : null;
     const noResultsDescription = noResultsElement ? noResultsElement.querySelector('p') : null;
+
+    updateListingContextCards();
+    updateActiveFilterChips();
 
     if (!statusElement || !noResultsElement) {
       return;
@@ -428,11 +812,29 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
+    if (currentSearchState.sidebar.hasCustomPrice) {
+      if (currentSearchState.sidebar.priceValidationMessage) {
+        guidanceMessages.push(currentSearchState.sidebar.priceValidationMessage);
+      } else {
+        const minLabel = getPriceInputValue('min') || '0';
+        const maxLabel = getPriceInputValue('max') || 'any price';
+        activeFilters.push('price $' + minLabel + ' to ' + (maxLabel === 'any price' ? maxLabel : '$' + maxLabel));
+      }
+    }
+
+    if (currentSearchState.sidebar.sortValue !== 'recommended') {
+      activeFilters.push('sorted by ' + getSortLabel(currentSearchState.sidebar.sortValue));
+    }
+
+    currentSearchState.sidebar.selectedButtons.forEach(function (button) {
+      activeFilters.push(button.textContent.trim());
+    });
+
     let statusMessage = '';
 
-    if (!activeFilters.length) {
-      statusMessage = '';
-    } else {
+    // The default state stays empty. Status text appears only after the
+    // user searches, picks dates/travelers, sorts, or selects a sidebar filter.
+    if (activeFilters.length) {
       statusMessage =
         'Showing ' +
         visibleCount +
@@ -444,16 +846,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (guidanceMessages.length) {
-      statusMessage += ' ' + guidanceMessages.join(' ');
+      statusMessage += (statusMessage ? ' ' : '') + guidanceMessages.join(' ');
     }
 
+    // Clear the previous conversion template before writing new dynamic status text.
+    delete statusElement.dataset.usdTextTemplate;
     statusElement.textContent = statusMessage;
+    reapplyCurrencyFormatting();
 
-    const hasAnyFilter = Boolean(
-      activeFilters.length || currentSearchState.dates.isActive || currentSearchState.travelers.isActive
-    );
-    const shouldShowNoResults = hasAnyFilter && visibleCount === 0 && !guidanceMessages.length;
-
+    const shouldShowNoResults = hasActiveSearchState(currentSearchState) && visibleCount === 0 && !guidanceMessages.length;
     noResultsElement.classList.toggle('search-ui-hidden', !shouldShowNoResults);
 
     if (shouldShowNoResults) {
@@ -463,13 +864,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (noResultsDescription) {
         noResultsDescription.textContent =
-          'Try broader dates, fewer travelers, or a different destination.';
+          'Try broader dates, fewer travelers, a different destination, or fewer sidebar filters.';
       }
     }
   }
 
   let listingsSearch = null;
   let resultsSecondaryFilterTimeoutId = null;
+
+  function sortListings() {
+    if (!listingsPanel || !listingLinks.length) {
+      return;
+    }
+
+    const sortValue = sortSelect ? sortSelect.value : 'recommended';
+    const noResultsElement = listingsPanel.querySelector('.search-no-results');
+    const sortedLinks = listingLinks.slice().sort(function (firstLink, secondLink) {
+      const firstPrice = Number(firstLink.dataset.priceUsd || '0');
+      const secondPrice = Number(secondLink.dataset.priceUsd || '0');
+      const firstRating = Number(firstLink.dataset.rating || '0');
+      const secondRating = Number(secondLink.dataset.rating || '0');
+      const firstOrder = Number(firstLink.dataset.originalOrder || '0');
+      const secondOrder = Number(secondLink.dataset.originalOrder || '0');
+
+      if (sortValue === 'price-low') {
+        return firstPrice - secondPrice || firstOrder - secondOrder;
+      }
+
+      if (sortValue === 'price-high') {
+        return secondPrice - firstPrice || firstOrder - secondOrder;
+      }
+
+      if (sortValue === 'rating-high') {
+        return secondRating - firstRating || firstOrder - secondOrder;
+      }
+
+      return firstOrder - secondOrder;
+    });
+
+    sortedLinks.forEach(function (listingLink) {
+      listingsPanel.insertBefore(listingLink, noResultsElement || null);
+    });
+  }
 
   function applyAllSearchFilters() {
     if (!listingsSearch) {
@@ -498,6 +934,79 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 120);
   }
 
+  initializeFilterAccordions();
+
+  filterOptions.forEach(function (button) {
+    button.addEventListener('click', function () {
+      const isSelected = button.classList.contains('selected');
+      const exclusiveGroup = button.dataset.exclusiveGroup;
+
+      if (button.dataset.filterGroup === 'price' && !isSelected) {
+        priceBoundInputs.forEach(function (input) { input.value = ''; });
+      }
+
+      if (exclusiveGroup && !isSelected) {
+        filterOptions.forEach(function (otherButton) {
+          if (otherButton !== button && otherButton.dataset.exclusiveGroup === exclusiveGroup) {
+            setFilterButtonSelected(otherButton, false);
+          }
+        });
+      }
+
+      setFilterButtonSelected(button, !isSelected);
+      scheduleSecondaryFiltersUpdate();
+    });
+  });
+
+  priceBoundInputs.forEach(function (input) {
+    input.addEventListener('input', function () {
+      filterOptions.forEach(function (button) {
+        if (button.dataset.filterGroup === 'price') {
+          setFilterButtonSelected(button, false);
+        }
+      });
+      scheduleSecondaryFiltersUpdate();
+    });
+
+    input.addEventListener('change', scheduleSecondaryFiltersUpdate);
+  });
+
+  if (sortSelect) {
+    sortSelect.addEventListener('change', scheduleSecondaryFiltersUpdate);
+  }
+
+  if (applyButton) {
+    applyButton.addEventListener('click', function () {
+      scheduleSecondaryFiltersUpdate();
+
+      if (window.TravelWebsiteUtils) {
+        window.TravelWebsiteUtils.showToast('Filters applied to the current search results.');
+      }
+    });
+  }
+
+  if (clearFiltersButton) {
+    clearFiltersButton.addEventListener('click', function () {
+      filterOptions.forEach(function (button) {
+        setFilterButtonSelected(button, false);
+      });
+
+      priceBoundInputs.forEach(function (input) {
+        input.value = '';
+      });
+
+      if (sortSelect) {
+        sortSelect.value = 'recommended';
+      }
+
+      scheduleSecondaryFiltersUpdate();
+
+      if (window.TravelWebsiteUtils) {
+        window.TravelWebsiteUtils.showToast('Sidebar filters cleared.');
+      }
+    });
+  }
+
   if (
     window.TravelWebsiteUtils &&
     searchForm &&
@@ -516,12 +1025,13 @@ document.addEventListener('DOMContentLoaded', function () {
       noResultsMount: listingsPanel,
 
       getItemData: function (listingLink) {
-        const titleElement = listingLink.querySelector('h3');
-        const locationElement = listingLink.querySelector('.location');
+        const title = getListingTitle(listingLink);
+        const location = getListingLocation(listingLink);
         const priceElement = listingLink.querySelector('.price');
         const listingMetaElement = listingLink.querySelector('.listing-meta');
-        const title = titleElement ? titleElement.textContent.trim() : '';
-        const location = locationElement ? locationElement.textContent.trim() : '';
+        const badges = Array.from(listingLink.querySelectorAll('.listing-badges span')).map(function (badge) {
+          return badge.textContent.trim();
+        });
         const price = priceElement ? priceElement.textContent.trim() : '';
         const listingMeta = listingMetaElement ? listingMetaElement.textContent.trim() : '';
 
@@ -531,8 +1041,25 @@ document.addEventListener('DOMContentLoaded', function () {
           suggestionMeta: location + (price ? ' • ' + price + ' per night' : ''),
           suggestionKey: title + '|' + location,
           searchValue: title,
-          searchText: [title, location, price, listingMeta].join(' ')
+          searchText: [
+            title,
+            location,
+            price,
+            listingMeta,
+            listingLink.dataset.propertyType,
+            listingLink.dataset.region,
+            listingLink.dataset.amenities,
+            badges.join(' ')
+          ].join(' ')
         };
+      },
+
+      getLiveSuggestionMeta: function (listingLink) {
+        const location = getListingLocation(listingLink);
+        const priceElement = listingLink.querySelector('.price');
+        const price = priceElement ? priceElement.textContent.trim() : '';
+
+        return location + (price ? ' • ' + price + ' per night' : '');
       },
 
       getStatusText: function () {
@@ -547,18 +1074,21 @@ document.addEventListener('DOMContentLoaded', function () {
         const shouldShowListing =
           matchesDestinationQuery &&
           matchesDateFilter(listingLink, currentSearchState.dates) &&
-          matchesTravelersFilter(listingLink, currentSearchState.travelers);
+          matchesTravelersFilter(listingLink, currentSearchState.travelers) &&
+          matchesSidebarFilters(listingLink, currentSearchState.sidebar);
 
         listingLink.style.display = shouldShowListing ? '' : 'none';
       },
 
       afterFilter: function () {
         syncSearchQueryParams();
+        sortListings();
         updateCombinedSearchFeedback();
       },
 
       onSubmit: function () {
         syncSearchQueryParams();
+        sortListings();
         updateCombinedSearchFeedback();
       },
 
@@ -576,7 +1106,13 @@ document.addEventListener('DOMContentLoaded', function () {
     checkOutInput.addEventListener('change', scheduleSecondaryFiltersUpdate);
     travelersInput.addEventListener('input', scheduleSecondaryFiltersUpdate);
     travelersInput.addEventListener('change', scheduleSecondaryFiltersUpdate);
+
+    // Initial context/link sync is useful even before a user filters because it
+    // ensures checkout receives any saved Homepage search values immediately.
+    updateListingContextCards();
+    updateActiveFilterChips();
   }
+
 
   /* =========================================================
      GLOBAL KEYBOARD SHORTCUTS

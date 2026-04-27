@@ -114,7 +114,7 @@
           </div>
         </div>
 
-        <!-- Prototype search form -->
+        <!-- Search form that keeps destination, dates, and traveler values synced with the results below. -->
         <form class="search-form" action="index.html">
           <input type="text" name="destination" placeholder="Where to?" aria-label="Destination" />
 
@@ -132,50 +132,143 @@
           <button type="submit" class="search-button">Search</button>
         </form>
 
-        <!-- Example active filters -->
-        <div class="active-filters">
-          <button class="filter-pill" type="button">✕ Beachfront</button>
-          <button class="filter-pill" type="button">✕ Free cancellation</button>
-          <button class="filter-pill" type="button">✕ Under $300</button>
-        </div>
+        <!-- Active filter chips are rendered by SearchResults/script.js after the user takes action. -->
+        <div class="active-filters" aria-live="polite"></div>
       </div>
     </section>
 
     <!-- Main results layout -->
     <main class="results-layout">
       <!-- Left filter panel -->
-      <aside class="filters-panel">
+      <aside class="filters-panel" aria-label="Search filters">
         <h2 class="filters-title">Search Filters</h2>
+        <p class="filter-description">
+          Refine by budget, property style, guest rating, region, and amenities. Each filter updates the results with a loading state.
+        </p>
 
-        <section class="filter-group">
-          <div class="filter-group-header">
-            <h3>Price</h3>
-            <span>▾</span>
+        <section class="filter-group" aria-labelledby="priceFilterTitle" data-default-open="true">
+          <button class="filter-group-header" type="button" aria-expanded="true" aria-controls="priceFilterOptions">
+            <span>
+              <span id="priceFilterTitle" class="filter-heading">Price per night</span>
+              <small>Use a preset range or set your own budget.</small>
+            </span>
+            <span class="filter-arrow" aria-hidden="true">▾</span>
+          </button>
+          <div class="filter-options" id="priceFilterOptions">
+            <button class="filter-option" type="button" data-filter-group="price" data-filter-value="0-150" data-exclusive-group="price" aria-pressed="false">Under $150</button>
+            <button class="filter-option" type="button" data-filter-group="price" data-filter-value="150-225" data-exclusive-group="price" aria-pressed="false">$150–$225</button>
+            <button class="filter-option" type="button" data-filter-group="price" data-filter-value="225-325" data-exclusive-group="price" aria-pressed="false">$225–$325</button>
+            <button class="filter-option" type="button" data-filter-group="price" data-filter-value="325-500" data-exclusive-group="price" aria-pressed="false">$325–$500</button>
+            <button class="filter-option" type="button" data-filter-group="price" data-filter-value="500-99999" data-exclusive-group="price" aria-pressed="false">$500+</button>
+            <div class="price-custom-row" aria-label="Custom price range">
+              <label for="filterMinPrice">Min price
+                <input id="filterMinPrice" type="number" min="0" step="25" placeholder="0" data-price-bound="min" />
+              </label>
+              <label for="filterMaxPrice">Max price
+                <input id="filterMaxPrice" type="number" min="0" step="25" placeholder="400" data-price-bound="max" />
+              </label>
+            </div>
           </div>
-          <button class="filter-option selected" type="button">$0–$300</button>
         </section>
 
-        <section class="filter-group">
-          <div class="filter-group-header">
-            <h3>Property Type</h3>
-            <span>▾</span>
+        <section class="filter-group" aria-labelledby="sortFilterTitle">
+          <button class="filter-group-header" type="button" aria-expanded="false" aria-controls="sortFilterOptions">
+            <span>
+              <span id="sortFilterTitle" class="filter-heading">Sort results</span>
+              <small>Reorder stays without losing active filters.</small>
+            </span>
+            <span class="filter-arrow" aria-hidden="true">▾</span>
+          </button>
+          <div class="filter-options" id="sortFilterOptions" hidden>
+            <label class="filter-select-label" for="resultsSortSelect">Sort by</label>
+            <select id="resultsSortSelect" class="filter-select">
+              <option value="recommended">Recommended</option>
+              <option value="price-low">Price: low to high</option>
+              <option value="price-high">Price: high to low</option>
+              <option value="rating-high">Guest rating: high to low</option>
+            </select>
           </div>
-          <button class="filter-option selected" type="button">Hotels</button>
-          <button class="filter-option" type="button">Resorts</button>
-          <button class="filter-option" type="button">Vacation rentals</button>
         </section>
 
-        <section class="filter-group">
-          <div class="filter-group-header">
-            <h3>Guest Rating</h3>
-            <span>▾</span>
+        <section class="filter-group" aria-labelledby="propertyFilterTitle">
+          <button class="filter-group-header" type="button" aria-expanded="false" aria-controls="propertyFilterOptions">
+            <span>
+              <span id="propertyFilterTitle" class="filter-heading">Property type</span>
+              <small>Choose one or more stay styles.</small>
+            </span>
+            <span class="filter-arrow" aria-hidden="true">▾</span>
+          </button>
+          <div class="filter-options" id="propertyFilterOptions" hidden>
+            <button class="filter-option" type="button" data-filter-group="propertyType" data-filter-value="Hotel" aria-pressed="false">Hotels</button>
+            <button class="filter-option" type="button" data-filter-group="propertyType" data-filter-value="Resort" aria-pressed="false">Resorts</button>
+            <button class="filter-option" type="button" data-filter-group="propertyType" data-filter-value="Vacation rental" aria-pressed="false">Vacation rentals</button>
+            <button class="filter-option" type="button" data-filter-group="propertyType" data-filter-value="Apartment" aria-pressed="false">Apartments</button>
+            <button class="filter-option" type="button" data-filter-group="propertyType" data-filter-value="Boutique hotel" aria-pressed="false">Boutique hotels</button>
+            <button class="filter-option" type="button" data-filter-group="propertyType" data-filter-value="Villa" aria-pressed="false">Villas</button>
+            <button class="filter-option" type="button" data-filter-group="propertyType" data-filter-value="Cabin" aria-pressed="false">Cabins</button>
           </div>
-          <button class="filter-option selected" type="button">Excellent</button>
-          <button class="filter-option" type="button">Very good</button>
-          <button class="filter-option" type="button">Good</button>
         </section>
 
-        <button class="apply-button" type="button">Apply</button>
+        <section class="filter-group" aria-labelledby="ratingFilterTitle">
+          <button class="filter-group-header" type="button" aria-expanded="false" aria-controls="ratingFilterOptions">
+            <span>
+              <span id="ratingFilterTitle" class="filter-heading">Guest rating</span>
+              <small>Prioritize highly rated stays.</small>
+            </span>
+            <span class="filter-arrow" aria-hidden="true">▾</span>
+          </button>
+          <div class="filter-options" id="ratingFilterOptions" hidden>
+            <button class="filter-option" type="button" data-filter-group="rating" data-filter-value="4.7" data-exclusive-group="rating" aria-pressed="false">Exceptional 4.7+</button>
+            <button class="filter-option" type="button" data-filter-group="rating" data-filter-value="4.5" data-exclusive-group="rating" aria-pressed="false">Excellent 4.5+</button>
+            <button class="filter-option" type="button" data-filter-group="rating" data-filter-value="4.0" data-exclusive-group="rating" aria-pressed="false">Very good 4.0+</button>
+            <button class="filter-option" type="button" data-filter-group="rating" data-filter-value="3.5" data-exclusive-group="rating" aria-pressed="false">Good 3.5+</button>
+          </div>
+        </section>
+
+        <section class="filter-group" aria-labelledby="regionFilterTitle">
+          <button class="filter-group-header" type="button" aria-expanded="false" aria-controls="regionFilterOptions">
+            <span>
+              <span id="regionFilterTitle" class="filter-heading">Region</span>
+              <small>Browse map-friendly destination areas.</small>
+            </span>
+            <span class="filter-arrow" aria-hidden="true">▾</span>
+          </button>
+          <div class="filter-options" id="regionFilterOptions" hidden>
+            <button class="filter-option" type="button" data-filter-group="region" data-filter-value="North America" aria-pressed="false">North America</button>
+            <button class="filter-option" type="button" data-filter-group="region" data-filter-value="South America" aria-pressed="false">South America</button>
+            <button class="filter-option" type="button" data-filter-group="region" data-filter-value="Europe" aria-pressed="false">Europe</button>
+            <button class="filter-option" type="button" data-filter-group="region" data-filter-value="Asia Pacific" aria-pressed="false">Asia Pacific</button>
+            <button class="filter-option" type="button" data-filter-group="region" data-filter-value="Caribbean" aria-pressed="false">Caribbean</button>
+            <button class="filter-option" type="button" data-filter-group="region" data-filter-value="Africa" aria-pressed="false">Africa</button>
+            <button class="filter-option" type="button" data-filter-group="region" data-filter-value="Middle East" aria-pressed="false">Middle East</button>
+            <button class="filter-option" type="button" data-filter-group="region" data-filter-value="Your listed location" aria-pressed="false">Your listed location</button>
+          </div>
+        </section>
+
+        <section class="filter-group" aria-labelledby="amenityFilterTitle">
+          <button class="filter-group-header" type="button" aria-expanded="false" aria-controls="amenityFilterOptions">
+            <span>
+              <span id="amenityFilterTitle" class="filter-heading">Amenities</span>
+              <small>Combine amenities to narrow results.</small>
+            </span>
+            <span class="filter-arrow" aria-hidden="true">▾</span>
+          </button>
+          <div class="filter-options" id="amenityFilterOptions" hidden>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Free cancellation" aria-pressed="false">Free cancellation</button>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Beachfront" aria-pressed="false">Beachfront</button>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Breakfast included" aria-pressed="false">Breakfast included</button>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Kitchen" aria-pressed="false">Kitchen</button>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Pool" aria-pressed="false">Pool</button>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Spa" aria-pressed="false">Spa</button>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Pet friendly" aria-pressed="false">Pet friendly</button>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Family friendly" aria-pressed="false">Family friendly</button>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Free parking" aria-pressed="false">Free parking</button>
+            <button class="filter-option" type="button" data-filter-group="amenity" data-filter-value="Near transit" aria-pressed="false">Near transit</button>
+          </div>
+        </section>
+
+        <button class="apply-button" type="button">Apply filters</button>
+        <button class="clear-filters-button" type="button">Clear filters</button>
       </aside>
 
       <!-- Center hotel/property listings -->
@@ -188,7 +281,7 @@
           data-max-travelers="10"
         >
           <article class="listing-card">
-            <div>
+            <div class="listing-media">
               <img class="listing-image" src="images/sanjuan.jpeg" alt="San Juan" />
             </div>
             <div class="listing-info">
@@ -209,7 +302,7 @@
           data-max-travelers="8"
         >
           <article class="listing-card">
-            <div>
+            <div class="listing-media">
               <img class="listing-image" src="images/miami.jpeg" alt="Miami Beach" />
             </div>
             <div class="listing-info">
@@ -230,7 +323,7 @@
           data-max-travelers="8"
         >
           <article class="listing-card">
-            <div>
+            <div class="listing-media">
               <img class="listing-image" src="images/myrtle.jpeg" alt="Myrtle Beach" />
             </div>
             <div class="listing-info">
@@ -251,28 +344,7 @@
           data-max-travelers="10"
         >
           <article class="listing-card">
-            <div>
-              <img class="listing-image" src="images/myrtle.jpeg" alt="Myrtle Beach" />
-            </div>
-            <div class="listing-info">
-              <h3>Myrtle Beach</h3>
-              <p class="location">South Carolina, USA</p>
-              <p class="price">$146</p>
-              <p class="note">per night</p>
-              <p class="listing-meta">Sleeps up to 10 • Available 2026-04-01 to 2026-12-31</p>
-            </div>
-          </article>
-        </a>
-
-        <a
-          href="../CheckoutPage/index.html"
-          class="listing-link"
-          data-available-start="2026-04-01"
-          data-available-end="2026-12-31"
-          data-max-travelers="10"
-        >
-          <article class="listing-card">
-            <div>
+            <div class="listing-media">
               <img class="listing-image" src="images/wilmington.jpeg" alt="Wilmington" />
             </div>
             <div class="listing-info">
@@ -293,7 +365,7 @@
           data-max-travelers="6"
         >
           <article class="listing-card">
-            <div>
+            <div class="listing-media">
               <img class="listing-image" src="images/hilton.jpeg" alt="Hilton Head Island" />
             </div>
             <div class="listing-info">
@@ -402,7 +474,7 @@
       <h2 id="signInModalTitle">Welcome Back</h2>
       <p>Please sign in or create an account</p>
 
-      <!-- Prototype modal actions -->
+      <!-- Fallback modal actions retained for users without the shared JavaScript enhancement. -->
       <button id="signInSubmit" class="modal-button primary" type="button">Sign In</button>
       <button id="signUpSubmit" class="modal-button secondary" type="button">Sign Up</button>
     </div>

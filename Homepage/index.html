@@ -136,6 +136,26 @@
       </div>
     </section>
 
+    <!-- Interactive world map section.
+         The SVG map and plotted destination buttons are rendered by shared/common.js
+         so session-only listed locations can appear without a backend service. -->
+    <section class="map-section" aria-labelledby="worldMapTitle">
+      <div class="map-shell">
+        <div class="map-copy">
+          <p class="section-eyebrow">Explore by map</p>
+          <h2 class="section-title" id="worldMapTitle">Popular stays around the world</h2>
+          <p class="section-subtitle">
+            Search starts here, then the Search Results page updates the matching stays, filters, dates, travelers, and currency.
+          </p>
+        </div>
+
+        <div class="world-map-card">
+          <div id="worldMapPoints" class="world-map-points" aria-label="World map with destination points"></div>
+          <div id="mapLocationList" class="map-location-list" aria-label="Map destination shortcuts"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Lower section with trip cards -->
     <section class="trip-section">
       <h2 class="section-title">Ideas for your next trip</h2>
@@ -344,7 +364,7 @@
       <h2 id="signInModalTitle">Welcome Back</h2>
       <p>Please sign in or create an account</p>
 
-      <!-- Prototype modal actions -->
+      <!-- Account modal actions -->
       <button id="signInSubmit" class="modal-button primary" type="button">Sign In</button>
       <button id="signUpSubmit" class="modal-button secondary" type="button">Sign Up</button>
     </div>

@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Prototype behavior: both buttons go to Trips
+  // Account action fallback keeps legacy buttons navigable.
   if (signInSubmit) {
     signInSubmit.addEventListener('click', function () {
       window.location.href = '../Trips/index.html';
@@ -146,8 +146,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* =========================================================
      HOMEPAGE FEATURE BUTTONS
-     Keeps each travel type clickable while the demo still
-     uses the shared trips-style search flow.
+     Keeps each travel type interactive while routing users through
+     the shared trips-style search flow.
      ========================================================= */
 
   const homepageFeatureButtons = Array.from(document.querySelectorAll('.category-feature-button'));
@@ -168,295 +168,65 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (window.TravelWebsiteUtils) {
         window.TravelWebsiteUtils.showToast(
-          selectedFeature + ' is clickable in this prototype. The demo still uses the shared trips flow.'
+          selectedFeature + ' options are ready. Continue through search to view matching stays.'
         );
       }
     });
   });
 
   /* =========================================================
-     LIVE DESTINATION SEARCH
-     Filters featured stays in real time by destination,
-     dates, and travelers, while submit still routes to the
-     Search Results page.
+     HOMEPAGE SEARCH ROUTER
+     The homepage now acts as the starting point for a search.
+     It shows type-ahead suggestions, saves the
+     visitor's dates/traveler choices, and routes to Search Results
+     instead of hiding or changing the homepage card section.
      ========================================================= */
 
-  // The Homepage search uses the first destination input inside the shared search form.
   const homepageSearchForm = document.querySelector('.search-form');
   const homepageDestinationInput = document.querySelector('.search-form input[aria-label="Destination"]');
   const homepageCheckInInput = document.querySelector('.search-form input[aria-label="Check-in"]');
   const homepageCheckOutInput = document.querySelector('.search-form input[aria-label="Check-out"]');
   const homepageTravelersInput = document.querySelector('.search-form input[aria-label="Travelers"]');
   const homepageTripLinks = Array.from(document.querySelectorAll('.trip-grid .trip-link'));
-  const homepageTripSection = document.querySelector('.trip-section');
 
-  let homepageSearchController = null;
-  let homepageSecondaryFilterTimeoutId = null;
-
-  function parseIsoDate(dateText) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateText)) {
-      return null;
-    }
-
-    const parsedDate = new Date(dateText + 'T00:00:00');
-
-    if (Number.isNaN(parsedDate.getTime())) {
-      return null;
-    }
-
-    return parsedDate;
-  }
-
-  function formatShortDate(dateObject) {
-    if (!(dateObject instanceof Date) || Number.isNaN(dateObject.getTime())) {
-      return '';
-    }
-
-    return dateObject.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  }
-
-  function getHomepageDatesFilterState() {
-    const checkInValue = homepageCheckInInput ? homepageCheckInInput.value.trim() : '';
-    const checkOutValue = homepageCheckOutInput ? homepageCheckOutInput.value.trim() : '';
-    const hasAnyDate = Boolean(checkInValue || checkOutValue);
-
-    if (!hasAnyDate) {
-      return {
-        checkInValue: '',
-        checkOutValue: '',
-        isActive: false,
-        isValid: true,
-        startDate: null,
-        endDate: null,
-        validationMessage: ''
-      };
-    }
-
-    if (!checkInValue || !checkOutValue) {
-      return {
-        checkInValue: checkInValue,
-        checkOutValue: checkOutValue,
-        isActive: true,
-        isValid: false,
-        startDate: null,
-        endDate: null,
-        validationMessage: 'Choose both check-in and check-out dates.'
-      };
-    }
-
-    const startDate = parseIsoDate(checkInValue);
-    const endDate = parseIsoDate(checkOutValue);
-
-    if (!startDate || !endDate) {
-      return {
-        checkInValue: checkInValue,
-        checkOutValue: checkOutValue,
-        isActive: true,
-        isValid: false,
-        startDate: null,
-        endDate: null,
-        validationMessage: 'Enter valid check-in and check-out dates.'
-      };
-    }
-
-    if (endDate < startDate) {
-      return {
-        checkInValue: checkInValue,
-        checkOutValue: checkOutValue,
-        isActive: true,
-        isValid: false,
-        startDate: startDate,
-        endDate: endDate,
-        validationMessage: 'Check-out must be after check-in.'
-      };
-    }
-
+  function getHomepageSearchValues() {
     return {
-      checkInValue: checkInValue,
-      checkOutValue: checkOutValue,
-      isActive: true,
-      isValid: true,
-      startDate: startDate,
-      endDate: endDate,
-      validationMessage: ''
+      destination: homepageDestinationInput ? homepageDestinationInput.value.trim() : '',
+      checkIn: homepageCheckInInput ? homepageCheckInInput.value.trim() : '',
+      checkOut: homepageCheckOutInput ? homepageCheckOutInput.value.trim() : '',
+      travelers: homepageTravelersInput ? homepageTravelersInput.value.trim() : ''
     };
   }
 
-  function getHomepageTravelersFilterState() {
-    const rawValue = homepageTravelersInput ? homepageTravelersInput.value.trim() : '';
-
-    if (!rawValue) {
-      return {
-        rawValue: '',
-        isActive: false,
-        isValid: true,
-        count: null
-      };
-    }
-
-    const numericMatch = rawValue.match(/\d+/);
-    const travelerCount = numericMatch ? Number(numericMatch[0]) : Number.NaN;
-    const isValidTravelerCount = Number.isFinite(travelerCount) && travelerCount > 0;
-
-    return {
-      rawValue: rawValue,
-      isActive: true,
-      isValid: isValidTravelerCount,
-      count: isValidTravelerCount ? travelerCount : null
-    };
-  }
-
-  function matchesHomepageDateFilter(tripLink, datesState) {
-    if (!datesState.isActive || !datesState.isValid) {
-      return true;
-    }
-
-    const availableStart = parseIsoDate(tripLink.dataset.availableStart || '');
-    const availableEnd = parseIsoDate(tripLink.dataset.availableEnd || '');
-
-    if (!availableStart || !availableEnd) {
-      return false;
-    }
-
-    return datesState.startDate >= availableStart && datesState.endDate <= availableEnd;
-  }
-
-  function matchesHomepageTravelersFilter(tripLink, travelersState) {
-    if (!travelersState.isActive || !travelersState.isValid) {
-      return true;
-    }
-
-    const maxTravelers = Number(tripLink.dataset.maxTravelers || '0');
-    return travelersState.count <= maxTravelers;
-  }
-
-  function getHomepageSearchState() {
-    return {
-      destinationQuery: homepageDestinationInput ? homepageDestinationInput.value.trim() : '',
-      dates: getHomepageDatesFilterState(),
-      travelers: getHomepageTravelersFilterState()
-    };
-  }
-
-  function getVisibleHomepageTripCount() {
-    return homepageTripLinks.filter(function (tripLink) {
-      return tripLink.style.display !== 'none';
-    }).length;
-  }
-
-  function updateHomepageSearchFeedback() {
-    const currentSearchState = getHomepageSearchState();
-    const visibleCount = getVisibleHomepageTripCount();
-    const statusElement = document.querySelector('.search-results-status');
-    const noResultsElement = document.querySelector('.search-no-results');
-    const noResultsTitle = noResultsElement ? noResultsElement.querySelector('h3') : null;
-    const noResultsDescription = noResultsElement ? noResultsElement.querySelector('p') : null;
-
-    if (!statusElement || !noResultsElement) {
-      return;
-    }
-
-    const activeFilters = [];
-    const guidanceMessages = [];
-
-    if (currentSearchState.destinationQuery) {
-      activeFilters.push('destination “' + currentSearchState.destinationQuery + '”');
-    }
-
-    if (currentSearchState.dates.isActive) {
-      if (currentSearchState.dates.isValid) {
-        activeFilters.push(
-          'dates ' +
-            formatShortDate(currentSearchState.dates.startDate) +
-            ' to ' +
-            formatShortDate(currentSearchState.dates.endDate)
-        );
-      } else {
-        guidanceMessages.push(currentSearchState.dates.validationMessage);
-      }
-    }
-
-    if (currentSearchState.travelers.isActive) {
-      if (currentSearchState.travelers.isValid) {
-        activeFilters.push(
-          currentSearchState.travelers.count +
-            ' ' +
-            (currentSearchState.travelers.count === 1 ? 'traveler' : 'travelers')
-        );
-      } else {
-        guidanceMessages.push('Enter at least 1 traveler.');
-      }
-    }
-
-    let statusMessage = '';
-
-    if (activeFilters.length) {
-      statusMessage =
-        'Showing ' +
-        visibleCount +
-        ' ' +
-        (visibleCount === 1 ? 'featured stay' : 'featured stays') +
-        ' for ' +
-        activeFilters.join(' • ') +
-        '.';
-    }
-
-    if (guidanceMessages.length) {
-      statusMessage += (statusMessage ? ' ' : '') + guidanceMessages.join(' ');
-    }
-
-    statusElement.textContent = statusMessage;
-
-    const hasAnyFilter = Boolean(
-      currentSearchState.destinationQuery ||
-      currentSearchState.dates.isActive ||
-      currentSearchState.travelers.isActive
-    );
-    const shouldShowNoResults = hasAnyFilter && visibleCount === 0 && !guidanceMessages.length;
-
-    noResultsElement.classList.toggle('search-ui-hidden', !shouldShowNoResults);
-
-    if (shouldShowNoResults) {
-      if (noResultsTitle) {
-        noResultsTitle.textContent = 'No featured stays matched your current search';
-      }
-
-      if (noResultsDescription) {
-        noResultsDescription.textContent =
-          'Try broader dates, fewer travelers, or a different destination.';
-      }
+  function saveHomepageSearchValues() {
+    if (window.NexpediaEnhancements && typeof window.NexpediaEnhancements.saveSearchState === 'function') {
+      window.NexpediaEnhancements.saveSearchState(getHomepageSearchValues());
     }
   }
 
-  function applyHomepageSearchFilters() {
-    if (!homepageSearchController) {
-      return;
+  function routeHomepageSearchToResults(queryFromSearchController) {
+    const currentValues = getHomepageSearchValues();
+    const searchResultsUrl = new URL('../SearchResults/index.html', window.location.href);
+    const destinationQuery = String(queryFromSearchController || currentValues.destination || '').trim();
+
+    if (destinationQuery) {
+      searchResultsUrl.searchParams.set('destination', destinationQuery);
     }
 
-    homepageSearchController.applyFilter(homepageDestinationInput ? homepageDestinationInput.value.trim() : '');
-    homepageSearchController.hideSuggestions();
-  }
-
-  function scheduleHomepageSecondaryFiltersUpdate() {
-    if (!homepageSearchController) {
-      return;
+    if (currentValues.checkIn) {
+      searchResultsUrl.searchParams.set('checkIn', currentValues.checkIn);
     }
 
-    window.clearTimeout(homepageSecondaryFilterTimeoutId);
+    if (currentValues.checkOut) {
+      searchResultsUrl.searchParams.set('checkOut', currentValues.checkOut);
+    }
 
-    homepageSecondaryFilterTimeoutId = window.setTimeout(function () {
-      homepageSearchController.runLoadingTask({
-        mode: 'filter',
-        query: 'featured stays',
-        text: 'Updating featured stays…',
-        delay: 420,
-        onComplete: applyHomepageSearchFilters
-      });
-    }, 120);
+    if (currentValues.travelers) {
+      searchResultsUrl.searchParams.set('travelers', currentValues.travelers);
+    }
+
+    saveHomepageSearchValues();
+    window.location.href = searchResultsUrl.toString();
   }
 
   if (
@@ -468,12 +238,12 @@ document.addEventListener('DOMContentLoaded', function () {
     homepageTravelersInput &&
     homepageTripLinks.length
   ) {
-    homepageSearchController = window.TravelWebsiteUtils.initLiveSearch({
+    window.TravelWebsiteUtils.initLiveSearch({
       formElement: homepageSearchForm,
       inputElement: homepageDestinationInput,
       itemElements: homepageTripLinks,
 
-      // Build a clean search record from each destination card.
+      // Suggestions still come from the visible destination cards, but card visibility is never changed.
       getItemData: function (tripLink) {
         const titleElement = tripLink.querySelector('h3');
         const locationElement = tripLink.querySelector('.location');
@@ -491,70 +261,50 @@ document.addEventListener('DOMContentLoaded', function () {
         };
       },
 
+      getLiveSuggestionMeta: function (tripLink) {
+        const locationElement = tripLink.querySelector('.location');
+        const priceElement = tripLink.querySelector('.price');
+        const location = locationElement ? locationElement.textContent.trim() : '';
+        const price = priceElement ? priceElement.textContent.trim() : '';
+
+        return location + (price ? ' • ' + price + ' per night' : '');
+      },
+
       getStatusText: function () {
         return '';
       },
 
-      noResultsTitle: 'No featured stays matched your current search',
-      noResultsDescription: 'Try broader dates, fewer travelers, or a different destination.',
-      noResultsMount: homepageTripSection,
+      noResultsTitle: 'No homepage suggestions matched',
+      noResultsDescription: 'You can still search this destination to see all available results.',
 
-      setItemVisibility: function (tripLink, matchesDestinationQuery) {
-        const currentSearchState = getHomepageSearchState();
-        const shouldShowTrip =
-          matchesDestinationQuery &&
-          matchesHomepageDateFilter(tripLink, currentSearchState.dates) &&
-          matchesHomepageTravelersFilter(tripLink, currentSearchState.travelers);
-
-        tripLink.style.display = shouldShowTrip ? '' : 'none';
+      // Code review note: the homepage remains stable after searching;
+      // destination filtering happens only on the dedicated Search Results page.
+      setItemVisibility: function (tripLink) {
+        tripLink.style.display = '';
       },
 
       afterFilter: function () {
-        updateHomepageSearchFeedback();
+        homepageTripLinks.forEach(function (tripLink) {
+          tripLink.style.display = '';
+        });
+        saveHomepageSearchValues();
       },
 
-      // Submitting the Homepage search still routes the user to the Search Results page.
       onSubmit: function (state) {
-        const searchResultsUrl = new URL('../SearchResults/index.html', window.location.href);
-        const checkInValue = homepageCheckInInput ? homepageCheckInInput.value.trim() : '';
-        const checkOutValue = homepageCheckOutInput ? homepageCheckOutInput.value.trim() : '';
-        const travelersValue = homepageTravelersInput ? homepageTravelersInput.value.trim() : '';
-
-        if (state.query) {
-          searchResultsUrl.searchParams.set('destination', state.query);
-        }
-
-        if (checkInValue) {
-          searchResultsUrl.searchParams.set('checkIn', checkInValue);
-        }
-
-        if (checkOutValue) {
-          searchResultsUrl.searchParams.set('checkOut', checkOutValue);
-        }
-
-        if (travelersValue) {
-          searchResultsUrl.searchParams.set('travelers', travelersValue);
-        }
-
-        window.location.href = searchResultsUrl.toString();
+        routeHomepageSearchToResults(state.query);
       },
 
       enableInputLoading: true,
-      loadingDelay: 260,
-      loadingText: 'Loading featured stays…',
-      filterLoadingText: 'Updating featured stays…',
-      submitLoadingDelay: 900,
-      submitLoadingText: 'Searching featured stays…'
+      loadingDelay: 240,
+      loadingText: 'Loading destination suggestions…',
+      submitLoadingDelay: 750,
+      submitLoadingText: 'Opening search results…'
     });
 
-    homepageCheckInInput.addEventListener('input', scheduleHomepageSecondaryFiltersUpdate);
-    homepageCheckInInput.addEventListener('change', scheduleHomepageSecondaryFiltersUpdate);
-    homepageCheckOutInput.addEventListener('input', scheduleHomepageSecondaryFiltersUpdate);
-    homepageCheckOutInput.addEventListener('change', scheduleHomepageSecondaryFiltersUpdate);
-    homepageTravelersInput.addEventListener('input', scheduleHomepageSecondaryFiltersUpdate);
-    homepageTravelersInput.addEventListener('change', scheduleHomepageSecondaryFiltersUpdate);
-
-    updateHomepageSearchFeedback();
+    [homepageCheckInInput, homepageCheckOutInput, homepageTravelersInput].forEach(function (inputElement) {
+      inputElement.addEventListener('input', saveHomepageSearchValues);
+      inputElement.addEventListener('change', saveHomepageSearchValues);
+    });
   }
 
   /* =========================================================
